@@ -1,5 +1,7 @@
 # IF
 
+IF stands for **Intelligence Factory**.
+
 AI-driven SDLC demo focused on automated software delivery and creation with:
 
 - Governance
