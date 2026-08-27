@@ -11,12 +11,12 @@ import {
 } from 'recharts';
 import { Gauge, TrendingDown } from 'lucide-react';
 import { TRACKS } from '@/data/tracks';
-import { CLIENT_CONTEXT } from '@/data/scenario';
 import { GLOSSARY } from '@/data/glossary';
 import { selectAupiSeries, selectMetrics, selectTrack, useDemoStore } from '@/store/demoStore';
 import { Panel } from '@/components/ui/Panel';
 import { MetricCard } from '@/components/ui/MetricCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { ClientLogo } from '@/components/ui/ClientLogo';
 import { CHART, SPRINT_LABELS } from '@/components/ui/chartTokens';
 import { ChartTooltip } from '@/components/ui/ChartTooltip';
 
@@ -55,8 +55,10 @@ export function ExecutiveDashboard() {
           <h1 className="font-display text-[30px] leading-tight tracking-tight text-ink">
             Executive Trust Dashboard
           </h1>
-          <p className="mt-0.5 text-[15px] text-ink-muted">
-            {CLIENT_CONTEXT.client} · {track.label}
+          <p className="mt-1 flex flex-wrap items-center gap-2 text-[15px] text-ink-muted">
+            <ClientLogo className="max-h-[18px]" />
+            <span aria-hidden>·</span>
+            {track.label}
           </p>
         </div>
         <div className="flex items-center gap-2">
