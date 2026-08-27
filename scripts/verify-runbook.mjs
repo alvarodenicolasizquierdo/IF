@@ -134,6 +134,27 @@ await page.keyboard.press('Backquote');
 await page.waitForTimeout(300);
 check('the console\'s own key opens it too', await page.locator('#vault').isVisible());
 await page.keyboard.press('Escape');
+await page.waitForTimeout(200);
+
+// A remapper or soft keyboard can report the character with no code at all.
+// Position stays the primary signal; this is the fallback.
+await page.evaluate(() =>
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'º', bubbles: true })),
+);
+await page.waitForTimeout(300);
+check('the Spanish character alone opens it', await page.locator('#vault').isVisible());
+await page.keyboard.press('Escape');
+await page.waitForTimeout(200);
+
+// Discreet, not invisible: nothing at rest, a cue under a pointer already on
+// the words. A presenter told "click the product name" must be able to confirm
+// they are on the right thing.
+const atRest = await page.locator('#vault-key').evaluate((el) => getComputedStyle(el).cursor);
+check('the trigger is unmarked at rest', atRest === 'default', atRest);
+await page.locator('#vault-key').hover();
+await page.waitForTimeout(200);
+const onHover = await page.locator('#vault-key').evaluate((el) => getComputedStyle(el).cursor);
+check('it answers a pointer that finds it', onHover === 'pointer', onHover);
 
 check('no page errors', pageErrors.length === 0, pageErrors.join('; ') || undefined);
 
