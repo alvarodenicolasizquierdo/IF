@@ -146,13 +146,39 @@ const FACES = [
   ['JetBrains Mono', 'jetbrains-mono-700.woff2', 700, 'normal'],
 ];
 
-const fontFaces = FACES.map(
-  ([family, file, weight, style]) => `    @font-face {
+/**
+ * Pass --standalone for a copy that can be dropped onto any web host,
+ * including one that is not this site. The hosted page reads its fonts from
+ * /fonts/; a file living somewhere else has to carry them, so they are inlined
+ * as data URIs. Same content either way — one source, no second document to
+ * keep in step.
+ */
+const STANDALONE = process.argv.includes('--standalone');
+const STANDALONE_OUTPUT = resolve(root, 'dist-runbook/runbook.html');
+
+async function fontSrc(file) {
+  if (!STANDALONE) return `url('./fonts/${file}') format('woff2')`;
+  const bytes = await readFile(resolve(root, 'public/fonts', file));
+  return `url(data:font/woff2;base64,${bytes.toString('base64')}) format('woff2')`;
+}
+
+const fontFaces = (
+  await Promise.all(
+    FACES.map(
+      async ([family, file, weight, style]) => `    @font-face {
       font-family: '${family}';
-      src: url('./fonts/${file}') format('woff2');
+      src: ${await fontSrc(file)};
       font-weight: ${weight}; font-style: ${style}; font-display: swap;
     }`,
+    ),
+  )
 ).join('\n');
+
+// The favicon is the last relative reference in the head; a standalone copy
+// carries it inline or it 404s wherever the file is opened from.
+const favicon = STANDALONE
+  ? `data:image/svg+xml;base64,${(await readFile(resolve(root, 'public/favicon.svg'))).toString('base64')}`
+  : './favicon.svg';
 
 const rawBody = await readFile(SOURCE, 'utf8');
 if (!rawBody.includes('__VAULT_PAYLOAD__')) {
@@ -187,7 +213,7 @@ const page = `<!doctype html>
   result: it carries the verbatim script and the presenter-only controls.
 -->
 <meta name="robots" content="noindex, nofollow">
-<link rel="icon" href="./favicon.svg">
+<link rel="icon" href="${favicon}">
 <style>
 ${fontFaces}
 </style>
@@ -197,6 +223,16 @@ ${content}
 </body>
 </html>
 `;
+
+if (STANDALONE) {
+  await mkdir(dirname(STANDALONE_OUTPUT), { recursive: true });
+  await writeFile(STANDALONE_OUTPUT, page, 'utf8');
+  console.log(
+    `runbook → dist-runbook/runbook.html (${(page.length / 1024).toFixed(1)} kB, self-contained)`,
+  );
+  console.log(`  vault: ${exploits.length} competitors, ${(vaultPayload.length / 1024).toFixed(1)} kB encoded`);
+  process.exit(0);
+}
 
 await mkdir(dirname(OUTPUT), { recursive: true });
 await writeFile(OUTPUT, page, 'utf8');
