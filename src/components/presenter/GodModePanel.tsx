@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Crown, Scale, ServerCog, X, Zap } from 'lucide-react';
+import { Crown, Download, Scale, ServerCog, X, Zap } from 'lucide-react';
 import { PHASES } from '@/data/scenario';
 import { COMPETITOR_EXPLOITS, EXPLOIT_ORDER } from '@/data/scenario';
 import { PERSONA_ORDER, PERSONAS, TRACK_ORDER, TRACKS } from '@/data/tracks';
@@ -165,6 +165,20 @@ export function GodModePanel() {
               );
             })}
           </div>
+        </Group>
+
+        {/*
+          * Lives here rather than in the shell: taking a copy offline is a
+          * presenter errand, and the header is what a client is looking at.
+          */}
+        <Group label="Take it offline">
+          <a
+            href="./download.html"
+            className="flex items-center justify-center gap-2 rounded border border-hairline bg-canvas/60 px-2.5 py-2 text-[13px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-trust-active/50 hover:text-trust-active-soft"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Download single file
+          </a>
         </Group>
 
         <p className="text-center font-mono text-[12px] text-ink-faint">
