@@ -73,6 +73,14 @@ jobs:
       - name: Prove the offline download actually downloads
         run: BASE_URL=http://localhost:4173/ npm run test:download
 
+      # The run-book is generated from runbook/body.html, so a stale build is
+      # invisible. This asserts on copy that only exists in the current source,
+      # and on the noindex directive — the page carries the verbatim script and
+      # the presenter-only controls, so the link is shareable but a search
+      # result is not.
+      - name: Check the hosted run-book
+        run: BASE_URL=http://localhost:4173/ npm run test:runbook
+
       # Ship the standalone build alongside the normal one so the Pages site
       # also serves a file anyone can download and run offline.
       #

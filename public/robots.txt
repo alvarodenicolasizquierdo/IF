@@ -1,0 +1,7 @@
+# The run-book carries the verbatim presenter script and the controls a client
+# should not see. The link is shareable; a search result is not.
+User-agent: *
+Disallow: /runbook.html
+
+# The console itself is fine to index.
+Allow: /
