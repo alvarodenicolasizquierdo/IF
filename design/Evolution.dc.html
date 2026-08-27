@@ -1,0 +1,383 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; background: #170D26; }
+    * { box-sizing: border-box; }
+    a { color: #9F7AEA; text-decoration: none; }
+    a:hover { color: #B79BF0; }
+    .tnum { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #170D26; color: #FFFFFF; font-family: Manrope, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+  <!-- ── Header ───────────────────────────────────────────────── -->
+  <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 20px 26px 14px; border-bottom: 1px solid #4A3568; flex-shrink: 0">
+    <div>
+      <div style="font-size: 9px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0; margin-bottom: 6px">IMPROVE · POST-DEPLOYMENT</div>
+      <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.1">Continuous Evolution Engine</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 9px">
+      <div style="display: flex; align-items: center; gap: 6px; padding: 6px 11px; border: 1px solid rgba(16,185,129,0.4); border-radius: 7px; background: rgba(16,185,129,0.08)">
+        <span style="width: 5px; height: 5px; border-radius: 999px; background: #10B981"></span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: #10B981">LIVE</span>
+      </div>
+      <div style="display: flex; padding: 3px; gap: 2px; border: 1px solid #4A3568; border-radius: 8px; background: rgba(44,24,71,0.8)">
+        <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="6">
+          <div onClick="{{ r.pick }}" style="{{ r.style }}">{{ r.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Body ─────────────────────────────────────────────────── -->
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: 268px minmax(0,1fr) 352px">
+
+    <!-- FCEE stepper -->
+    <div style="border-right: 1px solid #4A3568; background: rgba(44,24,71,0.35); padding: 16px 14px; display: flex; flex-direction: column; overflow: hidden">
+      <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0; padding: 0 4px 12px">THE 7-STEP FCEE LOOP</div>
+      <div style="display: flex; flex-direction: column">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="7">
+          <div onClick="{{ s.pick }}" style="{{ s.rowStyle }}">
+            <div style="display: flex; flex-direction: column; align-items: center; width: 18px; flex-shrink: 0">
+              <div style="{{ s.nodeStyle }}">{{ s.glyph }}</div>
+              <div style="{{ s.railStyle }}"></div>
+            </div>
+            <div style="min-width: 0; flex: 1; padding-bottom: 12px">
+              <div style="display: flex; align-items: center; gap: 7px">
+                <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: {{ s.titleColor }}">{{ s.name }}</span>
+                <span style="{{ s.chipStyle }}">{{ s.chip }}</span>
+              </div>
+              <div style="font-size: 10px; line-height: 1.5; color: {{ s.bodyColor }}; margin-top: 3px">{{ s.blurb }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Telemetry + event stream -->
+    <div style="min-width: 0; display: flex; flex-direction: column; padding: 16px 20px; gap: 14px; overflow: hidden">
+
+      <!-- Signal charts -->
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; flex-shrink: 0">
+        <sc-for list="{{ signals }}" as="sg" hint-placeholder-count="3">
+          <div style="border: 1px solid #4A3568; border-radius: 10px; background: rgba(44,24,71,0.7); padding: 12px 13px">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px">
+              <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">{{ sg.label }}</span>
+              <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: {{ sg.color }}">{{ sg.value }}</span>
+            </div>
+            <svg width="100%" height="42" viewBox="0 0 240 42" preserveAspectRatio="none" fill="none" style="margin-top: 8px">
+              <sc-for list="{{ sg.bars }}" as="b" hint-placeholder-count="24">
+                <rect x="{{ b.x }}" y="{{ b.y }}" width="6" height="{{ b.h }}" rx="1.5" fill="{{ b.fill }}"/>
+              </sc-for>
+            </svg>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- Event stream — the Cloudflare Observability pattern -->
+      <div style="flex: 1; min-height: 0; border: 1px solid #4A3568; border-radius: 11px; background: rgba(44,24,71,0.7); display: flex; flex-direction: column; overflow: hidden">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 11px 14px; border-bottom: 1px solid rgba(74,53,104,0.7); flex-shrink: 0">
+          <div style="display: flex; align-items: center; gap: 9px">
+            <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">EVENT STREAM</span>
+            <span style="padding: 3px 8px; border-radius: 5px; background: rgba(16,185,129,0.12); font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: #10B981">{{ stream.ok }} OK</span>
+            <span style="padding: 3px 8px; border-radius: 5px; background: rgba(217,119,6,0.12); font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: #F59E0B">{{ stream.warn }} DRIFT</span>
+          </div>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #8B7CA0">TIMESTAMP UTC+2</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 78px 96px minmax(0,1fr); gap: 0; padding: 7px 14px; border-bottom: 1px solid rgba(74,53,104,0.5); flex-shrink: 0">
+          <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.12em; color: #8B7CA0">TIME</span>
+          <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.12em; color: #8B7CA0">TYPE</span>
+          <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.12em; color: #8B7CA0">MESSAGE</span>
+        </div>
+
+        <div style="flex: 1; min-height: 0; overflow: hidden; padding: 4px 0">
+          <sc-for list="{{ stream.rows }}" as="e" hint-placeholder-count="12">
+            <div style="display: grid; grid-template-columns: 78px 96px minmax(0,1fr); gap: 0; align-items: center; padding: 5px 14px; border-left: 2px solid {{ e.accent }}">
+              <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #8B7CA0">{{ e.time }}</span>
+              <span><span style="{{ e.chipStyle }}">{{ e.type }}</span></span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: {{ e.msgColor }}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ e.message }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- Evidence panel -->
+    <div style="border-left: 1px solid #4A3568; background: rgba(44,24,71,0.35); display: flex; flex-direction: column; overflow: hidden">
+      <div style="padding: 16px 16px 12px; border-bottom: 1px solid rgba(74,53,104,0.7); flex-shrink: 0">
+        <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">{{ detail.eyebrow }}</div>
+        <div style="font-size: 14px; font-weight: 600; margin-top: 5px; color: {{ detail.color }}">{{ detail.title }}</div>
+        <div style="font-size: 10px; line-height: 1.6; color: #C7BDCB; margin-top: 7px">{{ detail.body }}</div>
+      </div>
+
+      <div style="flex: 1; min-height: 0; overflow: hidden; padding: 13px 16px">
+        <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0; margin-bottom: 10px">{{ detail.listLabel }}</div>
+        <div style="display: flex; flex-direction: column; gap: 9px">
+          <sc-for list="{{ detail.evidence }}" as="ev" hint-placeholder-count="4">
+            <div style="border: 1px solid #4A3568; border-radius: 8px; background: rgba(23,13,38,0.55); padding: 9px 11px">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #8B7CA0">{{ ev.when }}</span>
+                <span style="width: 5px; height: 5px; border-radius: 999px; background: {{ ev.dot }}"></span>
+              </div>
+              <div style="font-size: 10px; line-height: 1.55; color: #C7BDCB; margin-top: 5px">{{ ev.text }}</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #9F7AEA; margin-top: 6px">{{ ev.source }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="padding: 13px 16px; border-top: 1px solid rgba(74,53,104,0.7); flex-shrink: 0">
+        <div onClick="{{ detail.act }}" style="{{ detail.actStyle }}">{{ detail.actLabel }}</div>
+        <div style="font-size: 9px; line-height: 1.55; color: #8B7CA0; margin-top: 9px; text-align: center">
+          Remediation runs under a fresh, temporally bounded Mandate and the same non-bypassable gate pack.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { range: '1h', step: 2, prRaised: false };
+  }
+
+  stepData() {
+    return [
+      { name: 'MONITOR',  blurb: 'OpenTelemetry parsing across the deployed estate.' },
+      { name: 'ANALYZE',  blurb: 'Correlated context isolates the failing module.' },
+      { name: 'PROPOSE',  blurb: 'Automated correction drafted to the secondary repo.' },
+      { name: 'REVIEW',   blurb: 'Pending human sign-off under a fresh Mandate.' },
+      { name: 'EXECUTE',  blurb: 'Merged through the same OPA gate pack.' },
+      { name: 'VALIDATE', blurb: 'Post-merge telemetry compared to baseline.' },
+      { name: 'LEARN',    blurb: 'Transcript consolidated, vector index refreshed.' }
+    ];
+  }
+
+  detailFor(i) {
+    const d = [
+      {
+        eyebrow: 'MONITOR · SIGNAL',
+        title: 'Tax rate resolution error spike',
+        body: 'Error rate on calculateTax rose from 0.001% to 0.01% within twenty minutes of the release reaching the second region.',
+        listLabel: 'OBSERVED SAMPLES',
+        color: '#F59E0B',
+        evidence: [
+          { when: '11:24:07', text: 'resolveRate() returned undefined for period 2026-Q1 on the AZ-South shard.', source: 'otel · billing-gateway-v2', dot: '#F59E0B' },
+          { when: '11:24:31', text: 'Retry succeeded on fallback rate table — masked in aggregate dashboards.', source: 'otel · billing-gateway-v2', dot: '#D97706' },
+          { when: '11:31:02', text: 'Same signature observed on AZ-North. Not isolated to one shard.', source: 'otel · billing-gateway-v2', dot: '#F59E0B' }
+        ],
+        actLabel: 'ESCALATE TO ANALYZE'
+      },
+      {
+        eyebrow: 'ANALYZE · ROOT CAUSE',
+        title: 'Missing validation in adjacent module',
+        body: 'The correlated context engine traced the spike to an unguarded period lookup in a module the Mandate scope did not cover.',
+        listLabel: 'CORRELATED EVIDENCE',
+        color: '#9F7AEA',
+        evidence: [
+          { when: 'ADR-042', text: 'Schema contract requires a period guard on every rate lookup. billing.js complies; rate_table.js does not.', source: 'context-library · adr', dot: '#9F7AEA' },
+          { when: 'AZ-7001', text: 'Original work item scoped billing.js only. Adjacent module was out of Mandate scope by design.', source: 'jira · system of record', dot: '#9F7AEA' },
+          { when: 'EP-7A9B4C2D', text: 'Signed Evidence Pack confirms the merged change was compliant — the gap predates it.', source: 'evidence ledger', dot: '#10B981' }
+        ],
+        actLabel: 'DRAFT REMEDIATION'
+      },
+      {
+        eyebrow: 'PROPOSE · REMEDIATION',
+        title: 'Automated correction drafted',
+        body: 'A pull request adding the missing period guard and a property-based regression suite has been pushed to the secondary repository.',
+        listLabel: 'PROPOSED CHANGE',
+        color: '#9F7AEA',
+        evidence: [
+          { when: 'PR #418', text: 'Adds period guard to resolveRate() in rate_table.js, mirroring the ADR-042 contract.', source: 'bitbucket · core-billing-gateway', dot: '#9F7AEA' },
+          { when: '+38 / −4', text: 'Property-based suite covers the Q-boundary case that produced the spike.', source: 'diff summary', dot: '#10B981' },
+          { when: 'MND-new', text: 'Fresh Mandate scoped to rate_table.js, 20k tokens, 15-minute expiry.', source: 'mandate guardrail', dot: '#D97706' }
+        ],
+        actLabel: 'CREATE REMEDIATION PR'
+      },
+      {
+        eyebrow: 'REVIEW · AWAITING HUMAN',
+        title: 'Pending operator sign-off',
+        body: 'The remediation is queued at the same aviation-style checkpoint as any other production change. Automation earns no shortcut.',
+        listLabel: 'GATE STATE',
+        color: '#F59E0B',
+        evidence: [
+          { when: 'Blast radius', text: 'Modifies 1 file inside the fresh Mandate scope. Zero OPA violations.', source: 'security sub-agent', dot: '#10B981' },
+          { when: 'Signatory', text: 'CISO / Human Operator — full sign-off privileges, OIDC verified.', source: 'identity broker', dot: '#10B981' },
+          { when: 'SLA', text: 'Elevated severity — 30-day remediation window per the DORA gate pack.', source: 'remediation sla', dot: '#D97706' }
+        ],
+        actLabel: 'OPEN GOVERNANCE GATE'
+      },
+      {
+        eyebrow: 'EXECUTE · MERGED',
+        title: 'Remediation merged',
+        body: 'The change cleared every gate in the Finance-EU-v1 pack and was merged with a signed Evidence Pack attached.',
+        listLabel: 'GATE RESULTS',
+        color: '#10B981',
+        evidence: [
+          { when: 'OPA', text: 'Finance-EU-v1 pack — 5 of 5 gates passed.', source: 'open policy agent', dot: '#10B981' },
+          { when: 'Coverage', text: 'Statement coverage held at 100% across the touched module.', source: 'ci pipeline', dot: '#10B981' },
+          { when: 'EP-C41F8A02', text: 'Evidence Pack sealed and committed to the immutable ledger.', source: 'evidence ledger', dot: '#10B981' }
+        ],
+        actLabel: 'VIEW EVIDENCE PACK'
+      },
+      {
+        eyebrow: 'VALIDATE · CONFIRMED',
+        title: 'Signal returned to baseline',
+        body: 'Post-merge telemetry confirms the error rate is back at pre-change levels, and the A-UPI composite absorbed no penalty.',
+        listLabel: 'POST-MERGE TELEMETRY',
+        color: '#10B981',
+        evidence: [
+          { when: '30 min', text: 'Error rate on calculateTax back to 0.001%. No fallback retries observed.', source: 'otel · billing-gateway-v2', dot: '#10B981' },
+          { when: 'A-UPI', text: 'Composite index unchanged at 91 — the loop absorbed the defect without cost.', source: 'a-upi telemetry', dot: '#10B981' },
+          { when: 'CFR', text: 'Change failure rate held at 4.2%. Remediation did not count as a failure.', source: 'a-upi telemetry', dot: '#10B981' }
+        ],
+        actLabel: 'CLOSE SIGNAL'
+      },
+      {
+        eyebrow: 'LEARN · CONSOLIDATED',
+        title: 'Knowledge folded back in',
+        body: 'The session transcript was compiled offline: a new ADR clause extracted, tribal knowledge de-duplicated, the vector index refreshed.',
+        listLabel: 'CONSOLIDATION OUTPUT',
+        color: '#10B981',
+        evidence: [
+          { when: 'ADR-042.1', text: 'Period-guard requirement extended to every rate lookup, not just billing.js.', source: 'context library', dot: '#10B981' },
+          { when: 'Scope rule', text: 'Mandate templates for billing work now include adjacent rate modules by default.', source: 'mandate templates', dot: '#10B981' },
+          { when: 'Index', text: 'Vector index refreshed. Context freshness restored to 98%.', source: 'async consolidation', dot: '#10B981' }
+        ],
+        actLabel: 'LOOP COMPLETE'
+      }
+    ];
+    return d[i];
+  }
+
+  streamRows() {
+    const chip = (bg, color) => 'padding: 2px 7px; border-radius: 4px; background: ' + bg + '; font-family: JetBrains Mono, monospace; font-size: 9px; font-weight: 700; color: ' + color + ';';
+    const log = chip('rgba(124,93,199,0.14)', '#9F7AEA');
+    const warn = chip('rgba(217,119,6,0.16)', '#F59E0B');
+    const ok = chip('rgba(16,185,129,0.14)', '#10B981');
+
+    return [
+      { time: '11:24:07', type: 'otel', chipStyle: warn, accent: '#D97706', msgColor: '#F59E0B', message: 'error_rate calculateTax 0.010% exceeds baseline 0.001% — shard AZ-South' },
+      { time: '11:24:31', type: 'otel', chipStyle: warn, accent: '#D97706', msgColor: '#C7BDCB', message: 'fallback rate table engaged, request succeeded on retry' },
+      { time: '11:26:14', type: 'analyze', chipStyle: log, accent: '#7C5DC7', msgColor: '#C7BDCB', message: 'correlating 1,204 spans against ADR-042 schema contract' },
+      { time: '11:26:58', type: 'analyze', chipStyle: log, accent: '#7C5DC7', msgColor: '#C7BDCB', message: 'root cause isolated — rate_table.js resolveRate() unguarded period lookup' },
+      { time: '11:27:02', type: 'mandate', chipStyle: ok, accent: '#10B981', msgColor: '#C7BDCB', message: 'MND-C41F8A minted · scope rate_table.js · 20,000 tokens · expires 15m' },
+      { time: '11:28:40', type: 'agent', chipStyle: log, accent: '#7C5DC7', msgColor: '#C7BDCB', message: 'MCP gateway intercepted write_file — payload schema validated' },
+      { time: '11:29:11', type: 'ci', chipStyle: ok, accent: '#10B981', msgColor: '#C7BDCB', message: 'property-based suite 24 passed · statement coverage 100%' },
+      { time: '11:29:44', type: 'opa', chipStyle: ok, accent: '#10B981', msgColor: '#C7BDCB', message: 'Finance-EU-v1 gate pack — 5/5 passed' },
+      { time: '11:30:03', type: 'gate', chipStyle: warn, accent: '#D97706', msgColor: '#F59E0B', message: 'aviation checkpoint raised — awaiting named human signature' },
+      { time: '11:31:02', type: 'otel', chipStyle: warn, accent: '#D97706', msgColor: '#C7BDCB', message: 'same signature observed on shard AZ-North — not isolated' },
+      { time: '11:33:19', type: 'sign', chipStyle: ok, accent: '#10B981', msgColor: '#C7BDCB', message: 'EP-C41F8A02 sealed by CISO / Human Operator · sha256:9f21c4be…' },
+      { time: '11:34:07', type: 'deploy', chipStyle: ok, accent: '#10B981', msgColor: '#C7BDCB', message: 'remediation merged to main · pipeline released' },
+      { time: '12:04:22', type: 'otel', chipStyle: ok, accent: '#10B981', msgColor: '#10B981', message: 'error_rate calculateTax back to 0.001% — signal cleared' }
+    ];
+  }
+
+  bars(seed, tone) {
+    const out = [];
+    for (let i = 0; i < 24; i += 1) {
+      // Deterministic pseudo-variation: no Math.random, so the artboard is stable.
+      const v = ((seed * (i + 3) * 37) % 29) + 4;
+      const spike = tone === 'warn' && (i === 14 || i === 15);
+      const h = spike ? 38 : v;
+      out.push({
+        x: (i * 10).toFixed(0),
+        y: (42 - h).toFixed(0),
+        h: h.toFixed(0),
+        fill: spike ? '#F59E0B' : (tone === 'ok' ? '#0E9F6E' : tone === 'warn' ? 'rgba(217,119,6,0.45)' : 'rgba(159,122,234,0.55)')
+      });
+    }
+    return out;
+  }
+
+  renderVals() {
+    const idx = this.state.step;
+    const detail = this.detailFor(idx);
+    const steps = this.stepData();
+
+    const rangeList = ['15m', '1h', '6h', '24h', '7d', '30d'].map((r) => ({
+      label: r,
+      pick: () => this.setState({ range: r }),
+      style: 'padding: 5px 10px; border-radius: 6px; font-family: JetBrains Mono, monospace; font-size: 10px; font-weight: 700; cursor: pointer; transition: all 160ms; '
+        + (this.state.range === r
+          ? 'background: rgba(124,93,199,0.24); color: #9F7AEA;'
+          : 'background: transparent; color: #8B7CA0;')
+    }));
+
+    const stepRows = steps.map((s, i) => {
+      const done = i < idx;
+      const active = i === idx;
+      const color = done ? '#10B981' : active ? '#9F7AEA' : '#8B7CA0';
+      return {
+        name: s.name,
+        blurb: s.blurb,
+        pick: () => this.setState({ step: i }),
+        glyph: done ? '✓' : active ? '▶' : '',
+        titleColor: color,
+        bodyColor: i <= idx ? '#C7BDCB' : 'rgba(107,114,128,0.75)',
+        chip: active ? 'ACTIVE' : done ? '' : '',
+        chipStyle: active
+          ? 'padding: 1px 6px; border-radius: 4px; background: rgba(124,93,199,0.18); font-family: JetBrains Mono, monospace; font-size: 8px; font-weight: 700; color: #9F7AEA;'
+          : 'display: none;',
+        rowStyle: 'display: flex; gap: 10px; cursor: pointer; padding: 0 4px; border-radius: 7px; transition: background 160ms; '
+          + (active ? 'background: rgba(124,93,199,0.08);' : ''),
+        nodeStyle: 'width: 16px; height: 16px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; '
+          + (done
+            ? 'background: rgba(16,185,129,0.16); border: 1.5px solid #10B981; color: #10B981;'
+            : active
+              ? 'background: rgba(124,93,199,0.2); border: 1.5px solid #9F7AEA; color: #9F7AEA;'
+              : 'background: transparent; border: 1.5px solid #4A3568; color: transparent;'),
+        railStyle: i === steps.length - 1
+          ? 'display: none;'
+          : 'width: 1.5px; flex: 1; min-height: 26px; background: ' + (done ? 'rgba(16,185,129,0.4)' : '#4A3568') + ';'
+      };
+    });
+
+    return {
+      ranges: rangeList,
+      steps: stepRows,
+
+      signals: [
+        { label: 'ERROR RATE · calculateTax', value: idx >= 5 ? '0.001%' : '0.010%', color: idx >= 5 ? '#10B981' : '#F59E0B', bars: this.bars(3, 'warn') },
+        { label: 'THROUGHPUT · req/min', value: '4.2k', color: '#9F7AEA', bars: this.bars(7, 'neutral') },
+        { label: 'GATE PASS RATE', value: '100%', color: '#10B981', bars: this.bars(5, 'ok') }
+      ],
+
+      stream: { ok: '11', warn: '4', rows: this.streamRows() },
+
+      detail: {
+        eyebrow: detail.eyebrow,
+        title: detail.title,
+        body: detail.body,
+        color: detail.color,
+        listLabel: detail.listLabel,
+        evidence: detail.evidence,
+        actLabel: this.state.prRaised && idx === 2 ? 'REMEDIATION PR OPEN' : detail.actLabel,
+        act: () => {
+          if (idx === 2) this.setState({ prRaised: true, step: 3 });
+          else if (idx < 6) this.setState({ step: idx + 1 });
+        },
+        actStyle: 'padding: 10px 14px; border-radius: 8px; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; transition: all 180ms; '
+          + (idx >= 5
+            ? 'background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.42); color: #10B981;'
+            : 'background: #7C5DC7; border: 1px solid #7C5DC7; color: #fff; box-shadow: 0 0 18px rgba(124,93,199,0.40);')
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

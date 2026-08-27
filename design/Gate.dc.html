@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; background: #170D26; }
+    * { box-sizing: border-box; }
+    a { color: #9F7AEA; text-decoration: none; }
+    a:hover { color: #B79BF0; }
+    .tnum { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1180px; height: 820px; background: #170D26; color: #FFFFFF; font-family: Manrope, system-ui, sans-serif; display: flex; align-items: center; justify-content: center; padding: 26px; overflow: hidden">
+
+  <div style="width: 100%; border: 1px solid #4A3568; border-radius: 18px; background: #2C1847; overflow: hidden; box-shadow: 0 24px 70px -20px rgba(0,0,0,0.8)">
+
+    <!-- Amber Gold checkpoint edge -->
+    <div style="height: 3px; background: #D97706; box-shadow: 0 0 22px rgba(217,119,6,0.5)"></div>
+
+    <!-- Header -->
+    <div style="display: flex; align-items: flex-start; gap: 14px; padding: 22px 28px 18px; border-bottom: 1px solid #4A3568">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px">
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <div style="flex: 1; min-width: 0">
+        <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 25px; font-weight: 400; letter-spacing: -0.01em; color: #F59E0B; line-height: 1.15">
+          Critical governance gate
+        </div>
+        <div style="font-size: 12px; line-height: 1.6; color: #C7BDCB; margin-top: 6px">
+          The agent is attempting a non-reversible action — production merge of
+          <span style="font-family: 'JetBrains Mono', monospace; color: #FFFFFF">feature/dynamic-tax-rates</span>
+          into <span style="font-family: 'JetBrains Mono', monospace; color: #FFFFFF">mock-repos/core-service</span>.
+        </div>
+      </div>
+      <img src="avenga-symbol.png" alt="Avenga" style="height: 24px; width: auto; opacity: 0.9; flex-shrink: 0">
+    </div>
+
+    <!-- Body -->
+    <div style="display: grid; grid-template-columns: minmax(0,1fr) 372px; gap: 0">
+
+      <!-- Blast radius -->
+      <div style="padding: 20px 28px 22px; border-right: 1px solid #4A3568">
+        <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0">BLAST RADIUS · PRE-ANALYSED BY THE SECURITY SUB-AGENT</div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px">
+          <sc-for list="{{ blast }}" as="b" hint-placeholder-count="5">
+            <div style="display: flex; align-items: flex-start; gap: 11px; padding: 11px 13px; border: 1px solid {{ b.border }}; border-radius: 9px; background: {{ b.bg }}">
+              <div style="{{ b.iconWrap }}">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="{{ b.accent }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="{{ b.glyph }}"/>
+                </svg>
+              </div>
+              <span style="font-size: 11px; line-height: 1.6; color: #C7BDCB">{{ b.text }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 16px; border: 1px solid #4A3568; border-radius: 10px; background: rgba(23,13,38,0.6); padding: 13px 15px">
+          <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0; margin-bottom: 10px">ATTESTATION</div>
+          <sc-for list="{{ attest }}" as="a" hint-placeholder-count="5">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 4px 0">
+              <span style="font-size: 10px; letter-spacing: 0.1em; color: #8B7CA0; text-transform: uppercase; flex-shrink: 0">{{ a.k }}</span>
+              <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: {{ a.color }}; text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ a.v }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- Signature ceremony -->
+      <div style="padding: 20px 24px 22px; display: flex; flex-direction: column">
+        <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0">SIGNING IDENTITY</div>
+
+        <div style="display: flex; align-items: center; gap: 12px; margin-top: 13px; padding: 13px; border: 1px solid rgba(16,185,129,0.4); border-radius: 11px; background: rgba(16,185,129,0.07)">
+          <div style="width: 40px; height: 40px; border-radius: 999px; border: 2px solid rgba(16,185,129,0.55); background: rgba(16,185,129,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#22C58B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 11c0 3-2 5-2 8"/><path d="M8 11a4 4 0 0 1 8 0c0 4-1 6-2 8"/><path d="M4 11a8 8 0 0 1 16 0c0 5-2 7-3 10"/>
+            </svg>
+          </div>
+          <div style="min-width: 0">
+            <div style="font-size: 12px; font-weight: 700; color: #FFFFFF">CISO / Human Operator</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #22C58B; margin-top: 2px">OIDC VERIFIED · FULL SIGN-OFF</div>
+          </div>
+        </div>
+
+        <!-- Hold-to-sign — the Apple Pay / Okta register -->
+        <div style="margin-top: 18px; flex: 1; display: flex; flex-direction: column; justify-content: center">
+          <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0; text-align: center">{{ sign.caption }}</div>
+
+          <div onClick="{{ sign.press }}" style="{{ sign.dialStyle }}">
+            <svg width="150" height="150" viewBox="0 0 150 150" fill="none" style="position: absolute; inset: 0">
+              <circle cx="75" cy="75" r="66" stroke="#4A3568" stroke-width="4" fill="none"/>
+              <circle cx="75" cy="75" r="66" stroke="{{ sign.ringColor }}" stroke-width="4" fill="none"
+                      stroke-linecap="round" stroke-dasharray="{{ sign.dash }}" transform="rotate(-90 75 75)"/>
+            </svg>
+            <div style="position: relative; text-align: center">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: {{ sign.glyphSize }}; font-weight: 700; color: {{ sign.ringColor }}">{{ sign.glyph }}</div>
+              <div style="font-size: 9px; font-weight: 700; letter-spacing: 0.12em; color: #8B7CA0; margin-top: 5px">{{ sign.hint }}</div>
+            </div>
+          </div>
+
+          <div style="min-height: 44px; margin-top: 14px; text-align: center">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: {{ sign.sigColor }}; word-break: break-all; line-height: 1.6; padding: 0 6px">{{ sign.signature }}</div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px">
+          <div onClick="{{ sign.confirm }}" style="{{ sign.primaryStyle }}">{{ sign.primaryLabel }}</div>
+          <div onClick="{{ sign.reject }}" style="padding: 12px; border: 1px solid rgba(221,44,0,0.5); border-radius: 9px; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #FF5A2C; cursor: pointer">
+            REJECT &amp; VOID MANDATE
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    // held: 0 → untouched, 1 → armed, 2 → signed, -1 → rejected
+    this.state = { stage: 0 };
+  }
+
+  renderVals() {
+    const stage = this.state.stage;
+    const circumference = 414.7;   // 2πr, r = 66
+
+    const glyphs = {
+      check: 'M20 6 9 17l-5-5',
+      alert: 'M12 8v5M12 17h.01',
+      stop:  'M18 6 6 18M6 6l12 12'
+    };
+
+    const blastRaw = [
+      { text: 'Modifies 3 core tax allocation files, all inside the signed Mandate scope.', tone: 'passed' },
+      { text: '100% compliant with the OPA Policy Gate Pack (Finance-EU-v1). Zero violations.', tone: 'passed' },
+      { text: '100% interface contract adherence to ADR-042. Statement coverage 100%.', tone: 'passed' },
+      { text: 'Touches BSCS regional payment routing tables — named human sign-off required.', tone: 'hitl' },
+      { text: 'Action is non-reversible: production merge, no automated rollback path.', tone: 'violation' }
+    ];
+
+    const toneMap = {
+      passed:    { accent: '#22C58B', border: 'rgba(16,185,129,0.35)', bg: 'rgba(16,185,129,0.06)', glyph: glyphs.check },
+      hitl:      { accent: '#F59E0B', border: 'rgba(217,119,6,0.35)',  bg: 'rgba(217,119,6,0.06)',  glyph: glyphs.alert },
+      violation: { accent: '#FF5A2C', border: 'rgba(221,44,0,0.35)',   bg: 'rgba(221,44,0,0.06)',   glyph: glyphs.stop }
+    };
+
+    const blast = blastRaw.map((b) => {
+      const t = toneMap[b.tone];
+      return {
+        text: b.text,
+        accent: t.accent,
+        border: t.border,
+        bg: t.bg,
+        glyph: t.glyph,
+        iconWrap: 'width: 17px; height: 17px; border-radius: 999px; background: ' + t.bg
+          + '; border: 1px solid ' + t.border + '; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;'
+      };
+    });
+
+    const signed = stage === 2;
+    const armed = stage === 1;
+    const rejected = stage === -1;
+
+    const ringColor = rejected ? '#FF5A2C' : signed ? '#22C58B' : armed ? '#F59E0B' : '#8B7CA0';
+    const progress = rejected ? 1 : signed ? 1 : armed ? 0.55 : 0;
+
+    return {
+      blast: blast,
+
+      attest: [
+        { k: 'Evidence Pack', v: 'EP-7A9B4C2D', color: '#C7BDCB' },
+        { k: 'Mandate', v: 'MND-F839A2B91C', color: '#C7BDCB' },
+        { k: 'Model', v: 'bedrock.claude-3-5-sonnet', color: '#C7BDCB' },
+        { k: 'Context integrity', v: '0x6bdbdd6a745ad471', color: '#C7BDCB' },
+        { k: 'Statement coverage', v: '100%', color: '#22C58B' }
+      ],
+
+      sign: {
+        caption: rejected ? 'MANDATE VOIDED' : signed ? 'EVIDENCE PACK SEALED' : armed ? 'CONFIRM TO SIGN' : 'AUTHENTICATE TO PROCEED',
+        press: () => this.setState({ stage: stage === 0 ? 1 : stage }),
+        // Both the dial and the primary button advance the ceremony. Wiring
+        // confirm to stage 1 only left a dead first click on the button —
+        // a presenter hitting "Approve & sign" got no response at all.
+        confirm: () => {
+          if (stage === 0) this.setState({ stage: 1 });
+          else if (stage === 1) this.setState({ stage: 2 });
+        },
+        reject: () => this.setState({ stage: -1 }),
+
+        dialStyle: 'position: relative; width: 150px; height: 150px; margin: 14px auto 0; display: flex; align-items: center; justify-content: center; cursor: '
+          + (stage === 0 ? 'pointer' : 'default') + '; transition: transform 200ms;',
+        ringColor: ringColor,
+        dash: (progress * circumference).toFixed(1) + ' ' + circumference,
+        glyph: rejected ? '✕' : signed ? '✓' : armed ? '···' : '⌾',
+        glyphSize: signed || rejected ? '38px' : '30px',
+        hint: rejected ? 'REVERTED' : signed ? 'SIGNED' : armed ? 'HOLD' : 'TOUCH ID',
+
+        signature: signed
+          ? 'sha256:a44a72ff53d371c3e0b1f9d2c8e77a4b6019ff53d371c3e0b1f9d2c8e77a4b60'
+          : rejected ? 'no signature issued — branch rolled back to v1.0' : '',
+        sigColor: signed ? '#22C58B' : '#FF5A2C',
+
+        primaryLabel: rejected ? 'MANDATE VOIDED' : signed ? 'EVIDENCE PACK SIGNED' : armed ? 'CONFIRM & SIGN' : 'APPROVE & SIGN',
+        primaryStyle: 'padding: 13px; border-radius: 9px; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; cursor: pointer; transition: all 200ms; '
+          + (signed
+            ? 'background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.5); color: #22C58B;'
+            : rejected
+              ? 'background: transparent; border: 1px solid #4A3568; color: #8B7CA0;'
+              : 'background: #10B981; border: 1px solid #10B981; color: #170D26; box-shadow: 0 0 22px rgba(16,185,129,0.3);')
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

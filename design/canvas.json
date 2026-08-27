@@ -1,0 +1,33 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html",      "x": 0,    "y": 0,    "w": 1440, "h": 900, "title": "1 · Executive Trust Dashboard", "is_interactive": true },
+    { "file": "Mandate.dc.html",   "x": 1560, "y": 0,    "w": 1440, "h": 900, "title": "2 · Context Assembly & the Mandate", "is_interactive": true },
+    { "file": "Evolution.dc.html", "x": 0,    "y": 1080, "w": 1440, "h": 900, "title": "3 · Continuous Evolution Engine", "is_interactive": true },
+    { "file": "Risk.dc.html",      "x": 1560, "y": 1080, "w": 1440, "h": 900, "title": "4 · Regulatory Exposure Assessment", "is_interactive": true },
+    { "file": "Gate.dc.html",      "x": 640,  "y": 2160, "w": 1180, "h": 820, "title": "5 · Aviation-style HITL Gate", "is_interactive": true }
+  ],
+  "annotations": [
+    {
+      "id": "brand-note",
+      "x": 0,
+      "y": -300,
+      "w": 660,
+      "text": "AVENGA BRAND-ROOTED\n\nGround is Premium Purple #2C1847 — the brand book's own \"large solid backgrounds\" colour. Text is Visionary White, Trustful Beige and Compassionate Lavender. Creative Red #DD2C00 carries both the mark and the policy-violation semantic.\n\nEmerald (passed) and Amber (HITL) are functional additions — the brand book defines no status colours.\n\nTypefaces stand in for the licensed Avenga faces: Instrument Serif for Reckless, Manrope for Haffer."
+    },
+    {
+      "id": "refs-note",
+      "x": 1560,
+      "y": -300,
+      "w": 660,
+      "text": "REFERENCES, SCREEN BY SCREEN\n\n1 Executive Trust — Stripe Radar's itemised stat columns + Semrush's gauge-beside-trend.\n2 Mandate — Vercel project settings / AWS IAM policy generator: a firewall, not a chat box.\n3 Continuous Evolution — Cloudflare Observability's range control and timestamped event stream; the evidence panel from theme-analysis.\n4 Regulatory Exposure — Vanta Remediation SLAs: severity-banded rows with per-row windows and actions.\n5 HITL Gate — Apple Pay / Okta: one decision, zero distraction."
+    },
+    {
+      "id": "try-note",
+      "x": 640,
+      "y": 3060,
+      "w": 1180,
+      "text": "EVERY ARTBOARD IS LIVE — click into one and use it.\n\n1 Switch tracks: metric tiles, sparklines, gauge, chart and all three breakdown columns repaint.\n2 Run the integrity probe → the Golden Bridge warning blocks the Mandate → Fix with Avenga Intelligence releases it. Toggle scope paths; cycle the budget dials.\n3 Step the FCEE loop on the left — each step swaps the evidence panel on the right. Change the time range.\n4 Enforce control plane: four open audit vulnerabilities flip to enforced.\n5 Touch the dial to arm, then confirm — a signature is issued. Or reject and void."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

@@ -1,0 +1,344 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; background: #170D26; }
+    * { box-sizing: border-box; }
+    a { color: #9F7AEA; text-decoration: none; }
+    a:hover { color: #B79BF0; }
+    .tnum { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #170D26; color: #FFFFFF; font-family: Manrope, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+  <!-- Header -->
+  <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 20px 26px 16px; border-bottom: 1px solid #4A3568; flex-shrink: 0">
+    <div style="display: flex; align-items: flex-start; gap: 14px">
+      <img src="avenga-symbol.png" alt="Avenga" style="height: 26px; width: auto; margin-top: 3px">
+      <div>
+        <div style="font-size: 9px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0; margin-bottom: 5px">DISCOVER → DECIDE</div>
+        <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.1">Context Assembly &amp; the Mandate</div>
+      </div>
+    </div>
+    <div style="text-align: right">
+      <div style="font-size: 9px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">WORK ITEM</div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: #9F7AEA; margin-top: 3px">AZ-7001 · ADR-042</div>
+      <div style="font-size: 10px; color: #8B7CA0; margin-top: 3px">Flexible Tax Calendar &amp; Rate Utility</div>
+    </div>
+  </div>
+
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0,1fr) 476px; gap: 0">
+
+    <!-- Context library -->
+    <div style="min-width: 0; padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; border-right: 1px solid #4A3568; overflow: hidden">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px">
+        <div>
+          <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0">HOT-PATH MEMORY CONTEXT</div>
+          <div style="font-size: 13px; font-weight: 700; margin-top: 4px">Context Library</div>
+        </div>
+        <div onClick="{{ probe.run }}" style="{{ probe.btnStyle }}">{{ probe.btnLabel }}</div>
+      </div>
+
+      <!-- Freshness meter -->
+      <div style="border: 1px solid {{ probe.meterBorder }}; border-radius: 11px; background: {{ probe.meterBg }}; padding: 13px 15px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+          <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">AGGREGATE CONTEXT FRESHNESS</span>
+          <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 21px; font-weight: 700; color: {{ probe.freshColor }}">{{ probe.fresh }}</span>
+        </div>
+        <div style="height: 5px; border-radius: 999px; background: #3A2359; margin-top: 9px; overflow: hidden">
+          <div style="height: 100%; border-radius: 999px; width: {{ probe.fresh }}; background: {{ probe.freshColor }}; transition: width 500ms"></div>
+        </div>
+        <div style="font-size: 10px; line-height: 1.55; color: #C7BDCB; margin-top: 9px">{{ probe.meterNote }}</div>
+      </div>
+
+      <!-- Source rows -->
+      <div style="flex: 1; min-height: 0; border: 1px solid #4A3568; border-radius: 11px; background: rgba(44,24,71,0.55); overflow: hidden; display: flex; flex-direction: column">
+        <div style="display: grid; grid-template-columns: minmax(0,1fr) 92px 96px 78px; gap: 0; padding: 9px 14px; border-bottom: 1px solid #4A3568; flex-shrink: 0">
+          <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.12em; color: #8B7CA0">SOURCE</span>
+          <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.12em; color: #8B7CA0">KIND</span>
+          <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.12em; color: #8B7CA0">CLASSIFIED</span>
+          <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.12em; color: #8B7CA0; text-align: right">FRESHNESS</span>
+        </div>
+        <div style="flex: 1; min-height: 0; overflow: hidden">
+          <sc-for list="{{ sources }}" as="s" hint-placeholder-count="6">
+            <div style="display: grid; grid-template-columns: minmax(0,1fr) 92px 96px 78px; gap: 0; align-items: center; padding: 9px 14px; border-left: 2px solid {{ s.accent }}; border-bottom: 1px solid rgba(74,53,104,0.4)">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: {{ s.nameColor }}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ s.name }}</span>
+              <span style="font-size: 10px; color: #8B7CA0">{{ s.kind }}</span>
+              <span><span style="{{ s.classStyle }}">{{ s.classified }}</span></span>
+              <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: {{ s.freshColor }}; text-align: right">{{ s.fresh }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- Golden Bridge -->
+      <div style="{{ bridge.wrapStyle }}">
+        <div style="display: flex; align-items: flex-start; gap: 11px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ bridge.accent }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px">
+            <path d="{{ bridge.glyph }}"/>
+          </svg>
+          <div style="flex: 1; min-width: 0">
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: {{ bridge.accent }}">{{ bridge.title }}</div>
+            <div style="font-size: 11px; line-height: 1.6; color: #C7BDCB; margin-top: 5px">{{ bridge.body }}</div>
+          </div>
+          <div onClick="{{ bridge.act }}" style="{{ bridge.btnStyle }}">{{ bridge.btnLabel }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mandate configuration -->
+    <div style="padding: 18px 22px; display: flex; flex-direction: column; gap: 13px; background: rgba(44,24,71,0.35); overflow: hidden">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+        <div>
+          <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0">LAYER 2 · MANDATE GUARDRAIL</div>
+          <div style="font-size: 13px; font-weight: 700; margin-top: 4px">The cryptographic Mandate</div>
+        </div>
+        <span style="{{ mandate.badgeStyle }}">{{ mandate.status }}</span>
+      </div>
+
+      <div style="border: 1px solid #4A3568; border-radius: 10px; background: rgba(23,13,38,0.6); padding: 11px 13px">
+        <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">MANDATE TOKEN</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: #9F7AEA; margin-top: 4px">{{ mandate.token }}</div>
+      </div>
+
+      <!-- Budget dials -->
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 9px">
+        <sc-for list="{{ dials }}" as="d" hint-placeholder-count="3">
+          <div onClick="{{ d.cycle }}" style="border: 1px solid #4A3568; border-radius: 10px; background: rgba(23,13,38,0.5); padding: 11px 12px; cursor: pointer">
+            <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.12em; color: #8B7CA0; height: 22px">{{ d.label }}</div>
+            <div class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: #FFFFFF; margin-top: 2px">{{ d.value }}</div>
+            <div style="height: 3px; border-radius: 999px; background: #3A2359; margin-top: 8px; overflow: hidden">
+              <div style="height: 100%; border-radius: 999px; width: {{ d.pct }}; background: #7C5DC7; transition: width 300ms"></div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- Scope allowlist -->
+      <div style="flex: 1; min-height: 0; border: 1px solid #4A3568; border-radius: 11px; background: rgba(23,13,38,0.5); display: flex; flex-direction: column; overflow: hidden">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 13px; border-bottom: 1px solid #4A3568; flex-shrink: 0">
+          <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">REPOSITORY SCOPE — FILE-SYSTEM FIREWALL</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: #22C58B">{{ scope.allowed }} ALLOWED</span>
+        </div>
+        <div style="flex: 1; min-height: 0; overflow: hidden; padding: 5px 0">
+          <sc-for list="{{ scope.rows }}" as="n" hint-placeholder-count="8">
+            <div onClick="{{ n.toggle }}" style="display: flex; align-items: center; gap: 9px; padding: 6px 13px 6px {{ n.indent }}; cursor: {{ n.cursor }}">
+              <div style="{{ n.boxStyle }}">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#170D26" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="{{ n.tickStyle }}">
+                  <path d="M20 6 9 17l-5-5"/>
+                </svg>
+              </div>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: {{ n.color }}; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; {{ n.strike }}">{{ n.path }}</span>
+              <span style="font-size: 9px; letter-spacing: 0.08em; color: #8B7CA0; flex-shrink: 0">{{ n.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div onClick="{{ mandate.sign }}" style="{{ mandate.btnStyle }}">{{ mandate.btnLabel }}</div>
+      <div style="font-size: 9px; line-height: 1.55; color: #8B7CA0; text-align: center">{{ mandate.footnote }}</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      probed: false,
+      remediated: false,
+      signed: false,
+      budgetIdx: 1,
+      iterIdx: 1,
+      expiryIdx: 1,
+      denied: {}
+    };
+  }
+
+  scopeData() {
+    return [
+      { path: 'mock-repos/',                       depth: 0, allowed: true,  note: '', locked: true },
+      { path: 'core-service/',                     depth: 1, allowed: true,  note: '', locked: true },
+      { path: 'billing.js',                        depth: 2, allowed: true,  note: 'MANDATE TARGET', locked: false },
+      { path: 'tax_calc.js',                       depth: 2, allowed: true,  note: 'INTERFACE', locked: false },
+      { path: 'database/schema_root/',             depth: 1, allowed: false, note: 'LATERAL BLOCKED', locked: false },
+      { path: 'payments-gateway/',                 depth: 1, allowed: false, note: 'OUT OF SCOPE', locked: false },
+      { path: 'infra/terraform/',                  depth: 0, allowed: false, note: 'PRODUCTION', locked: false },
+      { path: '.github/workflows/',                depth: 0, allowed: false, note: 'PIPELINE', locked: false }
+    ];
+  }
+
+  sourceData() {
+    const clean = this.state.remediated;
+    return [
+      { name: 'ADR-042_BSCS_Billing_Pattern.md', kind: 'ADR',        fresh: 98,  classified: true },
+      { name: 'TaxCalculations_v1_EU.yaml',      kind: 'Compliance', fresh: 94,  classified: true },
+      { name: 'TaxRateUtility_v1.0.js',          kind: 'Interface',  fresh: 91,  classified: true },
+      { name: 'Azercell_BSCS_Entities.json',     kind: 'Domain',     fresh: 88,  classified: true },
+      { name: 'Jira_Ticket_AZ-7001',             kind: 'Origin',     fresh: 100, classified: true },
+      { name: 'TaxRates_2023_v1.xls',            kind: 'Schema',     fresh: clean ? 97 : 62, classified: true },
+      { name: 'customer_billing_dump.csv',       kind: 'Extract',    fresh: clean ? 96 : 41, classified: clean }
+    ];
+  }
+
+  renderVals() {
+    const probed = this.state.probed;
+    const clean = this.state.remediated;
+    const signed = this.state.signed;
+    const blocked = probed && !clean;
+
+    const sources = this.sourceData().map((s) => {
+      const bad = s.fresh < 80 || !s.classified;
+      const show = probed;
+      const accent = !show ? 'transparent' : bad ? '#DD2C00' : '#10B981';
+      return {
+        name: s.name,
+        kind: s.kind,
+        fresh: s.fresh + '%',
+        accent: accent,
+        nameColor: show && bad ? '#FF5A2C' : '#C7BDCB',
+        freshColor: !show ? '#8B7CA0' : bad ? '#FF5A2C' : '#22C58B',
+        classified: s.classified ? 'YES' : 'NO',
+        classStyle: 'padding: 1px 7px; border-radius: 4px; font-family: JetBrains Mono, monospace; font-size: 9px; font-weight: 700; '
+          + (s.classified
+            ? 'background: rgba(16,185,129,0.12); color: #22C58B;'
+            : 'background: rgba(221,44,0,0.14); color: #FF5A2C;')
+      };
+    });
+
+    const agg = clean ? 96 : probed ? 68 : 88;
+
+    const budgets = [20000, 50000, 100000];
+    const iters = [3, 5, 10];
+    const expiries = [5, 15, 60];
+
+    const scope = this.scopeData().map((n, i) => {
+      const denied = this.state.denied[i];
+      const on = denied === undefined ? n.allowed : denied;
+      const interactive = !n.locked && !signed;
+      return {
+        path: n.path,
+        note: n.note,
+        indent: (13 + n.depth * 15) + 'px',
+        cursor: interactive ? 'pointer' : 'default',
+        toggle: interactive ? () => {
+          const next = Object.assign({}, this.state.denied);
+          next[i] = !on;
+          this.setState({ denied: next });
+        } : () => {},
+        color: on ? '#22C58B' : '#8B7CA0',
+        strike: on ? '' : 'text-decoration: line-through;',
+        boxStyle: 'width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; '
+          + (on ? 'background: #10B981; border: 1px solid #10B981;' : 'background: transparent; border: 1px solid #4A3568;'),
+        tickStyle: on ? '' : 'display: none;'
+      };
+    });
+
+    const allowedCount = scope.filter((s) => s.color === '#22C58B').length;
+
+    return {
+      probe: {
+        run: () => this.setState({ probed: true }),
+        btnLabel: probed ? 'PROBE COMPLETE' : 'RUN INTEGRITY PROBE',
+        btnStyle: 'padding: 8px 13px; border-radius: 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; white-space: nowrap; '
+          + (probed
+            ? 'border: 1px solid #4A3568; background: transparent; color: #8B7CA0;'
+            : 'border: 1px solid #7C5DC7; background: rgba(124,93,199,0.16); color: #9F7AEA;'),
+        fresh: agg + '%',
+        freshColor: agg >= 90 ? '#22C58B' : agg >= 75 ? '#F59E0B' : '#FF5A2C',
+        meterBorder: blocked ? 'rgba(221,44,0,0.42)' : clean ? 'rgba(16,185,129,0.42)' : '#4A3568',
+        meterBg: blocked ? 'rgba(221,44,0,0.07)' : clean ? 'rgba(16,185,129,0.06)' : 'rgba(44,24,71,0.55)',
+        meterNote: blocked
+          ? 'Two sources fall below the 80% floor. The control plane will not issue a Mandate against them.'
+          : clean
+            ? 'Every source classified and re-indexed. The Context Library clears the freshness floor.'
+            : 'Run the probe to score the Context Library before any agent token is spent.'
+      },
+
+      sources: sources,
+
+      bridge: {
+        wrapStyle: 'border: 1px solid ' + (blocked ? 'rgba(217,119,6,0.5)' : clean ? 'rgba(16,185,129,0.42)' : '#4A3568')
+          + '; border-radius: 11px; padding: 13px 15px; flex-shrink: 0; background: '
+          + (blocked ? 'rgba(217,119,6,0.08)' : clean ? 'rgba(16,185,129,0.06)' : 'rgba(44,24,71,0.4)')
+          + (blocked ? '; box-shadow: 0 0 22px rgba(217,119,6,0.18)' : ''),
+        accent: blocked ? '#F59E0B' : clean ? '#22C58B' : '#8B7CA0',
+        glyph: blocked ? 'M12 9v4M12 17h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z' : 'M20 6 9 17l-5-5',
+        title: blocked ? 'DATA HYGIENE WARNING — AGENT INITIALISATION HELD' : clean ? 'CONTEXT LIBRARY REMEDIATED' : 'THE GOLDEN BRIDGE',
+        body: blocked
+          ? 'TaxRates_2023_v1.xls has decayed to 62% and customer_billing_dump.csv is unclassified with unmasked tax IDs. Sovereign routing has been pinned to the self-hosted tier to prevent a structural PII leak.'
+          : clean
+            ? 'The Data Product Factory re-indexed the stale schema and classified the billing extract. Sovereign routing override released.'
+            : 'Agents are only as reliable as the data they can reach. Probe the Context Library before issuing a Mandate.',
+        act: () => { if (blocked) this.setState({ remediated: true }); },
+        btnLabel: clean ? 'REMEDIATED' : 'FIX WITH AVENGA INTELLIGENCE',
+        btnStyle: 'padding: 9px 13px; border-radius: 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; align-self: center; '
+          + (blocked
+            ? 'background: #D97706; color: #170D26; cursor: pointer;'
+            : clean
+              ? 'border: 1px solid rgba(16,185,129,0.45); background: transparent; color: #22C58B;'
+              : 'display: none;')
+      },
+
+      mandate: {
+        token: signed ? 'MND-B47CE370208B' : 'MND-—————————',
+        status: signed ? 'ACTIVE' : blocked ? 'BLOCKED' : 'UNSIGNED',
+        badgeStyle: 'padding: 4px 9px; border-radius: 6px; font-family: JetBrains Mono, monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; '
+          + (signed
+            ? 'border: 1px solid rgba(16,185,129,0.45); background: rgba(16,185,129,0.1); color: #22C58B;'
+            : blocked
+              ? 'border: 1px solid rgba(221,44,0,0.45); background: rgba(221,44,0,0.1); color: #FF5A2C;'
+              : 'border: 1px solid #4A3568; background: transparent; color: #8B7CA0;'),
+        sign: () => { if (!blocked && !signed) this.setState({ signed: true }); },
+        btnLabel: signed ? 'MANDATE SIGNED — AGENT INITIALISED' : blocked ? 'BLOCKED — REMEDIATE CONTEXT FIRST' : 'SIGN MANDATE & INITIALISE AGENT',
+        btnStyle: 'padding: 14px; border-radius: 10px; text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; transition: all 200ms; flex-shrink: 0; '
+          + (signed
+            ? 'background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.45); color: #22C58B; cursor: default;'
+            : blocked
+              ? 'background: transparent; border: 1px solid rgba(221,44,0,0.4); color: #FF5A2C; cursor: not-allowed;'
+              : 'background: #DD2C00; border: 1px solid #DD2C00; color: #FFFFFF; cursor: pointer; box-shadow: 0 0 22px rgba(221,44,0,0.32);'),
+        footnote: signed
+          ? 'Bound to ' + allowedCount + ' paths · every write outside them voids the Mandate instantly.'
+          : 'The control plane will not issue a Mandate against an unclassified context library.'
+      },
+
+      dials: [
+        {
+          label: 'TOKEN BUDGET',
+          value: budgets[this.state.budgetIdx].toLocaleString(),
+          pct: ((budgets[this.state.budgetIdx] / 100000) * 100) + '%',
+          cycle: () => this.setState({ budgetIdx: (this.state.budgetIdx + 1) % 3 })
+        },
+        {
+          label: 'MAX ITERATIONS',
+          value: String(iters[this.state.iterIdx]),
+          pct: ((iters[this.state.iterIdx] / 10) * 100) + '%',
+          cycle: () => this.setState({ iterIdx: (this.state.iterIdx + 1) % 3 })
+        },
+        {
+          label: 'EXPIRY WINDOW',
+          value: expiries[this.state.expiryIdx] + 'm',
+          pct: ((expiries[this.state.expiryIdx] / 60) * 100) + '%',
+          cycle: () => this.setState({ expiryIdx: (this.state.expiryIdx + 1) % 3 })
+        }
+      ],
+
+      scope: { rows: scope, allowed: String(allowedCount) }
+    };
+  }
+}
+</script>
+</body>
+</html>
