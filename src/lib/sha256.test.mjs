@@ -20,7 +20,7 @@ const cases = [
   'Avenga Intelligent Flow',
   JSON.stringify({ id: 'EP-7A9B4C2D', mandate: 'MND-F839A2B91C' }),
   'a'.repeat(1000),
-  '€180 per COSMIC Function Point — Azercell',
+  '€180 per COSMIC Function Point — Palantino',
 ];
 
 let failures = 0;

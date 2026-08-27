@@ -342,7 +342,13 @@
   .kill dt { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
   .kill dd { margin: 0; max-width: var(--measure); color: var(--ink-soft); font-size: .9375rem; }
 
-  #vault-key { cursor: default; }
+  /*
+   * No affordance at rest — the footer must read as a footer. The cue appears
+   * only under a pointer already on the words, which a client has no reason to
+   * put there and a presenter looking for it does.
+   */
+  #vault-key { cursor: default; transition: color 120ms ease; }
+  #vault-key:hover { cursor: pointer; color: var(--accent); }
 
   /* ------------------------------------------------------------ footer */
   .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem 2rem; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); }
@@ -828,7 +834,7 @@
       about it announces that it is one.
     -->
     <p><span id="vault-key" role="presentation">Avenga Intelligent Flow</span> · canonical pre-sales console · PRD v5</p>
-    <p>Scenario data is Azercell Telecom LLC, work item AZ-7001. All figures are illustrative.</p>
+    <p>Scenario data is Palantino LLC, work item AZ-7001. All figures are illustrative.</p>
   </footer>
 
 </div>
@@ -878,9 +884,12 @@
         hide();
         return;
       }
-      // Matched by physical position, not the character printed on the key, so
-      // the gesture is identical on a Spanish or French layout.
-      if (event.code !== 'Backquote' && event.key !== '`') return;
+      // Position first — that is what makes the gesture identical on every
+      // layout. The characters are a fallback for anything that reports a key
+      // without a code: remappers, soft keyboards, some remote-desktop clients.
+      var byPosition = event.code === 'Backquote';
+      var byCharacter = event.key === '`' || event.key === 'º' || event.key === 'ª';
+      if (!byPosition && !byCharacter) return;
       var target = event.target;
       if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
       event.preventDefault();

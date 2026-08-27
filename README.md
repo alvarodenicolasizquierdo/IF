@@ -66,6 +66,11 @@ The banner does not block the deploy.
 `scripts/build-runbook.mjs`, which is also the file published as the shared
 Artifact; one source, so the hosted page and the shared link cannot drift.
 
+`npm run build:runbook` writes a self-contained copy to
+`dist-runbook/runbook.html` — fonts and favicon inlined, no relative paths — for
+dropping onto a host that is not this site. Same single source; it just carries
+its assets.
+
 It is served `noindex` and listed in `robots.txt`. That keeps it out of search
 results, and nothing more — **anyone with the link can read the page**. Send it
 to colleagues, not into a client thread.
