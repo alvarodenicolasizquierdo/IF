@@ -1,3 +1,4 @@
+import avengaWordmark from '@/assets/avenga-wordmark.png';
 import { CLIENT_CONTEXT, PHASE_BLURB } from '@/data/scenario';
 import { useDemoStore } from '@/store/demoStore';
 
@@ -33,7 +34,7 @@ export default function App() {
             <div className="flex items-center gap-3">
               {/* Avenga is the company; Intelligent Flow is the product it wraps around. */}
               <img
-                src="/avenga-wordmark.png"
+                src={avengaWordmark}
                 alt="Avenga"
                 className="h-[15px] w-auto"
               />

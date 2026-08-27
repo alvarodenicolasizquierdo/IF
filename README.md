@@ -12,6 +12,23 @@ over pace and narrative.
 
 ## Running it
 
+Three ways, depending on how much you want to install.
+
+**1 — Hosted.** Every push to `main` deploys the console to GitHub Pages. The
+site also serves `intelligent-flow-console.html`, a single self-contained file
+you can download and keep.
+
+> First time only: in the repository, **Settings → Pages → Build and deployment
+> → Source**, choose **GitHub Actions**. The workflow does the rest.
+
+**2 — One file, no install.** Download `intelligent-flow-console.html` from the
+Pages site (or build it with `npm run build:standalone`) and open it in any
+browser. Everything — JS, CSS, fonts, brand marks — is inlined, so it runs from
+a USB stick on a plane. `npm run test:standalone` proves it makes zero network
+requests.
+
+**3 — From source.**
+
 ```bash
 npm install
 npm run demo        # opens http://localhost:5173
@@ -23,9 +40,13 @@ Other scripts:
 |---|---|
 | `npm run dev` | Dev server with hot reload |
 | `npm run build` | Typecheck and production bundle to `dist/` |
+| `npm run build:standalone` | Single self-contained `dist-standalone/index.html` |
 | `npm run preview` | Serve the production bundle |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run simulate` | Headless state engine — writes a signed Evidence Pack to disk |
+| `npm run test:hash` | Verify the Evidence Pack signer against `node:crypto` |
+| `npm run test:smoke` | Playwright walkthrough of the presenter narrative |
+| `npm run test:standalone` | Prove the single-file build runs with the network cut off |
 
 Fonts are self-hosted, so the console runs correctly offline or behind a client
 guest network that blocks CDNs.
