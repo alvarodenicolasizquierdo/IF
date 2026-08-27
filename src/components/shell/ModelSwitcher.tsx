@@ -20,12 +20,16 @@ const TIER_TONE = {
   4: 'passed',
 } as const;
 
-/** What one Mandate's budget costs on this route, however it is billed. */
+/**
+ * What one Mandate's budget costs on this route, however it is billed.
+ * Both figures are USD; the suffix names the basis, since a self-hosted route
+ * bills GPU-hours rather than metered tokens.
+ */
 function runCost(model: ModelOption, budget: number): string {
   const api = mandateCostUsd(model, budget);
   if (api !== null) return `${formatUsd(api)} / run`;
   const gpu = mandateGpuCostUsd(model, budget);
-  return gpu !== null ? `${formatUsd(gpu)} GPU / run` : '—';
+  return gpu !== null ? `${formatUsd(gpu)} / run · GPU-hrs` : '—';
 }
 
 /**

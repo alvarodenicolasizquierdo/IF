@@ -1,7 +1,5 @@
 import { TRACK_ORDER, TRACKS } from '@/data/tracks';
-import { GLOSSARY } from '@/data/glossary';
 import { useDemoStore } from '@/store/demoStore';
-import { Tooltip } from '@/components/ui/Tooltip';
 import { cx } from '@/components/ui/tone';
 
 const TRACK_TONE = {
@@ -15,8 +13,7 @@ export function TrackSelector({ compact = false }: { compact?: boolean }) {
   const setTrack = useDemoStore((s) => s.setTrack);
 
   return (
-    <Tooltip content={GLOSSARY.track} side="right" wide>
-      <div className={cx('flex w-full gap-1.5', compact ? 'flex-row' : 'flex-col')}>
+    <div className={cx('flex w-full gap-1.5', compact ? 'flex-row' : 'flex-col')}>
       {TRACK_ORDER.map((id) => {
         const track = TRACKS[id];
         const on = activeTrack === id;
@@ -42,7 +39,6 @@ export function TrackSelector({ compact = false }: { compact?: boolean }) {
           </button>
         );
       })}
-      </div>
-    </Tooltip>
+    </div>
   );
 }

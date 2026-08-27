@@ -208,7 +208,14 @@ export const MODELS: ModelOption[] = [
 export const DEFAULT_MODEL_ID = 'opus-5-bedrock';
 
 export function getModel(id: string): ModelOption {
-  return MODELS.find((m) => m.id === id) ?? MODELS[2];
+  // Fall back through the named default rather than a positional index — the
+  // catalogue is meant to be edited before a workshop, and MODELS[2] only
+  // happened to be the default.
+  return (
+    MODELS.find((m) => m.id === id) ??
+    MODELS.find((m) => m.id === DEFAULT_MODEL_ID) ??
+    MODELS[0]
+  );
 }
 
 /**

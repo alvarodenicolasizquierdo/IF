@@ -9,15 +9,18 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Least privilege by default. Pages and OIDC are granted only to the deploy
+# job, so a pull request — which runs untrusted contributor code through npm
+# install and Playwright — never holds a token that can publish the site.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 jobs:
   verify:
     name: Typecheck, build and drive the demo
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -54,9 +57,9 @@ jobs:
       #
       # PAGES_CUSTOM_DOMAIN is an optional repository variable. When it is set,
       # the deploy writes a CNAME into the artifact so a custom domain survives
-      # every deployment — with Actions-based Pages the file has to be in the
-      # published output, not just in the repo. Leave the variable unset and
-      # nothing changes: the site stays on github.io.
+      # every deployment — with Actions-based Pages the artifact replaces the
+      # site wholesale, so a CNAME kept only in the repo is lost. Leave the
+      # variable unset and nothing changes: the site stays on github.io.
       - name: Assemble the site
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
@@ -69,19 +72,28 @@ jobs:
             echo "Pinned custom domain: $CUSTOM_DOMAIN"
           fi
 
-      - uses: actions/configure-pages@v5
+      # A plain artifact, not a Pages artifact — uploading one of those needs
+      # the elevated scope this job deliberately does not have. The deploy job
+      # picks it up and repackages it.
+      - name: Hand the site to the deploy job
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-      - uses: actions/upload-pages-artifact@v3
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
         with:
+          name: site
           path: dist
+          retention-days: 1
 
   deploy:
     name: Deploy to GitHub Pages
     needs: verify
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    # The only job that can publish, and it runs no project code — it just
+    # repackages an artifact the verified build produced.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     # One deploy at a time; let an in-flight run finish rather than cancelling it.
     concurrency:
       group: pages
@@ -90,5 +102,17 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Collect the verified site
+        uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: dist
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
       - id: deployment
         uses: actions/deploy-pages@v4

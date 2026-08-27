@@ -18,12 +18,12 @@ export function ActionTray() {
       <Button tone="active" onClick={advancePhase} icon={<PlayCircle className="h-4 w-4" />}>
         Next phase
       </Button>
-      <Tooltip content={GLOSSARY.opa} side="bottom" wide>
+      <Tooltip content={GLOSSARY.opa} side="bottom" wide interactiveChild>
         <Button tone="active" variant="outline" onClick={runOpaCheck} icon={<ShieldCheck className="h-4 w-4" />} className="w-full">
           OPA check
         </Button>
       </Tooltip>
-      <Tooltip content={GLOSSARY.codeDrift} side="bottom" wide>
+      <Tooltip content={GLOSSARY.codeDrift} side="bottom" wide interactiveChild>
         <Button
           tone="hitl"
           onClick={injectDrift}
@@ -34,7 +34,7 @@ export function ActionTray() {
           {driftDetected ? 'Voided' : 'Inject drift'}
         </Button>
       </Tooltip>
-      <Tooltip content={GLOSSARY.auditVulnerability} side="bottom" wide>
+      <Tooltip content={GLOSSARY.auditVulnerability} side="bottom" wide interactiveChild>
         <Button
           tone="violation"
           variant="outline"

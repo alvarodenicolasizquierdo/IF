@@ -1,4 +1,5 @@
 import avengaWordmark from '@/assets/avenga-wordmark.png';
+import { GLOSSARY } from '@/data/glossary';
 import { CLIENT_CONTEXT, PHASE_BLURB } from '@/data/scenario';
 import { useDemoStore } from '@/store/demoStore';
 
@@ -9,6 +10,7 @@ import { TrackSelector } from '@/components/shell/TrackSelector';
 import { ScreenRail } from '@/components/shell/ScreenRail';
 import { ActionTray } from '@/components/shell/ActionTray';
 import { ToastStack } from '@/components/shell/ToastStack';
+import { InfoTip } from '@/components/ui/Tooltip';
 import { AuditLog } from '@/components/shell/AuditLog';
 
 import { ExecutiveDashboard } from '@/components/screens/ExecutiveDashboard';
@@ -62,8 +64,9 @@ export default function App() {
           </div>
 
           <div>
-            <p className="mb-2 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-faint">
+            <p className="mb-2 flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-faint">
               Engagement track
+              <InfoTip definition={GLOSSARY.track} side="right" />
             </p>
             <TrackSelector />
           </div>

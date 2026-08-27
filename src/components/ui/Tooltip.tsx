@@ -1,4 +1,4 @@
-import { useId, useState, type ReactNode } from 'react';
+import { cloneElement, isValidElement, useId, useState, type ReactNode } from 'react';
 import { cx } from './tone';
 
 type Side = 'top' | 'bottom' | 'left' | 'right';
@@ -11,6 +11,12 @@ interface TooltipProps {
   /** Widen for longer definitions. */
   wide?: boolean;
   className?: string;
+  /**
+   * Set when the child is already focusable — a button, a link, a control.
+   * The tooltip then hangs its description off the child itself rather than
+   * adding a second tab stop in front of it.
+   */
+  interactiveChild?: boolean;
 }
 
 const SIDE: Record<Side, string> = {
@@ -23,37 +29,66 @@ const SIDE: Record<Side, string> = {
 /**
  * Hover- and focus-triggered explanation.
  *
- * Focus matters as much as hover here: a presenter tabbing through the console
- * on a client's machine, or anyone driving it by keyboard, should reach the
- * same copy. Escape dismisses so a tooltip never sits over the thing behind it.
+ * Focus matters as much as hover: a presenter tabbing through the console on a
+ * client's machine should reach the same copy. So the description is attached
+ * to whatever actually receives focus — the child when it is already a
+ * control, otherwise a focusable wrapper we supply. Escape dismisses.
  */
-export function Tooltip({ content, children, side = 'top', wide = false, className }: TooltipProps) {
+export function Tooltip({
+  content,
+  children,
+  side = 'top',
+  wide = false,
+  className,
+  interactiveChild = false,
+}: TooltipProps) {
   const [open, setOpen] = useState(false);
   const id = useId();
+
+  const show = () => setOpen(true);
+  const hide = () => setOpen(false);
+
+  // Describe the element the user is actually on. Wrapping an interactive
+  // child in a focusable span would add a phantom tab stop and leave the
+  // description on the wrapper, where a screen reader never reaches it.
+  const described =
+    interactiveChild && isValidElement(children)
+      ? cloneElement(children as React.ReactElement<Record<string, unknown>>, {
+          'aria-describedby': open ? id : undefined,
+        })
+      : children;
 
   return (
     <span
       className={cx('relative inline-flex', className)}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-      onFocus={() => setOpen(true)}
-      onBlur={() => setOpen(false)}
+      onMouseEnter={show}
+      onMouseLeave={hide}
+      onFocus={show}
+      onBlur={hide}
       onKeyDown={(e) => {
-        if (e.key === 'Escape') setOpen(false);
+        if (e.key === 'Escape') hide();
       }}
     >
-      <span aria-describedby={open ? id : undefined} tabIndex={0} className="inline-flex outline-none focus-visible:ring-1 focus-visible:ring-trust-active-soft rounded">
-        {children}
-      </span>
+      {interactiveChild ? (
+        described
+      ) : (
+        <span
+          aria-describedby={open ? id : undefined}
+          tabIndex={0}
+          className="inline-flex rounded outline-none focus-visible:ring-1 focus-visible:ring-trust-active-soft"
+        >
+          {children}
+        </span>
+      )}
 
       {open && (
         <span
           role="tooltip"
           id={id}
           className={cx(
-            'pointer-events-none absolute z-[80] animate-fade-in rounded-lg border border-hairline bg-canvas px-3 py-2 shadow-panel backdrop-blur',
+            'pointer-events-none absolute z-[80] animate-fade-in rounded-lg border border-hairline bg-canvas px-3 py-2 shadow-panel',
             'text-[14px] font-normal normal-case leading-relaxed tracking-normal text-ink-muted',
-            wide ? 'w-72' : 'w-56',
+            wide ? 'w-80' : 'w-64',
             SIDE[side],
           )}
         >
@@ -81,7 +116,7 @@ export function Term({
 }) {
   return (
     <Tooltip content={definition} side={side} wide={wide}>
-      <span className="cursor-help decoration-dotted decoration-from-font underline underline-offset-[3px] decoration-ink-faint">
+      <span className="cursor-help underline decoration-ink-faint decoration-dotted decoration-from-font underline-offset-[3px]">
         {children}
       </span>
     </Tooltip>
@@ -103,7 +138,7 @@ export function InfoTip({
       <span
         aria-label="More information"
         role="img"
-        className="flex h-3.5 w-3.5 cursor-help items-center justify-center rounded-full border border-hairline text-[12px] font-bold text-ink-faint transition hover:border-trust-active/60 hover:text-trust-active-soft"
+        className="flex h-4 w-4 cursor-help items-center justify-center rounded-full border border-hairline text-[11px] font-bold text-ink-faint transition hover:border-trust-active/60 hover:text-trust-active-soft"
       >
         i
       </span>
