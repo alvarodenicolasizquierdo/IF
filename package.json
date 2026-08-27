@@ -5,8 +5,8 @@
   "description": "Avenga Intelligent Flow \u2014 Canonical Pre-Sales Demo Console (PRD v5)",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "demo": "vite --open",
+    "dev": "node scripts/build-runbook.mjs && vite",
+    "demo": "node scripts/build-runbook.mjs && vite --open",
     "build": "node scripts/build-runbook.mjs && tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",

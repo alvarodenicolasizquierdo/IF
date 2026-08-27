@@ -82,7 +82,7 @@ contradicting the demo it documents.
 
 **2 — One file, no install.** Open `download.html` on the site — `flow.alvarodenicolas.com/download.html`,
 or `<user>.github.io/<repo>/download.html` if you stayed on github.io — and press the button, or
-open presenter God Mode and use *Take it offline*. A plain link to the file is
+open presenter God Mode and use *Download single file*. A plain link to the file is
 not enough: it is served as `text/html`, so a browser renders the console in a
 tab instead of saving it — the download page fetches it same-origin and hands
 over a blob, which is what actually saves. `npm run build:standalone` builds the
