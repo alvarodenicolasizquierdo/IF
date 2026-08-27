@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { AlertTriangle, Ban, CheckCircle2, Fingerprint, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { BLAST_RADIUS, CLIENT_CONTEXT, GOVERNED_CODE, LEGACY_CODE } from '@/data/scenario';
+import { GLOSSARY } from '@/data/glossary';
 import { selectPersona, useDemoStore } from '@/store/demoStore';
 import { Button } from '@/components/ui/Button';
 import { CodeDiff } from '@/components/ui/CodeDiff';
+import { InfoTip } from '@/components/ui/Tooltip';
 import { cx, TONE } from '@/components/ui/tone';
 
 const TONE_ICON = {
@@ -53,9 +55,10 @@ export function HitlGate() {
           <div>
             <h2
               id="hitl-gate-title"
-              className="text-base font-bold uppercase tracking-wider text-trust-hitl-soft"
+              className="flex items-center gap-2 text-base font-bold uppercase tracking-wider text-trust-hitl-soft"
             >
               Critical governance gate: manual authorisation required
+              <InfoTip definition={GLOSSARY.hitl} side="bottom" />
             </h2>
             <p className="mt-1 text-xs leading-relaxed text-ink-muted">
               Agent attempts a non-reversible action — production merge of branch{' '}
@@ -68,8 +71,9 @@ export function HitlGate() {
         <div className="grid grid-cols-1 gap-6 px-7 py-6 lg:grid-cols-5">
           {/* Blast radius */}
           <section className="lg:col-span-2">
-            <h3 className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
+            <h3 className="mb-3 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
               Blast radius analysis · pre-analysed by the security sub-agent
+              <InfoTip definition={GLOSSARY.blastRadius} side="bottom" />
             </h3>
             <ul className="space-y-2">
               {BLAST_RADIUS.map((item) => {

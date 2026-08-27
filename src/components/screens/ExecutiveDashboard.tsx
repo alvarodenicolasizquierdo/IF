@@ -12,6 +12,7 @@ import {
 import { Gauge, TrendingDown } from 'lucide-react';
 import { TRACKS } from '@/data/tracks';
 import { CLIENT_CONTEXT } from '@/data/scenario';
+import { GLOSSARY } from '@/data/glossary';
 import { selectAupiSeries, selectMetrics, selectTrack, useDemoStore } from '@/store/demoStore';
 import { Panel } from '@/components/ui/Panel';
 import { MetricCard } from '@/components/ui/MetricCard';
@@ -68,24 +69,28 @@ export function ExecutiveDashboard() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <MetricCard
           label="Delivery lead time"
+          definition={GLOSSARY.leadTime}
           baseline={`${BASELINE.leadTimeDays.toFixed(1)}d`}
           current={`${metrics.leadTimeDays.toFixed(1)}d`}
           delta={pctDelta(BASELINE.leadTimeDays, metrics.leadTimeDays)}
         />
         <MetricCard
           label="Change failure rate"
+          definition={GLOSSARY.changeFailureRate}
           baseline={`${BASELINE.changeFailureRate.toFixed(1)}%`}
           current={`${metrics.changeFailureRate.toFixed(1)}%`}
           delta={pctDelta(BASELINE.changeFailureRate, metrics.changeFailureRate)}
         />
         <MetricCard
           label="Defect escape ratio"
+          definition={GLOSSARY.defectEscape}
           baseline={`${BASELINE.defectEscapeRatio.toFixed(1)}%`}
           current={`${metrics.defectEscapeRatio.toFixed(1)}%`}
           delta={pctDelta(BASELINE.defectEscapeRatio, metrics.defectEscapeRatio)}
         />
         <MetricCard
           label="Maturity multiplier"
+          definition={GLOSSARY.maturityMultiplier}
           baseline={`${BASELINE.maturityMultiplier.toFixed(2)}×`}
           current={`${metrics.maturityMultiplier.toFixed(2)}×`}
           delta={pctDelta(BASELINE.maturityMultiplier, metrics.maturityMultiplier)}
@@ -95,6 +100,7 @@ export function ExecutiveDashboard() {
         />
         <MetricCard
           label="TCO per COSMIC function point"
+          definition={GLOSSARY.cfp}
           baseline={`€${BASELINE.tcoPerCfp.toLocaleString()}`}
           current={`€${metrics.tcoPerCfp.toLocaleString()}`}
           delta={pctDelta(BASELINE.tcoPerCfp, metrics.tcoPerCfp)}
@@ -106,6 +112,7 @@ export function ExecutiveDashboard() {
           className="xl:col-span-2"
           eyebrow="The traceability spine · governed delivery vs ungoverned AI output"
           title="A-UPI composite index"
+          titleTip={GLOSSARY.aupi}
           action={
             <div className="flex items-center gap-4">
               <LegendChip color={CHART.ungoverned} label="Ungoverned AI output" />

@@ -1,12 +1,15 @@
-import { Fingerprint, PlugZap, ShieldAlert, Timer } from 'lucide-react';
+import { Coins, Fingerprint, PlugZap, ShieldAlert, Timer } from 'lucide-react';
 import { CLIENT_CONTEXT, GOVERNED_CODE, LEGACY_CODE, MCP_INTERCEPTS } from '@/data/scenario';
-import { useDemoStore } from '@/store/demoStore';
+import { GLOSSARY } from '@/data/glossary';
+import { formatUsd, mandateCostUsd, mandateGpuCostUsd } from '@/data/models';
+import { selectModel, useDemoStore } from '@/store/demoStore';
 import { Panel } from '@/components/ui/Panel';
 import { Button } from '@/components/ui/Button';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { CodeDiff } from '@/components/ui/CodeDiff';
 import { JsonTree } from '@/components/ui/JsonTree';
 import { truncateHash } from '@/lib/sha256';
+import { InfoTip } from '@/components/ui/Tooltip';
 import { cx } from '@/components/ui/tone';
 
 export function GroundedExecution() {
@@ -18,7 +21,16 @@ export function GroundedExecution() {
   const advanceIntercept = useDemoStore((s) => s.advanceIntercept);
   const openHitlGate = useDemoStore((s) => s.openHitlGate);
 
+  const model = useDemoStore(selectModel);
   const budgetPct = Math.min(100, (mandate.tokensConsumed / mandate.budgetTokens) * 100);
+
+  // What this run has cost so far on the routed model. Self-hosted weights bill
+  // GPU-hours rather than tokens, which is the whole economic argument for the
+  // sovereign tiers — so show whichever number is real for this route.
+  const apiSpend = mandateCostUsd(model, mandate.tokensConsumed);
+  const gpuSpend = mandateGpuCostUsd(model, mandate.tokensConsumed);
+  const spend = apiSpend !== null ? formatUsd(apiSpend) : gpuSpend !== null ? formatUsd(gpuSpend) : '—';
+  const spendBasis = apiSpend !== null ? 'metered tokens' : 'GPU-hours, self-hosted';
   const interceptsDone = interceptIndex >= MCP_INTERCEPTS.length;
 
   const packView = {
@@ -26,6 +38,8 @@ export function GroundedExecution() {
     timestamp: evidencePack.timestamp,
     mandate_id: evidencePack.mandateId,
     selected_model: evidencePack.selectedModel,
+    assurance_tier: `Tier ${model.tier} — ${model.tierLabel}`,
+    data_residency: model.dataResidency,
     verification_status: evidencePack.verificationStatus,
     context_integrity_hash: evidencePack.contextIntegrityHash,
     statement_coverage: evidencePack.statementCoverage,
@@ -81,6 +95,14 @@ export function GroundedExecution() {
             <span className="font-mono text-[11px] font-bold tabular-nums text-ink">
               {mandate.tokensConsumed.toLocaleString()} / {mandate.budgetTokens.toLocaleString()} tokens
             </span>
+            <span
+              className="flex items-center gap-1.5 font-mono text-[11px] tabular-nums text-trust-passed"
+              title={`Spend on ${model.name} — ${spendBasis}`}
+            >
+              <Coins className="h-3 w-3" />
+              {spend}
+              <span className="text-ink-faint">{spendBasis}</span>
+            </span>
           </div>
         </div>
         <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-hairline">
@@ -104,6 +126,7 @@ export function GroundedExecution() {
         <Panel
           eyebrow="Layer 2 · Evidence Pack compiler"
           title="Evidence_Pack.json — live"
+          titleTip={GLOSSARY.evidencePack}
           action={
             <span className="font-mono text-[10px] text-ink-faint">
               {evidencePack.signature
@@ -123,6 +146,7 @@ export function GroundedExecution() {
               <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
                 <PlugZap className="h-3 w-3" />
                 MCP Gateway interceptions
+                <InfoTip definition={GLOSSARY.mcpGateway} side="bottom" />
               </p>
               <span className="font-mono text-[10px] text-ink-faint">
                 {interceptIndex} / {MCP_INTERCEPTS.length}

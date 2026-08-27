@@ -19,8 +19,8 @@ import {
   GOVERNED_CODE,
   MCP_INTERCEPTS,
   PHASES,
-  SOVEREIGN_MODEL_ROUTING,
 } from '@/data/scenario';
+import { DEFAULT_MODEL_ID, getModel, MODELS } from '@/data/models';
 import { mintToken, sha256Hex } from '@/lib/sha256';
 
 const PHASE_SCREEN: Record<PhaseId, ScreenId> = {
@@ -98,7 +98,8 @@ interface DemoState {
   controlPlaneEnforced: boolean;
   driftDetected: boolean;
   dataRemediated: boolean;
-  modelRoutingOverride: string | null;
+  /** Which route in the LLM Gateway catalogue is live. */
+  activeModelId: string;
   metricsOverride: TrackMetrics | null;
   aupiOverride: number[] | null;
 
@@ -158,6 +159,7 @@ interface DemoState {
   dismissExploit: () => void;
   closeExploit: () => void;
   swapToSovereignModel: () => void;
+  setModel: (id: string) => void;
 
   advanceFcee: () => void;
   raiseRemediationPr: () => void;
@@ -181,7 +183,7 @@ const initialState = () => ({
   controlPlaneEnforced: true,
   driftDetected: false,
   dataRemediated: false,
-  modelRoutingOverride: null,
+  activeModelId: DEFAULT_MODEL_ID,
   metricsOverride: null,
   aupiOverride: null,
 
@@ -219,7 +221,6 @@ export const useDemoStore = create<DemoState>((set, get) => ({
       metricsOverride: null,
       aupiOverride: null,
       controlPlaneEnforced: track === 'track2',
-      modelRoutingOverride: null,
     });
     get().log({
       phase: get().activePhase,
@@ -331,7 +332,9 @@ export const useDemoStore = create<DemoState>((set, get) => ({
           ...evidencePack.opaGates,
           finance_policy_pack_v1: 'PASSED',
           dependency_scan: 'PASSED',
-          pii_egress_control: get().dataRemediated || get().controlPlaneEnforced ? 'PASSED' : 'FAILED',
+          // Same rule as the route switch: egress is a property of the
+          // destination, not of how tidy the context library is.
+          pii_egress_control: getModel(get().activeModelId).piiSafe ? 'PASSED' : 'FAILED',
           gitops_origin_provenance: scopeIntact ? 'PASSED' : 'FAILED',
         },
       },
@@ -615,31 +618,49 @@ export const useDemoStore = create<DemoState>((set, get) => ({
     }
   },
 
-  swapToSovereignModel: () => {
-    const current = get().modelRoutingOverride;
-    const next = current ? null : SOVEREIGN_MODEL_ROUTING;
+  setModel: (id) => {
+    const model = getModel(id);
+    const previous = getModel(get().activeModelId);
     set({
-      modelRoutingOverride: next,
+      activeModelId: id,
       evidencePack: {
         ...get().evidencePack,
-        selectedModel: next ? 'selfhosted.vllm.llama-3.1-70b-instruct' : 'amazon.bedrock.anthropic.claude-3-5-sonnet',
+        selectedModel: model.routeId,
+        opaGates: {
+          ...get().evidencePack.opaGates,
+          // Routing classified context to a model that egresses to the public
+          // internet is the GDPR finding, evaluated live rather than narrated.
+          //
+          // Deliberately independent of dataRemediated: classifying the context
+          // library is a different control from where classified payloads may
+          // travel. Cleaning the data does not license sending it to a public
+          // endpoint — if anything, knowing it holds PII sharpens the finding.
+          pii_egress_control: model.piiSafe ? 'PASSED' : 'FAILED',
+        },
       },
     });
+
     get().pushToast({
       title: 'LLM Gateway re-routed',
-      detail: next
-        ? 'Swapped to the sovereign air-gapped tier. No re-engineering, no prompt changes, no developer disruption.'
-        : 'Restored managed enclave routing on AWS Bedrock, region-isolated.',
-      tone: 'passed',
+      detail: `${model.name} — Tier ${model.tier}, ${model.tierLabel}. ${model.note}`,
+      tone: model.piiSafe ? 'passed' : 'violation',
     });
     get().log({
       phase: get().activePhase,
       actor: 'LiteLLM Multi-Tier Gateway',
-      message: next
-        ? 'Model tier switched to Tier 4 (sovereign, air-gapped) — open-weight Llama 3.1 70B on client Kubernetes.'
-        : 'Model tier restored to Tier 2 (managed enclave) — Claude 3.5 Sonnet on AWS Bedrock.',
-      tone: 'passed',
+      message: `Route switched ${previous.name} → ${model.name} (${model.routeId}). Residency: ${model.dataResidency}.`,
+      tone: model.piiSafe ? 'passed' : 'violation',
     });
+  },
+
+  swapToSovereignModel: () => {
+    // The demolition point against proprietary-editor lock-in: jump straight to
+    // the deepest sovereign tier, then back, without touching anything else.
+    const onSovereign = getModel(get().activeModelId).hosting === 'sovereign';
+    const target = onSovereign
+      ? DEFAULT_MODEL_ID
+      : (MODELS.find((m) => m.tier === 4) ?? MODELS[MODELS.length - 1]).id;
+    get().setModel(target);
   },
 
   /* ------------------------------------------------------------------ */
@@ -715,8 +736,12 @@ export const selectMetrics = (s: DemoState): TrackMetrics =>
 export const selectAupiSeries = (s: DemoState): number[] =>
   s.aupiOverride ?? TRACKS[s.activeTrack].aupiSeries;
 
-export const selectModelRouting = (s: DemoState): string =>
-  s.modelRoutingOverride ?? TRACKS[s.activeTrack].modelRouting;
+export const selectModel = (s: DemoState) => getModel(s.activeModelId);
+
+export const selectModelRouting = (s: DemoState): string => {
+  const m = getModel(s.activeModelId);
+  return `${m.name} · ${m.dataResidency}`;
+};
 
 export const selectPersona = (s: DemoState) => PERSONAS[s.activePersona];
 

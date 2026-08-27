@@ -3,6 +3,7 @@ import { Crown, Scale, ServerCog, X, Zap } from 'lucide-react';
 import { PHASES } from '@/data/scenario';
 import { COMPETITOR_EXPLOITS, EXPLOIT_ORDER } from '@/data/scenario';
 import { PERSONA_ORDER, PERSONAS, TRACK_ORDER, TRACKS } from '@/data/tracks';
+import { getModel } from '@/data/models';
 import { useDemoStore } from '@/store/demoStore';
 import { cx, TONE } from '@/components/ui/tone';
 
@@ -20,7 +21,7 @@ export function GodModePanel() {
   const activePhase = useDemoStore((s) => s.activePhase);
   const activeTrack = useDemoStore((s) => s.activeTrack);
   const activePersona = useDemoStore((s) => s.activePersona);
-  const sovereign = useDemoStore((s) => s.modelRoutingOverride !== null);
+  const sovereign = useDemoStore((s) => getModel(s.activeModelId).hosting === 'sovereign');
 
   const setPhase = useDemoStore((s) => s.setPhase);
   const setTrack = useDemoStore((s) => s.setTrack);

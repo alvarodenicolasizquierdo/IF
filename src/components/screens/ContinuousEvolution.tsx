@@ -1,5 +1,6 @@
 import { CheckCircle2, Circle, GitPullRequestArrow, PackageSearch, Radio } from 'lucide-react';
 import { FCEE_STEPS } from '@/data/scenario';
+import { GLOSSARY } from '@/data/glossary';
 import { useDemoStore } from '@/store/demoStore';
 import { Panel } from '@/components/ui/Panel';
 import { Button } from '@/components/ui/Button';
@@ -33,6 +34,7 @@ export function ContinuousEvolution() {
           className="lg:col-span-3"
           eyebrow="The 7-step post-deployment loop"
           title="Continuous Evolution stepper"
+          titleTip={GLOSSARY.fcee}
           action={
             <Button size="sm" tone="active" variant="outline" onClick={advanceFcee} disabled={stepIndex >= 6}>
               {stepIndex >= 6 ? 'Loop complete' : 'Advance loop'}

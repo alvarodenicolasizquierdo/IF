@@ -4,6 +4,7 @@ import { useDemoStore } from '@/store/demoStore';
 
 import { PhaseBanner } from '@/components/shell/PhaseBanner';
 import { IdentityConsole } from '@/components/shell/IdentityConsole';
+import { ModelSwitcher } from '@/components/shell/ModelSwitcher';
 import { TrackSelector } from '@/components/shell/TrackSelector';
 import { ScreenRail } from '@/components/shell/ScreenRail';
 import { ActionTray } from '@/components/shell/ActionTray';
@@ -48,7 +49,10 @@ export default function App() {
             </div>
             <PhaseBanner />
           </div>
-          <IdentityConsole />
+          <div className="flex items-center gap-3">
+            <ModelSwitcher />
+            <IdentityConsole />
+          </div>
         </div>
       </header>
 

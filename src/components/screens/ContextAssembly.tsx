@@ -10,10 +10,12 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { CLIENT_CONTEXT, CONTEXT_PILLS, HYGIENE_FINDINGS, SCOPE_TREE } from '@/data/scenario';
+import { GLOSSARY } from '@/data/glossary';
 import { useDemoStore } from '@/store/demoStore';
 import { Panel } from '@/components/ui/Panel';
 import { Button } from '@/components/ui/Button';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { InfoTip } from '@/components/ui/Tooltip';
 import { cx, TONE } from '@/components/ui/tone';
 
 const PILL_TONE = {
@@ -52,6 +54,7 @@ export function ContextAssembly() {
         <Panel
           eyebrow="Layer 3 · Context Registry"
           title="Hot-path memory context"
+          titleTip={GLOSSARY.contextFreshness}
           action={<StatusBadge label="Top-k semantic · synchronous" tone="active" />}
         >
           <ul className="flex flex-wrap gap-2">
@@ -92,7 +95,8 @@ export function ContextAssembly() {
             <div className="flex items-center justify-between gap-3">
               <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-ink">
                 <Radar className="h-3.5 w-3.5 text-trust-active-soft" />
-                Context Integrity & Classification Probe
+                Context Integrity &amp; Classification Probe
+                <InfoTip definition={GLOSSARY.goldenBridge} side="bottom" />
               </h3>
               {!probeRun && (
                 <Button size="sm" tone="active" variant="outline" onClick={() => setProbeRun(true)}>
@@ -165,6 +169,7 @@ export function ContextAssembly() {
         <Panel
           eyebrow="Layer 2 · Mandate Guardrail"
           title="The cryptographic Mandate"
+          titleTip={GLOSSARY.mandate}
           action={
             <StatusBadge
               label={mandate.status}
@@ -197,6 +202,7 @@ export function ContextAssembly() {
             />
             <SliderRow
               label="Token budget"
+              tip={GLOSSARY.tokenBudget}
               value={mandate.budgetTokens}
               min={10_000}
               max={200_000}
@@ -294,6 +300,7 @@ export function ContextAssembly() {
 
 interface SliderRowProps {
   label: string;
+  tip?: string;
   value: number;
   min: number;
   max: number;
@@ -303,11 +310,14 @@ interface SliderRowProps {
   onChange: (value: number) => void;
 }
 
-function SliderRow({ label, value, min, max, step, display, disabled, onChange }: SliderRowProps) {
+function SliderRow({ label, tip, value, min, max, step, display, disabled, onChange }: SliderRowProps) {
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
-        <label className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">{label}</label>
+        <label className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+          {label}
+          {tip && <InfoTip definition={tip} side="bottom" />}
+        </label>
         <span className="font-mono text-[11px] font-bold text-ink">{display}</span>
       </div>
       <input

@@ -1,8 +1,12 @@
+import type { ReactNode } from 'react';
 import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
+import { InfoTip } from './Tooltip';
 import { cx, TONE, type Tone } from './tone';
 
 interface MetricCardProps {
   label: string;
+  /** Explanation shown behind an (i) beside the label. */
+  definition?: ReactNode;
   baseline: string;
   current: string;
   /** Signed percentage delta, e.g. -85 */
@@ -25,6 +29,7 @@ export function MetricCard({
   lowerIsBetter = true,
   hero = false,
   footnote,
+  definition,
 }: MetricCardProps) {
   const improved = lowerIsBetter ? delta < 0 : delta > 0;
   const tone: Tone = delta === 0 ? 'neutral' : improved ? 'passed' : 'violation';
@@ -38,7 +43,10 @@ export function MetricCard({
         hero ? cx('border-2 border-trust-hitl/50 shadow-glow-hitl') : 'border-hairline',
       )}
     >
-      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">{label}</p>
+      <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+        {label}
+        {definition && <InfoTip definition={definition} side="bottom" />}
+      </p>
 
       <div className="mt-2 flex items-baseline gap-2">
         <span

@@ -359,7 +359,3 @@ export const EXPLOIT_ORDER: CompetitorExploit['id'][] = [
   'persistent',
   'wonderful',
 ];
-
-/** The self-hosted sovereign tier used to prove model flexibility against Persistent. */
-export const SOVEREIGN_MODEL_ROUTING =
-  'Self-hosted Llama 3.1 70B — vLLM on client Kubernetes (Tier 4, air-gapped)';
