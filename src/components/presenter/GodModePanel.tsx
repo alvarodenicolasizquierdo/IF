@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { Crown, Scale, ServerCog, X, Zap } from 'lucide-react';
+import { Crown, Download, Scale, ServerCog, X, Zap } from 'lucide-react';
 import { PHASES } from '@/data/scenario';
 import { COMPETITOR_EXPLOITS, EXPLOIT_ORDER } from '@/data/scenario';
 import { PERSONA_ORDER, PERSONAS, TRACK_ORDER, TRACKS } from '@/data/tracks';
 import { getModel } from '@/data/models';
 import { useDemoStore } from '@/store/demoStore';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { cx, TONE } from '@/components/ui/tone';
 
 /**
@@ -47,15 +48,32 @@ export function GodModePanel() {
 
   if (!open) {
     return (
-      <button
-        type="button"
-        onClick={() => setPresenterMode(true)}
-        aria-label="Open presenter God Mode panel"
-        title="Presenter God Mode — press ` to toggle"
-        className="fixed bottom-5 right-5 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-hairline bg-surface/80 text-ink-faint shadow-panel backdrop-blur transition hover:border-trust-active/50 hover:text-trust-active-soft"
+      // The project's own tooltip rather than a title attribute: this small
+      // circle is the only visible way into God Mode, and a native tooltip
+      // waits a second, never appears on keyboard focus, and cannot say which
+      // physical key to press on a non-US layout.
+      <Tooltip
+        content={
+          <>
+            <strong className="text-ink">Presenter God Mode.</strong> Jump to any phase, force a
+            track or identity, fire an instant proof, or open a competitor demolition point. Also
+            opens with the key immediately left of “1” — backtick on a US or UK keyboard, the same
+            physical key on any other layout.
+          </>
+        }
+        side="left"
+        wide
+        interactiveChild
       >
-        <Crown className="h-4 w-4" />
-      </button>
+        <button
+          type="button"
+          onClick={() => setPresenterMode(true)}
+          aria-label="Open presenter God Mode panel"
+          className="fixed bottom-5 right-5 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-hairline bg-surface/80 text-ink-faint shadow-panel backdrop-blur transition hover:border-trust-active/50 hover:text-trust-active-soft"
+        >
+          <Crown className="h-4 w-4" />
+        </button>
+      </Tooltip>
     );
   }
 
@@ -165,6 +183,20 @@ export function GodModePanel() {
               );
             })}
           </div>
+        </Group>
+
+        {/*
+          * Lives here rather than in the shell: taking a copy offline is a
+          * presenter errand, and the header is what a client is looking at.
+          */}
+        <Group label="Take it offline">
+          <a
+            href="./download.html"
+            className="flex items-center justify-center gap-2 rounded border border-hairline bg-canvas/60 px-2.5 py-2 text-[13px] font-bold uppercase tracking-wider text-ink-muted transition hover:border-trust-active/50 hover:text-trust-active-soft"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Download single file
+          </a>
         </Group>
 
         <p className="text-center font-mono text-[12px] text-ink-faint">

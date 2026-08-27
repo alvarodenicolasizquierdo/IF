@@ -15,7 +15,8 @@
     "test:smoke": "node scripts/smoke.mjs",
     "test:layout": "node scripts/layout-audit.mjs",
     "build:standalone": "tsc --noEmit && vite build --config vite.standalone.config.ts",
-    "test:standalone": "node scripts/verify-standalone.mjs"
+    "test:standalone": "node scripts/verify-standalone.mjs",
+    "test:download": "node scripts/verify-download.mjs"
   },
   "dependencies": {
     "@fontsource/instrument-serif": "^5.3.0",

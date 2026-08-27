@@ -83,6 +83,82 @@ const nextId = (prefix: string) => `${prefix}-${(sequence += 1)}`;
 
 /** Deferred HITL gate opening, cancelled whenever the phase moves on. */
 let pendingGateTimer: ReturnType<typeof setTimeout> | null = null;
+let autoPlayTimer: ReturnType<typeof setTimeout> | null = null;
+
+/**
+ * The scripted run, up to the human decision and no further.
+ *
+ * Each entry is one beat of the narrative: a label the presenter can read off
+ * the screen, the state change it makes, and how long to leave it on screen
+ * before the next one. The hygiene warning and the Mandate signature get
+ * longer pauses because they are the two beats an audience needs to absorb.
+ */
+interface AutoPlayStep {
+  label: string;
+  hold: number;
+  run: (store: DemoState) => void;
+}
+
+const AUTO_PLAY: AutoPlayStep[] = [
+  {
+    label: 'Baseline — ungoverned delivery',
+    hold: 2200,
+    run: (s) => {
+      s.setScreen('dashboard');
+      s.setTrack('track1');
+    },
+  },
+  {
+    label: 'Same team, same work, under governance',
+    hold: 2600,
+    run: (s) => s.setTrack('track2'),
+  },
+  {
+    label: 'Assembling the context the agent will rely on',
+    hold: 1800,
+    run: (s) => s.setScreen('context'),
+  },
+  {
+    label: 'Probing the context library before a token is spent',
+    hold: 3400,
+    run: (s) => s.runContextProbe(),
+  },
+  {
+    label: 'Held — stale schema and unclassified PII found',
+    hold: 2400,
+    run: (s) => s.openAvengaIntelligence(),
+  },
+  {
+    label: 'Data Product Factory rebuilding the context library',
+    hold: 2600,
+    run: (s) => s.remediateContextLibrary(),
+  },
+  {
+    label: 'Signing the Mandate — scope, budget and expiry fixed',
+    hold: 3000,
+    run: (s) => {
+      s.closeAvengaIntelligence();
+      s.signMandate();
+    },
+  },
+  {
+    label: 'Agent executing inside the file-system firewall',
+    hold: 1800,
+    run: (s) => s.setScreen('execution'),
+  },
+  { label: 'Tool-call intercepted and schema-validated', hold: 1500, run: (s) => s.advanceIntercept() },
+  { label: 'Tool-call intercepted and schema-validated', hold: 1500, run: (s) => s.advanceIntercept() },
+  { label: 'Tool-call intercepted and schema-validated', hold: 1500, run: (s) => s.advanceIntercept() },
+  { label: 'Evidence Pack compiled — every step recorded', hold: 2400, run: (s) => s.advanceIntercept() },
+  {
+    label: 'Stopping at the human decision',
+    hold: 0,
+    run: (s) => s.openHitlGate(),
+  },
+];
+
+/** So the progress bar does not hard-code a number that will drift. */
+export const AUTO_PLAY_LENGTH = AUTO_PLAY.length;
 
 interface DemoState {
   /* ---- Narrative state ---- */
@@ -104,6 +180,21 @@ interface DemoState {
   aupiOverride: number[] | null;
 
   /* ---- Execution state ---- */
+  /**
+   * Lifted out of the Context screen. It has to live here for two reasons:
+   * auto-play needs to drive it, and as component state it survived
+   * resetDemo — so a reset put the hygiene warning straight back on screen.
+   */
+  probeRun: boolean;
+
+  /**
+   * Auto-play position, or null when nobody is driving. The run stops itself
+   * at the HITL gate: the whole point of that beat is that a human decides,
+   * so a script that clicked through it would be arguing against the demo.
+   */
+  autoPlayIndex: number | null;
+  autoPlayLabel: string | null;
+
   agentRunning: boolean;
   interceptIndex: number;
   codeRevealed: boolean;
@@ -122,6 +213,8 @@ interface DemoState {
   regulatoryRemediated: boolean;
   avengaIntelligenceOpen: boolean;
   activeExploit: CompetitorExploit | null;
+  helpOpen: boolean;
+  contextGraphOpen: boolean;
 
   /* ---- Feedback ---- */
   toasts: ToastMessage[];
@@ -135,6 +228,10 @@ interface DemoState {
   setScreen: (screen: ScreenId) => void;
   togglePresenterMode: () => void;
   setPresenterMode: (open: boolean) => void;
+
+  runContextProbe: () => void;
+  startAutoPlay: () => void;
+  stopAutoPlay: () => void;
 
   signMandate: () => void;
   updateMandate: (patch: Partial<Pick<Mandate, 'maxIterations' | 'budgetTokens' | 'expiryMinutes'>>) => void;
@@ -150,6 +247,12 @@ interface DemoState {
   completeRegulatoryScan: () => void;
   closeRegulatoryOverlay: () => void;
   enforceControlPlane: () => void;
+
+  openHelp: () => void;
+  closeHelp: () => void;
+  toggleHelp: () => void;
+  openContextGraph: () => void;
+  closeContextGraph: () => void;
 
   openAvengaIntelligence: () => void;
   closeAvengaIntelligence: () => void;
@@ -187,6 +290,10 @@ const initialState = () => ({
   metricsOverride: null,
   aupiOverride: null,
 
+  probeRun: false,
+  autoPlayIndex: null as number | null,
+  autoPlayLabel: null as string | null,
+
   agentRunning: false,
   interceptIndex: 0,
   codeRevealed: false,
@@ -199,6 +306,8 @@ const initialState = () => ({
   regulatoryRemediated: false,
   avengaIntelligenceOpen: false,
   activeExploit: null,
+  helpOpen: false,
+  contextGraphOpen: false,
 
   toasts: [] as ToastMessage[],
   auditLog: [] as AuditLogEntry[],
@@ -285,6 +394,65 @@ export const useDemoStore = create<DemoState>((set, get) => ({
   /* ------------------------------------------------------------------ */
   /* Mandate & execution                                                 */
   /* ------------------------------------------------------------------ */
+
+  /* ------------------------------------------------------------------ */
+  /* Context probe & auto-play                                           */
+  /* ------------------------------------------------------------------ */
+
+  runContextProbe: () => {
+    set({ probeRun: true });
+    const { dataRemediated } = get();
+    get().log({
+      phase: get().activePhase,
+      actor: 'Context Integrity Probe',
+      message: dataRemediated
+        ? 'Context library scanned — all artefacts classified and fresh.'
+        : 'Context library scanned — stale schema and unclassified PII found. Agent initialisation held.',
+      tone: dataRemediated ? 'passed' : 'hitl',
+    });
+  },
+
+  startAutoPlay: () => {
+    if (autoPlayTimer !== null) clearTimeout(autoPlayTimer);
+
+    // Always from a known baseline: a scripted run that begins halfway through
+    // a hand-driven demo tells a story nobody can follow.
+    set({ ...initialState(), autoPlayIndex: 0, autoPlayLabel: AUTO_PLAY[0].label });
+
+    const advance = (index: number) => {
+      // The presenter pressed stop, or reset, between two beats.
+      if (get().autoPlayIndex === null) return;
+
+      const step = AUTO_PLAY[index];
+      set({ autoPlayIndex: index, autoPlayLabel: step.label });
+      step.run(get());
+
+      const next = index + 1;
+      if (next >= AUTO_PLAY.length) {
+        // Ends on the gate, deliberately: the human decision is not scripted.
+        autoPlayTimer = null;
+        set({ autoPlayIndex: null, autoPlayLabel: null });
+        return;
+      }
+      autoPlayTimer = setTimeout(() => advance(next), step.hold);
+    };
+
+    autoPlayTimer = setTimeout(() => advance(0), 300);
+  },
+
+  stopAutoPlay: () => {
+    if (autoPlayTimer !== null) {
+      clearTimeout(autoPlayTimer);
+      autoPlayTimer = null;
+    }
+    if (get().autoPlayIndex === null) return;
+    set({ autoPlayIndex: null, autoPlayLabel: null });
+    get().pushToast({
+      title: 'Auto-play stopped',
+      detail: 'The console is yours again — nothing was undone.',
+      tone: 'active',
+    });
+  },
 
   signMandate: () => {
     const { mandate, activePersona } = get();
@@ -551,6 +719,13 @@ export const useDemoStore = create<DemoState>((set, get) => ({
   /* Golden Bridge — Avenga Intelligence                                 */
   /* ------------------------------------------------------------------ */
 
+  openContextGraph: () => set({ contextGraphOpen: true }),
+  closeContextGraph: () => set({ contextGraphOpen: false }),
+
+  openHelp: () => set({ helpOpen: true }),
+  closeHelp: () => set({ helpOpen: false }),
+  toggleHelp: () => set({ helpOpen: !get().helpOpen }),
+
   openAvengaIntelligence: () => set({ avengaIntelligenceOpen: true }),
   closeAvengaIntelligence: () => set({ avengaIntelligenceOpen: false }),
 
@@ -714,6 +889,10 @@ export const useDemoStore = create<DemoState>((set, get) => ({
     if (pendingGateTimer !== null) {
       clearTimeout(pendingGateTimer);
       pendingGateTimer = null;
+    }
+    if (autoPlayTimer !== null) {
+      clearTimeout(autoPlayTimer);
+      autoPlayTimer = null;
     }
     set({ ...initialState() });
     get().pushToast({

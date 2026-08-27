@@ -59,6 +59,20 @@ jobs:
       - name: Prove the standalone build runs with the network cut off
         run: npm run test:standalone
 
+      # Put the standalone file where the site serves it. Done here rather than
+      # in the deploy assembly so the download page can be driven for real on a
+      # pull request too.
+      - name: Place the offline copy
+        run: cp -f dist-standalone/index.html dist/intelligent-flow-console.html
+
+      # A plain link to that file renders in a tab instead of saving, so
+      # download.html fetches it and hands over a blob. That is easy to break
+      # silently — the button still looks fine and nobody finds out until a
+      # presenter is offline with nothing to open. So click it for real and
+      # inspect the bytes that land on disk.
+      - name: Prove the offline download actually downloads
+        run: BASE_URL=http://localhost:4173/ npm run test:download
+
       # Ship the standalone build alongside the normal one so the Pages site
       # also serves a file anyone can download and run offline.
       #
@@ -74,7 +88,6 @@ jobs:
         env:
           CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN || 'flow.alvarodenicolas.com' }}
         run: |
-          cp dist-standalone/index.html dist/intelligent-flow-console.html
           cp -f dist/index.html dist/404.html
           if [ -n "$CUSTOM_DOMAIN" ] && [ "$CUSTOM_DOMAIN" != "none" ]; then
             echo "$CUSTOM_DOMAIN" > dist/CNAME

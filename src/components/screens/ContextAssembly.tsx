@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   AlertTriangle,
   FileLock2,
@@ -37,7 +37,10 @@ export function ContextAssembly() {
   const signMandate = useDemoStore((s) => s.signMandate);
   const dataRemediated = useDemoStore((s) => s.dataRemediated);
   const openAvengaIntelligence = useDemoStore((s) => s.openAvengaIntelligence);
-  const [probeRun, setProbeRun] = useState(false);
+  // In the store, not here: auto-play drives it, and a reset has to clear it.
+  const probeRun = useDemoStore((s) => s.probeRun);
+  const runContextProbe = useDemoStore((s) => s.runContextProbe);
+  const openContextGraph = useDemoStore((s) => s.openContextGraph);
 
   const signed = mandate.status === 'ACTIVE' || mandate.status === 'DISCHARGED';
   const blockedByHygiene = probeRun && !dataRemediated;
@@ -71,7 +74,14 @@ export function ContextAssembly() {
           eyebrow="Layer 3 · Context Registry"
           title="Hot-path memory context"
           titleTip={GLOSSARY.contextFreshness}
-          action={<StatusBadge label="Top-k semantic · synchronous" tone="active" />}
+          action={
+            <div className="flex items-center gap-2">
+              <Button size="sm" tone="active" variant="outline" onClick={openContextGraph}>
+                View spine
+              </Button>
+              <StatusBadge label="Top-k semantic" tone="active" />
+            </div>
+          }
           className="min-h-0"
           bodyClassName="flex min-h-0 flex-col p-5"
         >
@@ -118,7 +128,7 @@ export function ContextAssembly() {
                   <InfoTip definition={GLOSSARY.goldenBridge} side="bottom" />
                 </h3>
                 {!probeRun && (
-                  <Button size="sm" tone="active" variant="outline" onClick={() => setProbeRun(true)}>
+                  <Button size="sm" tone="active" variant="outline" onClick={runContextProbe}>
                     Run probe
                   </Button>
                 )}

@@ -1,4 +1,4 @@
-import { AlertTriangle, PlayCircle, RotateCcw, Scale, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, PlayCircle, RotateCcw, Scale, ShieldCheck, Square, Zap } from 'lucide-react';
 import { GLOSSARY } from '@/data/glossary';
 import { useDemoStore } from '@/store/demoStore';
 import { Button } from '@/components/ui/Button';
@@ -12,9 +12,37 @@ export function ActionTray() {
   const openRegulatoryOverlay = useDemoStore((s) => s.openRegulatoryOverlay);
   const resetDemo = useDemoStore((s) => s.resetDemo);
   const driftDetected = useDemoStore((s) => s.driftDetected);
+  const startAutoPlay = useDemoStore((s) => s.startAutoPlay);
+  const stopAutoPlay = useDemoStore((s) => s.stopAutoPlay);
+  const autoPlaying = useDemoStore((s) => s.autoPlayIndex !== null);
 
   return (
-    <div className="grid grid-cols-2 gap-2 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-2 lg:grid-cols-6">
+      {/*
+        * First, because it is the control a presenter reaches for before the
+        * room has settled. It runs the narrative from the baseline through to
+        * the human decision and then hands back — twelve correct clicks
+        * under pressure become one.
+        */}
+      <Tooltip
+        content={
+          autoPlaying
+            ? 'Stop the scripted run and take the controls back. Nothing is undone.'
+            : 'Runs the demo from the ungoverned baseline through context, the Mandate and execution, then stops at the human decision. Resets to the baseline first.'
+        }
+        side="bottom"
+        wide
+        interactiveChild
+      >
+        <Button
+          tone={autoPlaying ? 'hitl' : 'passed'}
+          onClick={autoPlaying ? stopAutoPlay : startAutoPlay}
+          icon={autoPlaying ? <Square className="h-4 w-4" /> : <Zap className="h-4 w-4" />}
+          className="w-full"
+        >
+          {autoPlaying ? 'Stop' : 'Run cycle'}
+        </Button>
+      </Tooltip>
       <Button tone="active" onClick={advancePhase} icon={<PlayCircle className="h-4 w-4" />}>
         Next phase
       </Button>

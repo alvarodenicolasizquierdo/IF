@@ -121,6 +121,19 @@ const OVERLAYS = [
     open: async (page) => page.keyboard.press('`'),
     mustBeVisible: [/EPAM/],
   },
+  {
+    name: 'Contextual help',
+    open: async (page) => page.getByRole('button', { name: /Open help/i }).click(),
+    mustBeVisible: [/^Close$/],
+  },
+  {
+    name: 'Traceability spine',
+    open: async (page) => {
+      await page.getByRole('button', { name: /Context & Mandate/ }).click();
+      await page.getByRole('button', { name: /View spine/ }).click();
+    },
+    mustBeVisible: [/^Close$/],
+  },
 ];
 
 const failures = [];

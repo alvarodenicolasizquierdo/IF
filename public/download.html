@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download the offline console — Avenga Intelligent Flow</title>
+<link rel="icon" href="./favicon.svg">
+<style>
+  /*
+   * Fonts are served from this origin, never a CDN. The console self-hosts
+   * for exactly this reason — a client network that blocks Google Fonts is
+   * the normal case, not the edge case — and this is the page a presenter
+   * reaches for when the network is already being difficult. It also keeps
+   * the page from telling a third party who is downloading the demo.
+   */
+  @font-face {
+    font-family: 'Instrument Serif';
+    src: url('./fonts/instrument-serif-400.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Manrope';
+    src: url('./fonts/manrope-400.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Manrope';
+    src: url('./fonts/manrope-700.woff2') format('woff2');
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'JetBrains Mono';
+    src: url('./fonts/jetbrains-mono-400.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'JetBrains Mono';
+    src: url('./fonts/jetbrains-mono-700.woff2') format('woff2');
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+
+  /*
+   * Deliberately single-theme: this page is the console's own front door and
+   * lives in the same Premium Purple world, so it paints every colour rather
+   * than borrowing any from the host.
+   */
+  :root {
+    --canvas: #170D26;
+    --surface: #2C1847;
+    --hairline: #4A3568;
+    --ink: #FFFFFF;
+    --ink-warm: #E0DACE;
+    --ink-muted: #C7BDCB;
+    --ink-faint: #8B7CA0;
+    --active: #7C5DC7;
+    --active-soft: #9F7AEA;
+    --passed: #34D399;
+    --violation: #FF5A2C;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: 'Manrope', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card {
+    width: 100%;
+    max-width: 34rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: clamp(1.75rem, 5vw, 2.75rem);
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    box-shadow: 0 24px 60px -30px rgba(0,0,0,.8);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .brand img { height: 15px; width: auto; }
+  .brand span { width: 1px; height: 22px; background: var(--hairline); }
+  .brand p {
+    margin: 0;
+    font-family: 'Instrument Serif', ui-serif, Georgia, serif;
+    font-size: 1.2rem;
+    letter-spacing: -.01em;
+  }
+  h1 {
+    margin: 0;
+    font-family: 'Instrument Serif', ui-serif, Georgia, serif;
+    font-size: clamp(1.9rem, 5vw, 2.4rem);
+    font-weight: 400;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+  .lede { margin: 0; color: var(--ink-muted); }
+  .facts { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+  .facts li { display: flex; gap: .6rem; align-items: baseline; color: var(--ink-warm); font-size: .9375rem; }
+  .facts .tick { color: var(--passed); font-weight: 700; }
+
+  button {
+    appearance: none;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    padding: 1rem 1.25rem;
+    border: 0;
+    border-radius: 10px;
+    background: var(--active);
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: .01em;
+    cursor: pointer;
+    transition: background 140ms ease, transform 140ms ease;
+  }
+  button:hover:not(:disabled) { background: var(--active-soft); }
+  button:active:not(:disabled) { transform: translateY(1px); }
+  button:disabled { opacity: .65; cursor: progress; }
+  button:focus-visible { outline: 2px solid var(--ink-warm); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { button { transition: none; } }
+
+  .status {
+    margin: 0;
+    min-height: 1.4rem;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .8125rem;
+    color: var(--ink-faint);
+  }
+  .status.ok { color: var(--passed); }
+  .status.bad { color: var(--violation); }
+
+  .fallback {
+    margin: 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--hairline);
+    color: var(--ink-faint);
+    font-size: .875rem;
+  }
+  a { color: var(--ink-warm); }
+  a:focus-visible { outline: 2px solid var(--ink-warm); outline-offset: 2px; border-radius: 2px; }
+  code {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .875em;
+    padding: .1em .35em;
+    border-radius: 3px;
+    background: var(--canvas);
+  }
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand">
+      <img src="./avenga-wordmark.png" alt="Avenga">
+      <span aria-hidden="true"></span>
+      <p>Intelligent Flow</p>
+    </div>
+
+    <h1>Take the console with you</h1>
+    <p class="lede">
+      One file. Open it straight from your desktop — no install, no login, and no network of any kind.
+      Use it when the venue Wi-Fi fails, the client's laptop is locked down, or you are on a plane.
+    </p>
+
+    <ul class="facts">
+      <li><span class="tick">✓</span><span>Everything is inside the file — code, styling, typefaces, logos</span></li>
+      <li><span class="tick">✓</span><span>Makes zero network requests; this is tested on every release</span></li>
+      <li><span class="tick">✓</span><span>Identical to the live demo, same version, same data</span></li>
+    </ul>
+
+    <div>
+      <button id="get" type="button">Download the offline console</button>
+      <p class="status" id="status" role="status" aria-live="polite">About 1.9&nbsp;MB</p>
+    </div>
+
+    <p class="fallback">
+      If the button does nothing, right-click
+      <a id="direct" href="./intelligent-flow-console.html">this link</a>
+      and choose <strong>Save Link As…</strong> Save it anywhere; double-click the saved file to open
+      the demo. Back to the live version: <a href="./">Intelligent Flow</a>.
+    </p>
+  </main>
+
+<script>
+  // Same-origin fetch into a blob, then a real save. A plain link cannot be
+  // used on its own: the file is served as text/html, so the browser renders
+  // the console in a tab instead of saving it — which is exactly the confusion
+  // this page exists to remove.
+  (function () {
+    var FILE = 'intelligent-flow-console.html';
+    var button = document.getElementById('get');
+    var status = document.getElementById('status');
+
+    function say(message, kind) {
+      status.textContent = message;
+      status.className = 'status' + (kind ? ' ' + kind : '');
+    }
+
+    button.addEventListener('click', function () {
+      button.disabled = true;
+      say('Preparing the file…');
+
+      fetch('./' + FILE, { cache: 'no-store' })
+        .then(function (response) {
+          if (!response.ok) throw new Error('HTTP ' + response.status);
+          return response.blob();
+        })
+        .then(function (blob) {
+          var url = URL.createObjectURL(blob);
+          var link = document.createElement('a');
+          link.href = url;
+          link.download = FILE;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          // Revoke late: Safari needs the object URL alive past the click.
+          setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
+
+          var mb = (blob.size / 1048576).toFixed(1);
+          say('Saved — ' + FILE + ' (' + mb + ' MB). Double-click it to open the demo.', 'ok');
+          button.disabled = false;
+        })
+        .catch(function (error) {
+          say('Could not fetch the file (' + error.message + '). Use the link below instead.', 'bad');
+          button.disabled = false;
+        });
+    });
+  })();
+</script>
+</body>
+</html>
