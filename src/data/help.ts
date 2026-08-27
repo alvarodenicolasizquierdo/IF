@@ -190,8 +190,14 @@ export const PRESENTER_SECRETS: PresenterSecret[] = [
       'One button per competitor, each opening on the structural weakness of that platform rather than a feature comparison. EPAM DIAL and Cognizant Flowsource also fire a live proof against the running demo.',
   },
   {
+    label: 'The run-book',
+    how: 'God Mode → Run-book & script',
+    detail:
+      'The whole demo written out word for word for a non-technical audience, plus what to say when someone interrupts. Hosted alongside the console, so it is one link you can send to whoever presents next. It is excluded from search engines, but anyone with the link can read it — do not paste it into a client thread.',
+  },
+  {
     label: 'The offline copy',
-    how: 'God Mode → Take it offline',
+    how: 'God Mode → Download single file',
     detail:
       'Saves the entire console as one file that runs from your desktop with no network at all. Take it to a client site whose Wi-Fi you do not trust.',
   },

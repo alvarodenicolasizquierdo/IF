@@ -60,9 +60,29 @@ it does, the banner is GitHub's own check lagging behind a freshly-added record
 and it clears on its own; changing DNS at that point only makes things worse.
 The banner does not block the deploy.
 
+**The presenter run-book** lives at `runbook.html` on the same site —
+`flow.alvarodenicolas.com/runbook.html` — reachable in-app from God Mode →
+*Run-book & script*. It is generated at build time from `runbook/body.html` by
+`scripts/build-runbook.mjs`, which is also the file published as the shared
+Artifact; one source, so the hosted page and the shared link cannot drift.
+
+It is served `noindex` and listed in `robots.txt`. That keeps it out of search
+results, and nothing more — **anyone with the link can read the page**. Send it
+to colleagues, not into a client thread.
+
+The presenter-only half — God Mode and the competitor demolition matrix — is not
+in the rendered page at all. It is base64 in the file, decoded and injected only
+when a presenter asks for it, by clicking the product name in the footer or
+pressing the same key that opens God Mode in the console. `Esc` puts it away.
+That defeats the realistic case (a client scrolling the page, searching it, or
+reading it in reader view) and does not defeat anyone who opens the page source:
+**concealment, not protection.** The competitor cards are generated from
+`COMPETITOR_EXPLOITS` in `src/data/scenario.ts`, so the run-book cannot end up
+contradicting the demo it documents.
+
 **2 — One file, no install.** Open `download.html` on the site — `flow.alvarodenicolas.com/download.html`,
 or `<user>.github.io/<repo>/download.html` if you stayed on github.io — and press the button, or
-open presenter God Mode and use *Take it offline*. A plain link to the file is
+open presenter God Mode and use *Download single file*. A plain link to the file is
 not enough: it is served as `text/html`, so a browser renders the console in a
 tab instead of saving it — the download page fetches it same-origin and hands
 over a blob, which is what actually saves. `npm run build:standalone` builds the
@@ -92,6 +112,7 @@ Other scripts:
 | `npm run test:layout` | Measure every screen and overlay at 1280×720, 1440×790 and 1680×1000 |
 | `npm run test:standalone` | Prove the single-file build runs with the network cut off |
 | `npm run test:download` | Click the offline download for real and inspect the saved bytes |
+| `npm run test:runbook` | Check the hosted run-book is current, same-origin and noindex |
 
 Fonts are self-hosted, so the console runs correctly offline or behind a client
 guest network that blocks CDNs.

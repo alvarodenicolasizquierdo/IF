@@ -10,3 +10,7 @@ mock-repos/
 # Seeded design canvas — regenerate from design/*.dc.html with the design skill
 design/intelligent-flow-console.html
 dist-standalone/
+
+# Generated from runbook/body.html by scripts/build-runbook.mjs
+public/runbook.html
+runbook/.generated-body.html
