@@ -11,7 +11,7 @@ import type {
 
 /** The client in the room. Edit this block before a workshop to re-skin the demo. */
 export const CLIENT_CONTEXT = {
-  client: 'Azercell Telecom LLC',
+  client: 'Palantino LLC',
   project: 'Billing Engine Modernisation',
   workItem: 'AZ-7001',
   requirement: 'Flexible Tax Calendar & Rate Utility',
@@ -63,7 +63,7 @@ export const CONTEXT_PILLS: ContextPill[] = [
   {
     id: 'domain-bscs',
     kind: 'Domain',
-    label: 'Domain: Azercell_BSCS_Entities',
+    label: 'Domain: Palantino_BSCS_Entities',
     freshness: 88,
     classified: true,
   },
