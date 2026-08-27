@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { AlertTriangle, Ban, CheckCircle2, Fingerprint, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { BLAST_RADIUS, CLIENT_CONTEXT, GOVERNED_CODE, LEGACY_CODE } from '@/data/scenario';
+import { GLOSSARY } from '@/data/glossary';
 import { selectPersona, useDemoStore } from '@/store/demoStore';
 import { Button } from '@/components/ui/Button';
 import { CodeDiff } from '@/components/ui/CodeDiff';
+import { InfoTip } from '@/components/ui/Tooltip';
 import { cx, TONE } from '@/components/ui/tone';
 
 const TONE_ICON = {
@@ -44,20 +46,26 @@ export function HitlGate() {
       aria-labelledby="hitl-gate-title"
       className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-canvas/85 p-6 backdrop-blur-md"
     >
-      <div className="my-auto w-full max-w-6xl animate-scale-in overflow-hidden rounded-2xl border border-hairline bg-surface shadow-panel">
+      {/*
+        * Capped to the viewport with a scrolling body and a pinned ceremony:
+        * the signature is the beat the whole demo turns on, so it must never
+        * require scrolling to reach — least of all on a compressed share.
+        */}
+      <div className="my-auto flex max-h-[calc(100vh-3rem)] w-full max-w-6xl animate-scale-in flex-col overflow-hidden rounded-2xl border border-hairline bg-surface shadow-panel">
         {/* Thick Amber Gold top border — the HITL signature of the spectrum */}
-        <div className="h-1 w-full bg-trust-hitl shadow-glow-hitl" aria-hidden />
+        <div className="h-1 w-full shrink-0 bg-trust-hitl shadow-glow-hitl" aria-hidden />
 
-        <header className="flex items-start gap-3 border-b border-hairline px-7 py-5">
+        <header className="flex shrink-0 items-start gap-3 border-b border-hairline px-7 py-4">
           <TriangleAlert className="mt-0.5 h-6 w-6 shrink-0 text-trust-hitl-soft" strokeWidth={2.2} />
           <div>
             <h2
               id="hitl-gate-title"
-              className="text-base font-bold uppercase tracking-wider text-trust-hitl-soft"
+              className="flex items-center gap-2 text-[18px] font-bold uppercase tracking-wider text-trust-hitl-soft"
             >
               Critical governance gate: manual authorisation required
+              <InfoTip definition={GLOSSARY.hitl} side="bottom" />
             </h2>
-            <p className="mt-1 text-xs leading-relaxed text-ink-muted">
+            <p className="mt-1 text-[15px] leading-relaxed text-ink-muted">
               Agent attempts a non-reversible action — production merge of branch{' '}
               <code className="font-mono text-ink">feature/dynamic-tax-rates</code> into{' '}
               {CLIENT_CONTEXT.repository}.
@@ -65,11 +73,13 @@ export function HitlGate() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 gap-6 px-7 py-6 lg:grid-cols-5">
+        <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="grid grid-cols-1 gap-6 px-7 py-5 lg:grid-cols-5">
           {/* Blast radius */}
           <section className="lg:col-span-2">
-            <h3 className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
+            <h3 className="mb-3 flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.16em] text-ink-faint">
               Blast radius analysis · pre-analysed by the security sub-agent
+              <InfoTip definition={GLOSSARY.blastRadius} side="bottom" />
             </h3>
             <ul className="space-y-2">
               {BLAST_RADIUS.map((item) => {
@@ -81,7 +91,7 @@ export function HitlGate() {
                     className={cx('flex items-start gap-2.5 rounded-lg border px-3 py-2.5', t.border, t.bg)}
                   >
                     <Icon className={cx('mt-0.5 h-3.5 w-3.5 shrink-0', t.text)} />
-                    <span className="text-[11px] leading-relaxed text-ink-muted">{item.label}</span>
+                    <span className="text-[14px] leading-relaxed text-ink-muted">{item.label}</span>
                   </li>
                 );
               })}
@@ -97,8 +107,8 @@ export function HitlGate() {
           </section>
 
           {/* Diff under review */}
-          <section className="flex min-h-[340px] flex-col lg:col-span-3">
-            <h3 className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
+          <section className="flex min-h-[200px] flex-col lg:col-span-3">
+            <h3 className="mb-3 text-[13px] font-bold uppercase tracking-[0.16em] text-ink-faint">
               Change under review
             </h3>
             <div className="min-h-0 flex-1">
@@ -106,9 +116,10 @@ export function HitlGate() {
             </div>
           </section>
         </div>
+        </div>
 
-        {/* Signature ceremony */}
-        <div className="border-t border-hairline bg-canvas/40 px-7 py-5">
+        {/* Signature ceremony — pinned. */}
+        <div className="shrink-0 border-t border-hairline bg-canvas/40 px-7 py-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <span
@@ -127,12 +138,12 @@ export function HitlGate() {
                 />
               </span>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+                <p className="text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
                   Signing identity · OIDC verified
                 </p>
                 <p
                   className={cx(
-                    'font-mono text-xs font-bold',
+                    'font-mono text-[15px] font-bold',
                     persona.canSignEvidencePack ? 'text-trust-passed' : 'text-trust-violation-soft',
                   )}
                 >
@@ -142,14 +153,14 @@ export function HitlGate() {
             </div>
 
             {!persona.canSignEvidencePack && (
-              <p className="flex items-center gap-1.5 rounded-lg border border-trust-violation/50 bg-trust-violation/10 px-3 py-2 text-[11px] font-semibold text-trust-violation-soft">
+              <p className="flex items-center gap-1.5 rounded-lg border border-trust-violation/50 bg-trust-violation/10 px-3 py-2 text-[14px] font-semibold text-trust-violation-soft">
                 <Ban className="h-3.5 w-3.5" />
                 This persona holds no production-merge signing privilege.
               </p>
             )}
           </div>
 
-          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Button tone="violation" variant="outline" size="lg" onClick={rejectGate} icon={<Ban className="h-4 w-4" />}>
               Reject & void Mandate
             </Button>
@@ -172,8 +183,8 @@ export function HitlGate() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-3">
-      <dt className="shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">{label}</dt>
-      <dd className="truncate font-mono text-[11px] text-ink-muted" title={value}>
+      <dt className="shrink-0 text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">{label}</dt>
+      <dd className="truncate font-mono text-[14px] text-ink-muted" title={value}>
         {value}
       </dd>
     </div>

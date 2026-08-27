@@ -44,16 +44,16 @@ export function RegulatoryOverlay() {
       aria-labelledby="reg-title"
       className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-canvas/90 p-6 backdrop-blur-md"
     >
-      <div className="my-auto w-full max-w-3xl animate-scale-in overflow-hidden rounded-2xl border border-hairline bg-surface shadow-panel">
+      <div className="my-auto flex max-h-[calc(100vh-3rem)] w-full max-w-3xl animate-scale-in flex-col overflow-hidden rounded-2xl border border-hairline bg-surface shadow-panel">
         <div
           className={cx(
-            'h-1 w-full transition-colors duration-500',
+            'h-1 w-full shrink-0 transition-colors duration-500',
             remediated ? 'bg-trust-passed shadow-glow-passed' : 'bg-trust-violation shadow-glow-violation',
           )}
           aria-hidden
         />
 
-        <header className="flex items-start justify-between gap-4 border-b border-hairline px-7 py-5">
+        <header className="flex shrink-0 items-start justify-between gap-4 border-b border-hairline px-7 py-4">
           <div className="flex items-start gap-3">
             <Gavel
               className={cx(
@@ -63,10 +63,10 @@ export function RegulatoryOverlay() {
               strokeWidth={2.2}
             />
             <div>
-              <h2 id="reg-title" className="text-base font-bold uppercase tracking-wider text-ink">
+              <h2 id="reg-title" className="text-[18px] font-bold uppercase tracking-wider text-ink">
                 Regulatory Exposure Assessment
               </h2>
-              <p className="mt-1 font-mono text-[11px] text-ink-muted">
+              <p className="mt-1 font-mono text-[14px] text-ink-muted">
                 Target: {CLIENT_CONTEXT.scmConnector} · scope {CLIENT_CONTEXT.repository} ·{' '}
                 {CLIENT_CONTEXT.client}
               </p>
@@ -89,16 +89,16 @@ export function RegulatoryOverlay() {
               className="absolute inset-x-0 top-0 h-16 animate-sweep-scan bg-gradient-to-b from-transparent via-trust-violation/25 to-transparent"
             />
             <Radar className="mx-auto h-8 w-8 animate-spin text-trust-violation-soft" style={{ animationDuration: '2.4s' }} />
-            <p className="mt-4 font-mono text-xs font-bold uppercase tracking-[0.16em] text-trust-violation-soft">
+            <p className="mt-4 font-mono text-[15px] font-bold uppercase tracking-[0.16em] text-trust-violation-soft">
               Scanning pipeline against EU AI Act · DORA · GDPR
             </p>
-            <p className="mt-1.5 text-[11px] text-ink-faint">
+            <p className="mt-1.5 text-[14px] text-ink-faint">
               Evaluating commit provenance, agent oversight, dependency scanning and PII egress…
             </p>
           </div>
         ) : (
           <>
-            <div className="px-7 py-5">
+            <div className="min-h-0 flex-1 overflow-y-auto px-7 py-5">
               <div
                 className={cx(
                   'mb-4 flex items-center justify-between rounded-lg border px-4 py-3',
@@ -107,7 +107,7 @@ export function RegulatoryOverlay() {
                     : 'border-trust-violation/50 bg-trust-violation/10',
                 )}
               >
-                <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+                <span className="text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
                   Aggregate audit vulnerability
                 </span>
                 <span
@@ -131,16 +131,16 @@ export function RegulatoryOverlay() {
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
-                          <p className={cx('text-[11px] font-bold uppercase tracking-wider', t.text)}>
+                          <p className={cx('text-[14px] font-bold uppercase tracking-wider', t.text)}>
                             {finding.regulation} — {finding.article}
                           </p>
-                          <p className="mt-1 text-[11px] leading-relaxed text-ink-muted">
+                          <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
                             {remediated ? finding.remediation : finding.finding}
                           </p>
                         </div>
                         <span
                           className={cx(
-                            'shrink-0 rounded border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider',
+                            'shrink-0 rounded border px-2 py-0.5 font-mono text-[13px] font-bold uppercase tracking-wider',
                             t.border,
                             t.bg,
                             t.text,
@@ -150,7 +150,7 @@ export function RegulatoryOverlay() {
                         </span>
                       </div>
                       {!remediated && (
-                        <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
+                        <p className="mt-2 font-mono text-[13px] uppercase tracking-wider text-ink-faint">
                           Audit vulnerability: {finding.auditVulnerability}
                         </p>
                       )}
@@ -160,7 +160,7 @@ export function RegulatoryOverlay() {
               </ul>
             </div>
 
-            <div className="flex flex-wrap items-center justify-end gap-3 border-t border-hairline bg-canvas/40 px-7 py-4">
+            <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-hairline bg-canvas/40 px-7 py-4">
               <Button tone="neutral" variant="outline" onClick={close}>
                 Close
               </Button>

@@ -9,3 +9,4 @@ mock-repos/
 
 # Seeded design canvas — regenerate from design/*.dc.html with the design skill
 design/intelligent-flow-console.html
+dist-standalone/

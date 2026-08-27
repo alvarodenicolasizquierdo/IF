@@ -43,8 +43,6 @@ export interface TrackProfile {
   controlPlaneBadge: string;
   controlPlaneTone: 'violation' | 'hitl' | 'passed';
   metrics: TrackMetrics;
-  /** Model routing shown in the top-right console */
-  modelRouting: string;
   /** Default persona bound to this track */
   defaultPersona: PersonaId;
   /** A-UPI composite index per sprint — the governed delivery curve */

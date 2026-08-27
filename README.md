@@ -12,6 +12,62 @@ over pace and narrative.
 
 ## Running it
 
+Three ways, depending on how much you want to install.
+
+**1 — Hosted.** CI typechecks, builds, verifies the Evidence Pack signer and
+drives the full presenter walkthrough on every pull request; a push to `main`
+then deploys to GitHub Pages. The site also serves
+`intelligent-flow-console.html`, a single self-contained file you can download
+and keep.
+
+> First time only: in the repository, **Settings → Pages → Build and deployment
+> → Source**, choose **GitHub Actions**. The workflow does the rest.
+
+### Putting it on your own domain, safely
+
+Use a **subdomain**. It leaves the apex record — and whatever site already
+answers there — completely untouched.
+
+1. **DNS**, at whoever hosts the zone: add one `CNAME` record.
+
+   | Type | Name | Value |
+   |---|---|---|
+   | `CNAME` | `flow` | `<your-github-user>.github.io.` |
+
+   That creates `flow.yourdomain.com`. Do **not** add or change `A`, `ALIAS`
+   or `ANAME` records on the apex — those are what serve your existing site,
+   and repointing them is what takes a site down.
+
+2. **Repository → Settings → Pages → Custom domain**: enter the same
+   `flow.yourdomain.com` and save, then tick **Enforce HTTPS**. Save it even
+   if the DNS check complains — see the note below.
+
+3. Nothing. The workflow writes the `CNAME` file into every build already —
+   it defaults to `flow.alvarodenicolas.com`. To publish under a different
+   domain, set the repository variable `PAGES_CUSTOM_DOMAIN`
+   (**Settings → Secrets and variables → Actions → Variables**) to that
+   hostname; set it to `none` to stay on `github.io`.
+
+That third step used to be manual and was easy to miss, which broke the domain
+on the first deploy: with Actions-based Pages the published artifact replaces
+the site wholesale, so a domain entered only in Settings is dropped the moment
+a build ships without a `CNAME` in it.
+
+**If the Pages settings page says `InvalidDNSError`:** check whether the record
+actually resolves before touching it — `dig +short flow.yourdomain.com` should
+answer `<user>.github.io.` followed by the four `185.199.x.153` addresses. When
+it does, the banner is GitHub's own check lagging behind a freshly-added record
+and it clears on its own; changing DNS at that point only makes things worse.
+The banner does not block the deploy.
+
+**2 — One file, no install.** Download `intelligent-flow-console.html` from the
+Pages site (or build it with `npm run build:standalone`) and open it in any
+browser. Everything — JS, CSS, fonts, brand marks — is inlined, so it runs from
+a USB stick on a plane. `npm run test:standalone` proves it makes zero network
+requests.
+
+**3 — From source.**
+
 ```bash
 npm install
 npm run demo        # opens http://localhost:5173
@@ -23,9 +79,14 @@ Other scripts:
 |---|---|
 | `npm run dev` | Dev server with hot reload |
 | `npm run build` | Typecheck and production bundle to `dist/` |
+| `npm run build:standalone` | Single self-contained `dist-standalone/index.html` |
 | `npm run preview` | Serve the production bundle |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run simulate` | Headless state engine — writes a signed Evidence Pack to disk |
+| `npm run test:hash` | Verify the Evidence Pack signer against `node:crypto` |
+| `npm run test:smoke` | Playwright walkthrough of the presenter narrative |
+| `npm run test:layout` | Measure every screen and overlay at 1280×720, 1440×790 and 1680×1000 |
+| `npm run test:standalone` | Prove the single-file build runs with the network cut off |
 
 Fonts are self-hosted, so the console runs correctly offline or behind a client
 guest network that blocks CDNs.

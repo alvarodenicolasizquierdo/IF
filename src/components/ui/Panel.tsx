@@ -1,8 +1,11 @@
 import type { ReactNode } from 'react';
+import { InfoTip } from './Tooltip';
 import { cx } from './tone';
 
 interface PanelProps {
   title?: string;
+  /** Explanation shown behind an (i) beside the title. */
+  titleTip?: ReactNode;
   eyebrow?: string;
   action?: ReactNode;
   children: ReactNode;
@@ -14,7 +17,7 @@ interface PanelProps {
  * The base enterprise surface. Audit-suite restraint: one hairline border,
  * no gradients, no decorative shadow unless a tone demands it.
  */
-export function Panel({ title, eyebrow, action, children, className, bodyClassName }: PanelProps) {
+export function Panel({ title, titleTip, eyebrow, action, children, className, bodyClassName }: PanelProps) {
   return (
     <section
       className={cx(
@@ -26,11 +29,16 @@ export function Panel({ title, eyebrow, action, children, className, bodyClassNa
         <header className="flex items-start justify-between gap-4 border-b border-hairline/70 px-5 py-4">
           <div className="min-w-0">
             {eyebrow && (
-              <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+              <p className="mb-1 text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
                 {eyebrow}
               </p>
             )}
-            {title && <h2 className="truncate text-sm font-semibold text-ink">{title}</h2>}
+            {title && (
+              <h2 className="flex items-center gap-1.5 text-[16px] font-semibold text-ink">
+                <span className="truncate">{title}</span>
+                {titleTip && <InfoTip definition={titleTip} side="bottom" />}
+              </h2>
+            )}
           </div>
           {action && <div className="shrink-0">{action}</div>}
         </header>

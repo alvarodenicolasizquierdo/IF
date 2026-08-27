@@ -49,10 +49,10 @@ export function AvengaIntelligenceModal() {
 
         <header className="flex items-start justify-between gap-4 border-b border-hairline px-7 py-5">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
+            <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-ink-faint">
               The Golden Bridge · data-to-agent governance
             </p>
-            <h2 id="ai-bridge-title" className="mt-1 text-base font-bold tracking-tight text-ink">
+            <h2 id="ai-bridge-title" className="mt-1 text-[18px] font-bold tracking-tight text-ink">
               Avenga Intelligence
             </h2>
           </div>
@@ -67,7 +67,7 @@ export function AvengaIntelligenceModal() {
         </header>
 
         <div className="px-7 py-5">
-          <blockquote className="border-l-2 border-trust-hitl/60 pl-4 text-sm italic leading-relaxed text-ink-muted">
+          <blockquote className="border-l-2 border-trust-hitl/60 pl-4 text-[16px] italic leading-relaxed text-ink-muted">
             AI is an amplifier of your existing data hygiene. Feed an agent unclassified, outdated context and
             it will generate technical debt at machine speed. Setting up agentic workflows is the exciting
             part — governing the data is the prerequisite.
@@ -79,10 +79,10 @@ export function AvengaIntelligenceModal() {
                 <Icon className="mt-0.5 h-4 w-4 shrink-0 text-trust-hitl-soft" />
                 <div className="min-w-0">
                   <div className="flex items-baseline justify-between gap-3">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-ink">{name}</p>
-                    <span className="shrink-0 font-mono text-[10px] text-trust-hitl-soft">{price}</span>
+                    <p className="text-[14px] font-bold uppercase tracking-wider text-ink">{name}</p>
+                    <span className="shrink-0 font-mono text-[13px] text-trust-hitl-soft">{price}</span>
                   </div>
-                  <p className="mt-1 text-[11px] leading-relaxed text-ink-muted">{detail}</p>
+                  <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">{detail}</p>
                 </div>
               </li>
             ))}

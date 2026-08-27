@@ -1,12 +1,15 @@
-import { Fingerprint, PlugZap, ShieldAlert, Timer } from 'lucide-react';
+import { Coins, Fingerprint, PlugZap, ShieldAlert, Timer } from 'lucide-react';
 import { CLIENT_CONTEXT, GOVERNED_CODE, LEGACY_CODE, MCP_INTERCEPTS } from '@/data/scenario';
-import { useDemoStore } from '@/store/demoStore';
+import { GLOSSARY } from '@/data/glossary';
+import { formatUsd, mandateCostUsd, mandateGpuCostUsd } from '@/data/models';
+import { selectModel, useDemoStore } from '@/store/demoStore';
 import { Panel } from '@/components/ui/Panel';
 import { Button } from '@/components/ui/Button';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { CodeDiff } from '@/components/ui/CodeDiff';
 import { JsonTree } from '@/components/ui/JsonTree';
 import { truncateHash } from '@/lib/sha256';
+import { InfoTip } from '@/components/ui/Tooltip';
 import { cx } from '@/components/ui/tone';
 
 export function GroundedExecution() {
@@ -18,7 +21,16 @@ export function GroundedExecution() {
   const advanceIntercept = useDemoStore((s) => s.advanceIntercept);
   const openHitlGate = useDemoStore((s) => s.openHitlGate);
 
+  const model = useDemoStore(selectModel);
   const budgetPct = Math.min(100, (mandate.tokensConsumed / mandate.budgetTokens) * 100);
+
+  // What this run has cost so far on the routed model. Self-hosted weights bill
+  // GPU-hours rather than tokens, which is the whole economic argument for the
+  // sovereign tiers — so show whichever number is real for this route.
+  const apiSpend = mandateCostUsd(model, mandate.tokensConsumed);
+  const gpuSpend = mandateGpuCostUsd(model, mandate.tokensConsumed);
+  const spend = apiSpend !== null ? formatUsd(apiSpend) : gpuSpend !== null ? formatUsd(gpuSpend) : '—';
+  const spendBasis = apiSpend !== null ? 'metered tokens' : 'GPU-hours, self-hosted';
   const interceptsDone = interceptIndex >= MCP_INTERCEPTS.length;
 
   const packView = {
@@ -26,6 +38,8 @@ export function GroundedExecution() {
     timestamp: evidencePack.timestamp,
     mandate_id: evidencePack.mandateId,
     selected_model: evidencePack.selectedModel,
+    assurance_tier: `Tier ${model.tier} — ${model.tierLabel}`,
+    data_residency: model.dataResidency,
     verification_status: evidencePack.verificationStatus,
     context_integrity_hash: evidencePack.contextIntegrityHash,
     statement_coverage: evidencePack.statementCoverage,
@@ -43,16 +57,16 @@ export function GroundedExecution() {
   };
 
   return (
-    <div className="flex h-full flex-col gap-5">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+    <div className="flex h-full flex-col gap-4">
+      <header className="flex shrink-0 flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
+          <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-ink-faint">
             Build · grounded execution
           </p>
-          <h1 className="mt-1 font-display text-[26px] leading-tight tracking-tight text-ink">
+          <h1 className="mt-0.5 font-display text-[28px] leading-tight tracking-tight text-ink">
             Split-panel execution canvas
           </h1>
-          <p className="mt-1 font-mono text-xs text-ink-muted">{CLIENT_CONTEXT.targetFile}</p>
+          <p className="mt-0.5 font-mono text-[15px] text-ink-muted">{CLIENT_CONTEXT.targetFile}</p>
         </div>
         <div className="flex items-center gap-2">
           {driftDetected && <StatusBadge label="Control plane lockout" tone="violation" pulse />}
@@ -64,22 +78,30 @@ export function GroundedExecution() {
       </header>
 
       {/* ---------------- Mandate budget bar ---------------- */}
-      <div className="rounded-xl border border-hairline bg-surface/80 px-5 py-3.5">
+      <div className="shrink-0 rounded-xl border border-hairline bg-surface/80 px-5 py-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Fingerprint className="h-3.5 w-3.5 text-trust-active-soft" />
-            <span className="font-mono text-[11px] font-bold text-trust-active-soft">{mandate.token}</span>
-            <span className="font-mono text-[10px] text-ink-faint">
+            <span className="font-mono text-[14px] font-bold text-trust-active-soft">{mandate.token}</span>
+            <span className="font-mono text-[13px] text-ink-faint">
               scope {mandate.allowedScope}
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 font-mono text-[11px] text-ink-muted">
+            <span className="flex items-center gap-1.5 font-mono text-[14px] text-ink-muted">
               <Timer className="h-3 w-3" />
               expires in {mandate.expiryMinutes} min
             </span>
-            <span className="font-mono text-[11px] font-bold tabular-nums text-ink">
+            <span className="font-mono text-[14px] font-bold tabular-nums text-ink">
               {mandate.tokensConsumed.toLocaleString()} / {mandate.budgetTokens.toLocaleString()} tokens
+            </span>
+            <span
+              className="flex items-center gap-1.5 font-mono text-[14px] tabular-nums text-trust-passed"
+              title={`Spend on ${model.name} — ${spendBasis}`}
+            >
+              <Coins className="h-3 w-3" />
+              {spend}
+              <span className="text-ink-faint">{spendBasis}</span>
             </span>
           </div>
         </div>
@@ -99,13 +121,14 @@ export function GroundedExecution() {
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-5 xl:grid-cols-2">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 xl:grid-cols-2">
         {/* ---------------- Strategy & Evidence pane ---------------- */}
         <Panel
           eyebrow="Layer 2 · Evidence Pack compiler"
           title="Evidence_Pack.json — live"
+          titleTip={GLOSSARY.evidencePack}
           action={
-            <span className="font-mono text-[10px] text-ink-faint">
+            <span className="font-mono text-[13px] text-ink-faint">
               {evidencePack.signature
                 ? `sig ${truncateHash(evidencePack.signature)}`
                 : `hash ${evidencePack.contextIntegrityHash}`}
@@ -114,17 +137,19 @@ export function GroundedExecution() {
           className="min-h-0"
           bodyClassName="flex min-h-0 flex-col p-4"
         >
-          <div className="min-h-[280px] flex-1">
+          {/* Scrolls inside the panel so the tool-call button never leaves. */}
+          <div className="min-h-[110px] flex-1 overflow-y-auto pr-1">
             <JsonTree value={packView} />
           </div>
 
-          <div className="mt-4 space-y-2">
+          <div className="-mx-5 -mb-5 mt-4 shrink-0 space-y-2 border-t border-hairline bg-canvas/40 px-5 py-3">
             <div className="flex items-center justify-between">
-              <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+              <p className="flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
                 <PlugZap className="h-3 w-3" />
                 MCP Gateway interceptions
+                <InfoTip definition={GLOSSARY.mcpGateway} side="bottom" />
               </p>
-              <span className="font-mono text-[10px] text-ink-faint">
+              <span className="font-mono text-[13px] text-ink-faint">
                 {interceptIndex} / {MCP_INTERCEPTS.length}
               </span>
             </div>
@@ -170,18 +195,18 @@ export function GroundedExecution() {
           className="min-h-0"
           bodyClassName="flex min-h-0 flex-col p-4"
         >
-          <div className="min-h-[280px] flex-1">
+          <div className="min-h-[110px] flex-1 overflow-y-auto pr-1">
             <CodeDiff before={LEGACY_CODE} after={GOVERNED_CODE} revealed={codeRevealed && !driftDetected} />
           </div>
 
           {driftDetected ? (
-            <div className="mt-4 flex items-start gap-3 rounded-lg border-2 border-trust-violation/60 bg-trust-violation/10 px-3 py-2.5 shadow-glow-violation">
+            <div className="mt-4 flex shrink-0 items-start gap-3 rounded-lg border-2 border-trust-violation/60 bg-trust-violation/10 px-3 py-2.5 shadow-glow-violation">
               <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-trust-violation-soft" />
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-trust-violation-soft">
+                <p className="text-[14px] font-bold uppercase tracking-wider text-trust-violation-soft">
                   Control plane lockout
                 </p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-ink-muted">
+                <p className="mt-0.5 text-[14px] leading-relaxed text-ink-muted">
                   Out-of-band file system mutation detected. Mandate voided immediately and the merge path is
                   frozen until the diff matches the signed Mandate.
                 </p>
@@ -191,7 +216,7 @@ export function GroundedExecution() {
             <Button
               tone="hitl"
               size="lg"
-              className="mt-4 w-full"
+              className="-mx-5 -mb-5 mt-4 w-[calc(100%+2.5rem)] shrink-0 rounded-none border-t border-hairline"
               onClick={openHitlGate}
               disabled={!codeRevealed}
             >

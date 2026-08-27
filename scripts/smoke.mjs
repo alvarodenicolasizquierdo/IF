@@ -56,7 +56,7 @@ await step('Continuous Evolution raises a remediation PR', async () => {
 });
 
 await step('regulatory scan reports open audit vulnerabilities', async () => {
-  await click(/Enforce regulation/);
+  await click(/^Regulation$/);
   await page.waitForTimeout(2200);
   const open = await page.locator('text=/\\d+ open/').first().innerText();
   if (!/^[1-9]/.test(open)) throw new Error(`scan opened already remediated: "${open}"`);
@@ -75,8 +75,44 @@ await step('EPAM demolition point fires live drift', async () => {
   await page.waitForSelector('text=Control plane lockout');
 });
 
+await step('the model switcher lists every assurance tier', async () => {
+  await page.getByRole('button', { name: /^Model · T/ }).click();
+  await page.waitForSelector('text=LLM Gateway');
+  const opts = await page.getByRole('option').count();
+  if (opts < 6) throw new Error(`expected the full catalogue, saw ${opts} routes`);
+});
+
+await step('switching to a public-API route fails the PII egress gate', async () => {
+  await page.getByRole('option', { name: /Claude Haiku 4\.5/ }).click();
+  await page.waitForTimeout(400);
+  await click(/Grounded Execution/);
+  const body = await page.locator('body').innerText();
+  if (!body.includes('anthropic.claude-haiku-4-5')) throw new Error('Evidence Pack did not take the new route');
+  if (!body.includes('"pii_egress_control": "FAILED"')) throw new Error('public-internet egress did not fail the gate');
+});
+
+await step('switching to sovereign open weights bills GPU-hours, not tokens', async () => {
+  await page.getByRole('button', { name: /^Model · T/ }).click();
+  await page.getByRole('option', { name: /Mistral Large 2/ }).click();
+  await page.waitForTimeout(400);
+  const body = await page.locator('body').innerText();
+  if (!body.includes('GPU-hours, self-hosted')) throw new Error('sovereign route did not switch the cost basis');
+  if (!body.includes('"pii_egress_control": "PASSED"')) throw new Error('air-gapped route did not clear the gate');
+  if (!body.includes('Tier 4')) throw new Error('Evidence Pack did not record the assurance tier');
+});
+
+await step('tooltips explain the non-obvious terms', async () => {
+  await click(/Executive Trust/);
+  await page.waitForTimeout(300);
+  const tip = page.getByLabel('More information').first();
+  await tip.hover();
+  await page.waitForTimeout(250);
+  const tooltip = await page.getByRole('tooltip').first().innerText();
+  if (tooltip.length < 40) throw new Error(`tooltip looks empty: "${tooltip}"`);
+});
+
 await step('reset restores the baseline', async () => {
-  await click(/Reset simulation/);
+  await click(/^Reset$/);
   await click(/Executive Trust/);
   const body = await page.locator('body').innerText();
   if (!body.includes('1.44×')) throw new Error('reset did not restore the Track 2 baseline');

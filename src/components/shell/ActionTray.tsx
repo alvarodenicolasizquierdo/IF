@@ -1,6 +1,8 @@
 import { AlertTriangle, PlayCircle, RotateCcw, Scale, ShieldCheck } from 'lucide-react';
+import { GLOSSARY } from '@/data/glossary';
 import { useDemoStore } from '@/store/demoStore';
 import { Button } from '@/components/ui/Button';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 /** The presenter's always-visible control tray. */
 export function ActionTray() {
@@ -14,29 +16,37 @@ export function ActionTray() {
   return (
     <div className="grid grid-cols-2 gap-2 lg:grid-cols-5">
       <Button tone="active" onClick={advancePhase} icon={<PlayCircle className="h-4 w-4" />}>
-        Trigger next phase
+        Next phase
       </Button>
-      <Button tone="active" variant="outline" onClick={runOpaCheck} icon={<ShieldCheck className="h-4 w-4" />}>
-        OPA policy check
-      </Button>
-      <Button
-        tone="hitl"
-        onClick={injectDrift}
-        disabled={driftDetected}
-        icon={<AlertTriangle className="h-4 w-4" />}
-      >
-        {driftDetected ? 'Mandate voided' : 'Inject code drift'}
-      </Button>
-      <Button
-        tone="violation"
-        variant="outline"
-        onClick={openRegulatoryOverlay}
-        icon={<Scale className="h-4 w-4" />}
-      >
-        Enforce regulation
-      </Button>
+      <Tooltip content={GLOSSARY.opa} side="bottom" wide interactiveChild>
+        <Button tone="active" variant="outline" onClick={runOpaCheck} icon={<ShieldCheck className="h-4 w-4" />} className="w-full">
+          OPA check
+        </Button>
+      </Tooltip>
+      <Tooltip content={GLOSSARY.codeDrift} side="bottom" wide interactiveChild>
+        <Button
+          tone="hitl"
+          onClick={injectDrift}
+          disabled={driftDetected}
+          icon={<AlertTriangle className="h-4 w-4" />}
+          className="w-full"
+        >
+          {driftDetected ? 'Voided' : 'Inject drift'}
+        </Button>
+      </Tooltip>
+      <Tooltip content={GLOSSARY.auditVulnerability} side="bottom" wide interactiveChild>
+        <Button
+          tone="violation"
+          variant="outline"
+          onClick={openRegulatoryOverlay}
+          icon={<Scale className="h-4 w-4" />}
+          className="w-full"
+        >
+          Regulation
+        </Button>
+      </Tooltip>
       <Button tone="neutral" variant="outline" onClick={resetDemo} icon={<RotateCcw className="h-4 w-4" />}>
-        Reset simulation
+        Reset
       </Button>
     </div>
   );

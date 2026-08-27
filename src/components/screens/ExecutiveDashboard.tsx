@@ -12,6 +12,7 @@ import {
 import { Gauge, TrendingDown } from 'lucide-react';
 import { TRACKS } from '@/data/tracks';
 import { CLIENT_CONTEXT } from '@/data/scenario';
+import { GLOSSARY } from '@/data/glossary';
 import { selectAupiSeries, selectMetrics, selectTrack, useDemoStore } from '@/store/demoStore';
 import { Panel } from '@/components/ui/Panel';
 import { MetricCard } from '@/components/ui/MetricCard';
@@ -48,15 +49,14 @@ export function ExecutiveDashboard() {
   const finalTco = track.tcoSeries[track.tcoSeries.length - 1];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
-            A-UPI metric system · normalised baseline vs current pilot
-          </p>
-          <h1 className="mt-1 font-display text-[26px] leading-tight tracking-tight text-ink">Executive Trust Dashboard</h1>
-          <p className="mt-1 text-xs text-ink-muted">
-            {CLIENT_CONTEXT.client} — {CLIENT_CONTEXT.project} · {track.label}
+          <h1 className="font-display text-[30px] leading-tight tracking-tight text-ink">
+            Executive Trust Dashboard
+          </h1>
+          <p className="mt-0.5 text-[15px] text-ink-muted">
+            {CLIENT_CONTEXT.client} · {track.label}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -65,27 +65,31 @@ export function ExecutiveDashboard() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 xl:grid-cols-5">
         <MetricCard
-          label="Delivery lead time"
+          label="Lead time"
+          definition={GLOSSARY.leadTime}
           baseline={`${BASELINE.leadTimeDays.toFixed(1)}d`}
           current={`${metrics.leadTimeDays.toFixed(1)}d`}
           delta={pctDelta(BASELINE.leadTimeDays, metrics.leadTimeDays)}
         />
         <MetricCard
-          label="Change failure rate"
+          label="Change failure"
+          definition={GLOSSARY.changeFailureRate}
           baseline={`${BASELINE.changeFailureRate.toFixed(1)}%`}
           current={`${metrics.changeFailureRate.toFixed(1)}%`}
           delta={pctDelta(BASELINE.changeFailureRate, metrics.changeFailureRate)}
         />
         <MetricCard
-          label="Defect escape ratio"
+          label="Defect escape"
+          definition={GLOSSARY.defectEscape}
           baseline={`${BASELINE.defectEscapeRatio.toFixed(1)}%`}
           current={`${metrics.defectEscapeRatio.toFixed(1)}%`}
           delta={pctDelta(BASELINE.defectEscapeRatio, metrics.defectEscapeRatio)}
         />
         <MetricCard
-          label="Maturity multiplier"
+          label="Maturity ×"
+          definition={GLOSSARY.maturityMultiplier}
           baseline={`${BASELINE.maturityMultiplier.toFixed(2)}×`}
           current={`${metrics.maturityMultiplier.toFixed(2)}×`}
           delta={pctDelta(BASELINE.maturityMultiplier, metrics.maturityMultiplier)}
@@ -94,29 +98,31 @@ export function ExecutiveDashboard() {
           footnote="Computed via OPA gate adherence and context freshness."
         />
         <MetricCard
-          label="TCO per COSMIC function point"
+          label="TCO / CFP"
+          definition={GLOSSARY.cfp}
           baseline={`€${BASELINE.tcoPerCfp.toLocaleString()}`}
           current={`€${metrics.tcoPerCfp.toLocaleString()}`}
           delta={pctDelta(BASELINE.tcoPerCfp, metrics.tcoPerCfp)}
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
         <Panel
           className="xl:col-span-2"
-          eyebrow="The traceability spine · governed delivery vs ungoverned AI output"
+          eyebrow="The traceability spine"
           title="A-UPI composite index"
+          titleTip={GLOSSARY.aupi}
           action={
             <div className="flex items-center gap-4">
-              <LegendChip color={CHART.ungoverned} label="Ungoverned AI output" />
-              <LegendChip color={CHART.governed} label="Intelligent Flow governed" />
+              <LegendChip color={CHART.ungoverned} label="Ungoverned" />
+              <LegendChip color={CHART.governed} label="Governed" />
             </div>
           }
           bodyClassName="p-4"
         >
-          <div className="h-[300px]">
+          <div className="h-[240px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={aupiData} margin={{ top: 12, right: 64, left: 4, bottom: 4 }}>
+              <AreaChart data={aupiData} margin={{ top: 14, right: 78, left: 6, bottom: 4 }}>
                 <defs>
                   <linearGradient id="fill-ungoverned" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={CHART.ungoverned} stopOpacity={0.22} />
@@ -130,22 +136,22 @@ export function ExecutiveDashboard() {
                 <CartesianGrid stroke={CHART.grid} strokeWidth={1} vertical={false} />
                 <XAxis
                   dataKey="sprint"
-                  tick={{ fill: CHART.axis, fontSize: 11 }}
+                  tick={{ fill: CHART.axis, fontSize: 14 }}
                   tickLine={false}
                   axisLine={{ stroke: CHART.grid }}
                 />
                 <YAxis
                   domain={[0, 100]}
-                  tick={{ fill: CHART.axis, fontSize: 11 }}
+                  tick={{ fill: CHART.axis, fontSize: 14 }}
                   tickLine={false}
                   axisLine={false}
-                  width={34}
+                  width={44}
                 >
                   <Label
                     value="A-UPI index"
                     angle={-90}
                     position="insideLeft"
-                    style={{ fill: CHART.axis, fontSize: 10, textAnchor: 'middle' }}
+                    style={{ fill: CHART.axis, fontSize: 13, textAnchor: 'middle' }}
                   />
                 </YAxis>
                 <Tooltip
@@ -189,7 +195,7 @@ export function ExecutiveDashboard() {
                     value={String(finalGoverned)}
                     position="right"
                     offset={10}
-                    style={{ fill: '#FFFFFF', fontSize: 12, fontWeight: 700 }}
+                    style={{ fill: '#FFFFFF', fontSize: 16, fontWeight: 700 }}
                   />
                 </ReferenceDot>
                 <ReferenceDot
@@ -204,13 +210,13 @@ export function ExecutiveDashboard() {
                     value={String(finalUngoverned)}
                     position="right"
                     offset={10}
-                    style={{ fill: '#C7BDCB', fontSize: 12, fontWeight: 700 }}
+                    style={{ fill: '#C7BDCB', fontSize: 16, fontWeight: 700 }}
                   />
                 </ReferenceDot>
               </AreaChart>
             </ResponsiveContainer>
           </div>
-          <p className="mt-2 flex items-center gap-1.5 text-[10px] text-ink-faint">
+          <p className="mt-2 flex items-center gap-1.5 text-[13px] text-ink-faint">
             <Gauge className="h-3 w-3" />
             Both series are the same measure on one axis — ungoverned AI amplifies chaos while governed
             delivery compounds.
@@ -218,13 +224,13 @@ export function ExecutiveDashboard() {
         </Panel>
 
         <Panel
-          eyebrow="Outcome-based commercial model"
-          title="TCO per COSMIC function point"
+          eyebrow="Outcome-based model"
+          title="TCO per function point"
           bodyClassName="p-4"
         >
-          <div className="h-[300px]">
+          <div className="h-[240px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={tcoData} margin={{ top: 12, right: 56, left: 4, bottom: 4 }}>
+              <AreaChart data={tcoData} margin={{ top: 14, right: 72, left: 6, bottom: 4 }}>
                 <defs>
                   <linearGradient id="fill-tco" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={CHART.tco} stopOpacity={0.3} />
@@ -234,17 +240,17 @@ export function ExecutiveDashboard() {
                 <CartesianGrid stroke={CHART.grid} strokeWidth={1} vertical={false} />
                 <XAxis
                   dataKey="sprint"
-                  tick={{ fill: CHART.axis, fontSize: 10 }}
+                  tick={{ fill: CHART.axis, fontSize: 13 }}
                   tickLine={false}
                   axisLine={{ stroke: CHART.grid }}
                   tickFormatter={(v: string) => v.replace('Sprint ', 'S')}
                 />
                 <YAxis
                   domain={[0, 1400]}
-                  tick={{ fill: CHART.axis, fontSize: 10 }}
+                  tick={{ fill: CHART.axis, fontSize: 13 }}
                   tickLine={false}
                   axisLine={false}
-                  width={44}
+                  width={56}
                   tickFormatter={(v: number) => `€${v}`}
                 />
                 <Tooltip
@@ -275,13 +281,13 @@ export function ExecutiveDashboard() {
                     value={`€${finalTco}`}
                     position="right"
                     offset={10}
-                    style={{ fill: '#FFFFFF', fontSize: 12, fontWeight: 700 }}
+                    style={{ fill: '#FFFFFF', fontSize: 16, fontWeight: 700 }}
                   />
                 </ReferenceDot>
               </AreaChart>
             </ResponsiveContainer>
           </div>
-          <p className="mt-2 flex items-center gap-1.5 text-[10px] text-ink-faint">
+          <p className="mt-2 flex items-center gap-1.5 text-[13px] text-ink-faint">
             <TrendingDown className="h-3 w-3" />
             €{BASELINE.tcoPerCfp.toLocaleString()} at Track 1 → €{TRACKS.track2.metrics.tcoPerCfp} under full
             control plane enforcement.
@@ -290,7 +296,7 @@ export function ExecutiveDashboard() {
       </div>
 
       <Panel eyebrow="Way of working" title={track.label}>
-        <p className="text-sm leading-relaxed text-ink-muted">{track.wow}</p>
+        <p className="text-[16px] leading-relaxed text-ink-muted">{track.wow}</p>
       </Panel>
     </div>
   );
@@ -300,7 +306,7 @@ function LegendChip({ color, label }: { color: string; label: string }) {
   return (
     <span className="flex items-center gap-1.5">
       <span aria-hidden className="h-2 w-2 rounded-[2px]" style={{ backgroundColor: color }} />
-      <span className="text-[10px] font-semibold uppercase tracking-wider text-ink-muted">{label}</span>
+      <span className="text-[13px] font-semibold uppercase tracking-wider text-ink-muted">{label}</span>
     </span>
   );
 }

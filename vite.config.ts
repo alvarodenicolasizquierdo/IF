@@ -11,6 +11,9 @@ export default defineConfig({
     port: 5173,
     host: true,
   },
+  // Relative base so the build works from a project-scoped GitHub Pages path
+  // (/<repo>/) as well as from a domain root or a local file.
+  base: './',
   build: {
     outDir: 'dist',
     emptyOutDir: true,

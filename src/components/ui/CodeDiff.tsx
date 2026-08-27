@@ -49,10 +49,10 @@ function DiffColumn({ title, subtitle, lines, marker, tone, placeholder }: DiffC
   return (
     <div className="flex min-h-0 flex-col overflow-hidden rounded-lg border border-hairline bg-canvas/70">
       <header className="border-b border-hairline/70 px-3 py-2">
-        <p className="truncate font-mono text-[10px] font-bold text-ink-muted">{title}</p>
+        <p className="truncate font-mono text-[13px] font-bold text-ink-muted">{title}</p>
         <p
           className={cx(
-            'text-[9px] font-bold uppercase tracking-[0.14em]',
+            'text-[12px] font-bold uppercase tracking-[0.14em]',
             isPassed ? 'text-trust-passed' : 'text-trust-violation-soft',
           )}
         >
@@ -61,12 +61,12 @@ function DiffColumn({ title, subtitle, lines, marker, tone, placeholder }: DiffC
       </header>
       <div className="scrollbar-thin flex-1 overflow-auto p-2">
         {lines.length === 0 ? (
-          <p className="px-2 py-4 font-mono text-[11px] text-ink-faint">
+          <p className="px-2 py-4 font-mono text-[14px] text-ink-faint">
             {placeholder}
             <span className="ml-0.5 inline-block animate-caret-blink">▋</span>
           </p>
         ) : (
-          <pre className="font-mono text-[11px] leading-[1.7]">
+          <pre className="font-mono text-[14px] leading-[1.7]">
             {lines.map((line, i) => (
               <div
                 key={i}

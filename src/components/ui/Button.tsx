@@ -10,9 +10,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const SIZES = {
-  sm: 'h-8 px-3 text-[11px]',
-  md: 'h-10 px-4 text-xs',
-  lg: 'h-14 px-6 text-sm',
+  sm: 'h-8 px-3 text-[14px]',
+  md: 'h-10 px-4 text-[15px]',
+  lg: 'h-14 px-6 text-[16px]',
 } as const;
 
 export function Button({

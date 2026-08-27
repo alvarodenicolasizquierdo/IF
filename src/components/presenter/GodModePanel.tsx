@@ -3,6 +3,7 @@ import { Crown, Scale, ServerCog, X, Zap } from 'lucide-react';
 import { PHASES } from '@/data/scenario';
 import { COMPETITOR_EXPLOITS, EXPLOIT_ORDER } from '@/data/scenario';
 import { PERSONA_ORDER, PERSONAS, TRACK_ORDER, TRACKS } from '@/data/tracks';
+import { getModel } from '@/data/models';
 import { useDemoStore } from '@/store/demoStore';
 import { cx, TONE } from '@/components/ui/tone';
 
@@ -20,7 +21,7 @@ export function GodModePanel() {
   const activePhase = useDemoStore((s) => s.activePhase);
   const activeTrack = useDemoStore((s) => s.activeTrack);
   const activePersona = useDemoStore((s) => s.activePersona);
-  const sovereign = useDemoStore((s) => s.modelRoutingOverride !== null);
+  const sovereign = useDemoStore((s) => getModel(s.activeModelId).hosting === 'sovereign');
 
   const setPhase = useDemoStore((s) => s.setPhase);
   const setTrack = useDemoStore((s) => s.setTrack);
@@ -61,10 +62,10 @@ export function GodModePanel() {
   return (
     <aside
       aria-label="Presenter God Mode panel"
-      className="fixed bottom-5 right-5 z-50 w-[340px] animate-slide-in-up overflow-hidden rounded-xl border-2 border-trust-active/60 bg-surface/95 shadow-panel shadow-glow-active backdrop-blur-md"
+      className="fixed bottom-5 right-5 z-50 flex max-h-[calc(100vh-2.5rem)] w-[340px] animate-slide-in-up flex-col overflow-hidden rounded-xl border-2 border-trust-active/60 bg-surface/95 shadow-panel shadow-glow-active backdrop-blur-md"
     >
-      <header className="flex items-center justify-between bg-trust-active px-4 py-2.5">
-        <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-white">
+      <header className="flex shrink-0 items-center justify-between bg-trust-active px-4 py-2.5">
+        <span className="flex items-center gap-2 text-[14px] font-bold uppercase tracking-[0.14em] text-white">
           <Crown className="h-3.5 w-3.5" />
           Presenter God Mode
         </span>
@@ -78,7 +79,7 @@ export function GodModePanel() {
         </button>
       </header>
 
-      <div className="scrollbar-thin max-h-[70vh] space-y-4 overflow-y-auto p-4">
+      <div className="scrollbar-thin min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
         <Group label="Jump to phase">
           <div className="grid grid-cols-5 gap-1">
             {PHASES.map((phase) => (
@@ -115,10 +116,10 @@ export function GodModePanel() {
                     on ? cx(t.border, t.bg) : 'border-transparent bg-canvas/60 hover:bg-card/60',
                   )}
                 >
-                  <span className={cx('font-mono text-[10px] font-bold', on ? t.text : 'text-ink-muted')}>
+                  <span className={cx('font-mono text-[13px] font-bold', on ? t.text : 'text-ink-muted')}>
                     {persona.name}
                   </span>
-                  <span className="font-mono text-[9px] text-ink-faint">{persona.trackContext}</span>
+                  <span className="font-mono text-[12px] text-ink-faint">{persona.trackContext}</span>
                 </button>
               );
             })}
@@ -151,7 +152,7 @@ export function GodModePanel() {
                   onClick={() => triggerExploit(id)}
                   title={exploit.trap}
                   className={cx(
-                    'rounded border px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider transition',
+                    'rounded border px-2 py-1.5 text-[12px] font-bold uppercase tracking-wider transition',
                     t.border,
                     t.bg,
                     t.text,
@@ -166,7 +167,7 @@ export function GodModePanel() {
           </div>
         </Group>
 
-        <p className="text-center font-mono text-[9px] text-ink-faint">
+        <p className="text-center font-mono text-[12px] text-ink-faint">
           Press <kbd className="rounded border border-hairline px-1 text-ink-muted">`</kbd> to collapse
         </p>
       </div>
@@ -177,7 +178,7 @@ export function GodModePanel() {
 function Group({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="mb-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-ink-faint">{label}</p>
+      <p className="mb-1.5 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-faint">{label}</p>
       {children}
     </div>
   );
@@ -197,7 +198,7 @@ function GodButton({
       type="button"
       onClick={onClick}
       className={cx(
-        'rounded px-1 py-1.5 font-mono text-[9px] font-bold uppercase transition',
+        'rounded px-1 py-1.5 font-mono text-[12px] font-bold uppercase transition',
         on
           ? 'bg-trust-active/25 text-trust-active-soft'
           : 'bg-canvas/60 text-ink-faint hover:bg-card/70 hover:text-ink',
@@ -225,7 +226,7 @@ function WideButton({
       type="button"
       onClick={onClick}
       className={cx(
-        'flex items-center gap-2 rounded border px-2.5 py-2 text-[10px] font-bold uppercase tracking-wider transition',
+        'flex items-center gap-2 rounded border px-2.5 py-2 text-[13px] font-bold uppercase tracking-wider transition',
         t.border,
         t.bg,
         t.text,

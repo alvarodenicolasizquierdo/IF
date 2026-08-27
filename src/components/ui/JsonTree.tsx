@@ -6,7 +6,7 @@ import { cx } from './tone';
  */
 export function JsonTree({ value }: { value: unknown }) {
   return (
-    <pre className="scrollbar-thin h-full overflow-auto rounded-lg border border-hairline bg-canvas/80 p-4 font-mono text-[11px] leading-relaxed">
+    <pre className="scrollbar-thin h-full overflow-auto rounded-lg border border-hairline bg-canvas/80 p-4 font-mono text-[14px] leading-relaxed">
       {render(value, 0)}
     </pre>
   );

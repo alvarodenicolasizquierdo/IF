@@ -1,0 +1,127 @@
+name: CI
+
+# Runs on every pull request as well as on main, so a change is validated
+# *before* it merges rather than only after it lands. Pages deployment is
+# gated to main pushes.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Least privilege by default. Pages and OIDC are granted only to the deploy
+# job, so a pull request — which runs untrusted contributor code through npm
+# install and Playwright — never holds a token that can publish the site.
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Typecheck, build and drive the demo
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck and build
+        run: npm run build
+
+      - name: Verify the Evidence Pack signer against node:crypto
+        run: npm run test:hash
+
+      - name: Install Chromium for the walkthrough
+        run: npx playwright install --with-deps chromium
+
+      - name: Drive the presenter walkthrough
+        run: |
+          npm run preview -- --port 4173 &
+          npx wait-on --timeout 60000 http://localhost:4173
+          BASE_URL=http://localhost:4173/ npm run test:smoke
+
+      # Geometry, not behaviour. The walkthrough drives the demo at a generous
+      # 1680x1000 and passed while a tooltip painted behind the workspace and
+      # the Mandate's signature sat below the fold at 100% zoom. This measures
+      # every screen and overlay at the viewports the demo is actually shown on.
+      - name: Audit the layout at every presenter viewport
+        run: BASE_URL=http://localhost:4173/ npm run test:layout
+
+      - name: Build the standalone single-file console
+        run: npm run build:standalone
+
+      - name: Prove the standalone build runs with the network cut off
+        run: npm run test:standalone
+
+      # Ship the standalone build alongside the normal one so the Pages site
+      # also serves a file anyone can download and run offline.
+      #
+      # The deploy writes a CNAME into the artifact so the custom domain
+      # survives every deployment — with Actions-based Pages the artifact
+      # replaces the site wholesale, so a domain set only in Settings is
+      # dropped the first time a deploy ships without one. The default matches
+      # the domain configured in Settings -> Pages; set the repository variable
+      # PAGES_CUSTOM_DOMAIN to publish somewhere else, or to "none" to stay on
+      # github.io.
+      - name: Assemble the site
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN || 'flow.alvarodenicolas.com' }}
+        run: |
+          cp dist-standalone/index.html dist/intelligent-flow-console.html
+          cp -f dist/index.html dist/404.html
+          if [ -n "$CUSTOM_DOMAIN" ] && [ "$CUSTOM_DOMAIN" != "none" ]; then
+            echo "$CUSTOM_DOMAIN" > dist/CNAME
+            echo "Pinned custom domain: $CUSTOM_DOMAIN"
+          fi
+
+      # A plain artifact, not a Pages artifact — uploading one of those needs
+      # the elevated scope this job deliberately does not have. The deploy job
+      # picks it up and repackages it.
+      - name: Hand the site to the deploy job
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: dist
+          retention-days: 1
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # The only job that can publish, and it runs no project code — it just
+    # repackages an artifact the verified build produced.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    # One deploy at a time; let an in-flight run finish rather than cancelling it.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Collect the verified site
+        uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: dist
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
