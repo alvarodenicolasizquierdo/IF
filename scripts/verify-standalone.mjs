@@ -43,7 +43,7 @@ await click(/Run Data Product Factory/);
 await page.waitForTimeout(400);
 await click(/Sign Mandate & initialise agent/);
 await page.waitForTimeout(400);
-await click(/Enforce regulation/);
+await click(/^Regulation$/);
 await page.waitForTimeout(2400);
 await click(/Enforce control plane/);
 await page.waitForTimeout(600);

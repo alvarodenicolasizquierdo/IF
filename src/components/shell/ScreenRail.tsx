@@ -36,8 +36,8 @@ export function ScreenRail() {
               strokeWidth={2}
             />
             <span className="min-w-0">
-              <span className="block truncate text-xs font-semibold">{label}</span>
-              <span className="block truncate font-mono text-[10px] text-ink-faint">{sub}</span>
+              <span className="block truncate text-[15px] font-semibold">{label}</span>
+              <span className="block truncate font-mono text-[13px] text-ink-faint">{sub}</span>
             </span>
           </button>
         );

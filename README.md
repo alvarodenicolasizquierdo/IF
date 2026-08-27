@@ -23,6 +23,34 @@ and keep.
 > First time only: in the repository, **Settings → Pages → Build and deployment
 > → Source**, choose **GitHub Actions**. The workflow does the rest.
 
+### Putting it on your own domain, safely
+
+Use a **subdomain**. It leaves the apex record — and whatever site already
+answers there — completely untouched.
+
+1. **DNS**, at whoever hosts the zone: add one `CNAME` record.
+
+   | Type | Name | Value |
+   |---|---|---|
+   | `CNAME` | `flow` | `<your-github-user>.github.io.` |
+
+   That creates `flow.yourdomain.com`. Do **not** add or change `A`, `ALIAS`
+   or `ANAME` records on the apex — those are what serve your existing site,
+   and repointing them is what takes a site down.
+
+2. **Repository → Settings → Pages → Custom domain**: enter the same
+   `flow.yourdomain.com` and save. Wait for the DNS check to go green, then
+   tick **Enforce HTTPS**.
+
+3. **Repository → Settings → Secrets and variables → Actions → Variables**:
+   add `PAGES_CUSTOM_DOMAIN` = `flow.yourdomain.com`.
+
+Step 3 matters and is easy to miss. With Actions-based Pages the published
+artifact replaces the site wholesale on every deploy, so the `CNAME` file has
+to be written *into the build*. The workflow does that only when the variable
+is set, which is why nothing breaks if you skip it — the site simply stays on
+`github.io`.
+
 **2 — One file, no install.** Download `intelligent-flow-console.html` from the
 Pages site (or build it with `npm run build:standalone`) and open it in any
 browser. Everything — JS, CSS, fonts, brand marks — is inlined, so it runs from

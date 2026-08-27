@@ -52,7 +52,7 @@ export function Tooltip({ content, children, side = 'top', wide = false, classNa
           id={id}
           className={cx(
             'pointer-events-none absolute z-[80] animate-fade-in rounded-lg border border-hairline bg-canvas px-3 py-2 shadow-panel backdrop-blur',
-            'text-[11px] font-normal normal-case leading-relaxed tracking-normal text-ink-muted',
+            'text-[14px] font-normal normal-case leading-relaxed tracking-normal text-ink-muted',
             wide ? 'w-72' : 'w-56',
             SIDE[side],
           )}
@@ -103,7 +103,7 @@ export function InfoTip({
       <span
         aria-label="More information"
         role="img"
-        className="flex h-3.5 w-3.5 cursor-help items-center justify-center rounded-full border border-hairline text-[8px] font-bold text-ink-faint transition hover:border-trust-active/60 hover:text-trust-active-soft"
+        className="flex h-3.5 w-3.5 cursor-help items-center justify-center rounded-full border border-hairline text-[12px] font-bold text-ink-faint transition hover:border-trust-active/60 hover:text-trust-active-soft"
       >
         i
       </span>

@@ -14,38 +14,29 @@ export function IdentityConsole() {
 
   return (
     <div className="flex items-stretch divide-x divide-hairline/70 rounded-lg border border-hairline bg-canvas/70">
-      <div className="flex items-center gap-2.5 px-4 py-2">
-        <Fingerprint className={cx('h-3.5 w-3.5 shrink-0', tone.text)} />
+      <div className="flex items-center gap-2.5 px-3 py-1.5">
+        <Fingerprint className={cx('h-4 w-4 shrink-0', tone.text)} />
         <div>
-          <p className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-ink-faint">
-            Active RBAC persona
+          <p className="flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+            Persona
             <InfoTip definition={GLOSSARY.rbacPersona} side="bottom" />
           </p>
-          <p data-testid="active-persona" className={cx('font-mono text-[11px] font-bold', tone.text)}>
+          <p data-testid="active-persona" className={cx('font-mono text-[14px] font-bold leading-tight', tone.text)}>
             {persona.name}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2.5 px-4 py-2">
-        <div>
-          <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-ink-faint">Role access level</p>
-          <p className="font-mono text-[11px] font-bold text-ink-muted">{persona.accessLevel}</p>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2 px-4 py-2">
-        <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-trust-passed" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-trust-passed" />
-        </span>
-        <Tooltip content={GLOSSARY.oidc} side="bottom">
-          <span className="flex cursor-help items-center gap-1 font-mono text-[10px] font-bold text-trust-passed">
-            <ShieldCheck className="h-3 w-3" />
-            OIDC VERIFIED
+      <Tooltip content={`${persona.accessLevel} — ${GLOSSARY.oidc}`} side="bottom" wide>
+        <span className="flex h-full cursor-help items-center gap-2 px-3">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-trust-passed" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-trust-passed" />
           </span>
-        </Tooltip>
-      </div>
+          <ShieldCheck className="h-4 w-4 text-trust-passed" />
+          <span className="font-mono text-[12px] font-bold text-trust-passed">OIDC</span>
+        </span>
+      </Tooltip>
     </div>
   );
 }

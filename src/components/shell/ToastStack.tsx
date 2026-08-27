@@ -35,8 +35,8 @@ export function ToastStack() {
           >
             <Icon className={cx('mt-0.5 h-4 w-4 shrink-0', t.text)} />
             <div className="min-w-0 flex-1">
-              <p className={cx('text-xs font-bold uppercase tracking-wider', t.text)}>{toast.title}</p>
-              <p className="mt-0.5 font-mono text-[11px] leading-relaxed text-ink-muted">{toast.detail}</p>
+              <p className={cx('text-[15px] font-bold uppercase tracking-wider', t.text)}>{toast.title}</p>
+              <p className="mt-0.5 font-mono text-[14px] leading-relaxed text-ink-muted">{toast.detail}</p>
             </div>
             <button
               type="button"

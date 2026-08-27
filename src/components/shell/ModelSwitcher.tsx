@@ -80,10 +80,10 @@ export function ModelSwitcher() {
           <Cloud className={cx('h-3.5 w-3.5 shrink-0', activeTone.text)} />
         )}
         <span className="min-w-0">
-          <span className="block text-[9px] font-bold uppercase tracking-[0.14em] text-ink-faint">
-            Routed model · Tier {active.tier}
+          <span className="block whitespace-nowrap text-[12px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+            Model · T{active.tier}
           </span>
-          <span className={cx('block truncate font-mono text-[11px] font-bold', activeTone.text)}>
+          <span className={cx('block truncate whitespace-nowrap font-mono text-[14px] font-bold', activeTone.text)}>
             {active.name}
           </span>
         </span>
@@ -97,12 +97,12 @@ export function ModelSwitcher() {
         >
           <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-3">
             <div className="flex items-center gap-1.5">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+              <p className="text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
                 LLM Gateway · assurance tiers
               </p>
               <InfoTip definition={GLOSSARY.assuranceTier} side="bottom" />
             </div>
-            <span className="font-mono text-[9px] text-ink-faint">
+            <span className="font-mono text-[12px] text-ink-faint">
               cost at {budget.toLocaleString()} tok
             </span>
           </div>
@@ -140,22 +140,22 @@ export function ModelSwitcher() {
 
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline justify-between gap-3">
-                      <span className={cx('truncate text-xs font-semibold', on ? t.text : 'text-ink')}>
+                      <span className={cx('truncate text-[15px] font-semibold', on ? t.text : 'text-ink')}>
                         {m.name}
                       </span>
-                      <span className="shrink-0 font-mono text-[10px] tabular-nums text-ink-muted">
+                      <span className="shrink-0 font-mono text-[13px] tabular-nums text-ink-muted">
                         {runCost(m, budget)}
                       </span>
                     </span>
 
-                    <span className="mt-0.5 block truncate text-[10px] text-ink-faint">
+                    <span className="mt-0.5 block truncate text-[13px] text-ink-faint">
                       {m.vendor} · {m.contextWindow} context
                     </span>
 
                     <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
                       <span
                         className={cx(
-                          'rounded border px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider',
+                          'rounded border px-1.5 py-0.5 font-mono text-[12px] font-bold uppercase tracking-wider',
                           t.border,
                           t.bg,
                           t.text,
@@ -163,12 +163,12 @@ export function ModelSwitcher() {
                       >
                         T{m.tier} {m.tierLabel}
                       </span>
-                      <span className="rounded border border-hairline px-1.5 py-0.5 font-mono text-[9px] text-ink-faint">
+                      <span className="rounded border border-hairline px-1.5 py-0.5 font-mono text-[12px] text-ink-faint">
                         {EGRESS_LABEL[m.egress]}
                       </span>
                       <span
                         className={cx(
-                          'rounded border px-1.5 py-0.5 font-mono text-[9px]',
+                          'rounded border px-1.5 py-0.5 font-mono text-[12px]',
                           m.weights === 'open'
                             ? 'border-trust-passed/40 text-trust-passed'
                             : 'border-hairline text-ink-faint',
@@ -184,10 +184,10 @@ export function ModelSwitcher() {
           </div>
 
           <div className="border-t border-hairline bg-canvas/50 px-4 py-3">
-            <p className="text-[10px] leading-relaxed text-ink-muted">
+            <p className="text-[13px] leading-relaxed text-ink-muted">
               <span className={cx('font-semibold', activeTone.text)}>{active.name}</span> — {active.note}
             </p>
-            <p className="mt-1.5 font-mono text-[9px] text-ink-faint">{active.dataResidency}</p>
+            <p className="mt-1.5 font-mono text-[12px] text-ink-faint">{active.dataResidency}</p>
           </div>
         </div>
       )}

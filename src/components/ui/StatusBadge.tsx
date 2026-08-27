@@ -12,7 +12,7 @@ export function StatusBadge({ label, tone = 'neutral', pulse = false, className 
   return (
     <span
       className={cx(
-        'inline-flex items-center gap-1.5 rounded border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider',
+        'inline-flex items-center gap-1.5 rounded border px-2 py-0.5 font-mono text-[13px] font-bold uppercase tracking-wider',
         t.border,
         t.bg,
         t.text,

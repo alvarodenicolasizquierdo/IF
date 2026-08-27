@@ -56,7 +56,7 @@ await step('Continuous Evolution raises a remediation PR', async () => {
 });
 
 await step('regulatory scan reports open audit vulnerabilities', async () => {
-  await click(/Enforce regulation/);
+  await click(/^Regulation$/);
   await page.waitForTimeout(2200);
   const open = await page.locator('text=/\\d+ open/').first().innerText();
   if (!/^[1-9]/.test(open)) throw new Error(`scan opened already remediated: "${open}"`);
@@ -76,7 +76,7 @@ await step('EPAM demolition point fires live drift', async () => {
 });
 
 await step('the model switcher lists every assurance tier', async () => {
-  await page.getByRole('button', { name: /Routed model/ }).click();
+  await page.getByRole('button', { name: /^Model · T/ }).click();
   await page.waitForSelector('text=LLM Gateway');
   const opts = await page.getByRole('option').count();
   if (opts < 6) throw new Error(`expected the full catalogue, saw ${opts} routes`);
@@ -92,7 +92,7 @@ await step('switching to a public-API route fails the PII egress gate', async ()
 });
 
 await step('switching to sovereign open weights bills GPU-hours, not tokens', async () => {
-  await page.getByRole('button', { name: /Routed model/ }).click();
+  await page.getByRole('button', { name: /^Model · T/ }).click();
   await page.getByRole('option', { name: /Mistral Large 2/ }).click();
   await page.waitForTimeout(400);
   const body = await page.locator('body').innerText();
@@ -112,7 +112,7 @@ await step('tooltips explain the non-obvious terms', async () => {
 });
 
 await step('reset restores the baseline', async () => {
-  await click(/Reset simulation/);
+  await click(/^Reset$/);
   await click(/Executive Trust/);
   const body = await page.locator('body').innerText();
   if (!body.includes('1.44×')) throw new Error('reset did not restore the Track 2 baseline');

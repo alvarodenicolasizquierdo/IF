@@ -51,11 +51,23 @@ jobs:
 
       # Ship the standalone build alongside the normal one so the Pages site
       # also serves a file anyone can download and run offline.
+      #
+      # PAGES_CUSTOM_DOMAIN is an optional repository variable. When it is set,
+      # the deploy writes a CNAME into the artifact so a custom domain survives
+      # every deployment — with Actions-based Pages the file has to be in the
+      # published output, not just in the repo. Leave the variable unset and
+      # nothing changes: the site stays on github.io.
       - name: Assemble the site
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN }}
         run: |
           cp dist-standalone/index.html dist/intelligent-flow-console.html
           cp -f dist/index.html dist/404.html
+          if [ -n "$CUSTOM_DOMAIN" ]; then
+            echo "$CUSTOM_DOMAIN" > dist/CNAME
+            echo "Pinned custom domain: $CUSTOM_DOMAIN"
+          fi
 
       - uses: actions/configure-pages@v5
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

@@ -55,12 +55,12 @@ export function HitlGate() {
           <div>
             <h2
               id="hitl-gate-title"
-              className="flex items-center gap-2 text-base font-bold uppercase tracking-wider text-trust-hitl-soft"
+              className="flex items-center gap-2 text-[18px] font-bold uppercase tracking-wider text-trust-hitl-soft"
             >
               Critical governance gate: manual authorisation required
               <InfoTip definition={GLOSSARY.hitl} side="bottom" />
             </h2>
-            <p className="mt-1 text-xs leading-relaxed text-ink-muted">
+            <p className="mt-1 text-[15px] leading-relaxed text-ink-muted">
               Agent attempts a non-reversible action — production merge of branch{' '}
               <code className="font-mono text-ink">feature/dynamic-tax-rates</code> into{' '}
               {CLIENT_CONTEXT.repository}.
@@ -71,7 +71,7 @@ export function HitlGate() {
         <div className="grid grid-cols-1 gap-6 px-7 py-6 lg:grid-cols-5">
           {/* Blast radius */}
           <section className="lg:col-span-2">
-            <h3 className="mb-3 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
+            <h3 className="mb-3 flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.16em] text-ink-faint">
               Blast radius analysis · pre-analysed by the security sub-agent
               <InfoTip definition={GLOSSARY.blastRadius} side="bottom" />
             </h3>
@@ -85,7 +85,7 @@ export function HitlGate() {
                     className={cx('flex items-start gap-2.5 rounded-lg border px-3 py-2.5', t.border, t.bg)}
                   >
                     <Icon className={cx('mt-0.5 h-3.5 w-3.5 shrink-0', t.text)} />
-                    <span className="text-[11px] leading-relaxed text-ink-muted">{item.label}</span>
+                    <span className="text-[14px] leading-relaxed text-ink-muted">{item.label}</span>
                   </li>
                 );
               })}
@@ -102,7 +102,7 @@ export function HitlGate() {
 
           {/* Diff under review */}
           <section className="flex min-h-[340px] flex-col lg:col-span-3">
-            <h3 className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
+            <h3 className="mb-3 text-[13px] font-bold uppercase tracking-[0.16em] text-ink-faint">
               Change under review
             </h3>
             <div className="min-h-0 flex-1">
@@ -131,12 +131,12 @@ export function HitlGate() {
                 />
               </span>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+                <p className="text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
                   Signing identity · OIDC verified
                 </p>
                 <p
                   className={cx(
-                    'font-mono text-xs font-bold',
+                    'font-mono text-[15px] font-bold',
                     persona.canSignEvidencePack ? 'text-trust-passed' : 'text-trust-violation-soft',
                   )}
                 >
@@ -146,7 +146,7 @@ export function HitlGate() {
             </div>
 
             {!persona.canSignEvidencePack && (
-              <p className="flex items-center gap-1.5 rounded-lg border border-trust-violation/50 bg-trust-violation/10 px-3 py-2 text-[11px] font-semibold text-trust-violation-soft">
+              <p className="flex items-center gap-1.5 rounded-lg border border-trust-violation/50 bg-trust-violation/10 px-3 py-2 text-[14px] font-semibold text-trust-violation-soft">
                 <Ban className="h-3.5 w-3.5" />
                 This persona holds no production-merge signing privilege.
               </p>
@@ -176,8 +176,8 @@ export function HitlGate() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-3">
-      <dt className="shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">{label}</dt>
-      <dd className="truncate font-mono text-[11px] text-ink-muted" title={value}>
+      <dt className="shrink-0 text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">{label}</dt>
+      <dd className="truncate font-mono text-[14px] text-ink-muted" title={value}>
         {value}
       </dd>
     </div>

@@ -28,7 +28,7 @@ export function PhaseBanner() {
             aria-current={isActive ? 'step' : undefined}
             title={`Jump to ${phase}`}
             className={cx(
-              'group relative flex h-9 items-center gap-1.5 pl-5 pr-6 text-[10px] font-bold uppercase tracking-[0.12em] transition-all duration-300',
+              'group relative flex h-9 items-center gap-1.5 pl-5 pr-6 text-[13px] font-bold uppercase tracking-[0.12em] transition-all duration-300',
               shape,
               isActive
                 ? 'bg-trust-active/25 text-trust-active-soft shadow-glow-active'

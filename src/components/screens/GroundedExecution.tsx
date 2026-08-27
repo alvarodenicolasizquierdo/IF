@@ -60,13 +60,13 @@ export function GroundedExecution() {
     <div className="flex h-full flex-col gap-5">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
+          <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-ink-faint">
             Build · grounded execution
           </p>
-          <h1 className="mt-1 font-display text-[26px] leading-tight tracking-tight text-ink">
+          <h1 className="mt-1 font-display text-[30px] leading-tight tracking-tight text-ink">
             Split-panel execution canvas
           </h1>
-          <p className="mt-1 font-mono text-xs text-ink-muted">{CLIENT_CONTEXT.targetFile}</p>
+          <p className="mt-1 font-mono text-[15px] text-ink-muted">{CLIENT_CONTEXT.targetFile}</p>
         </div>
         <div className="flex items-center gap-2">
           {driftDetected && <StatusBadge label="Control plane lockout" tone="violation" pulse />}
@@ -82,21 +82,21 @@ export function GroundedExecution() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Fingerprint className="h-3.5 w-3.5 text-trust-active-soft" />
-            <span className="font-mono text-[11px] font-bold text-trust-active-soft">{mandate.token}</span>
-            <span className="font-mono text-[10px] text-ink-faint">
+            <span className="font-mono text-[14px] font-bold text-trust-active-soft">{mandate.token}</span>
+            <span className="font-mono text-[13px] text-ink-faint">
               scope {mandate.allowedScope}
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 font-mono text-[11px] text-ink-muted">
+            <span className="flex items-center gap-1.5 font-mono text-[14px] text-ink-muted">
               <Timer className="h-3 w-3" />
               expires in {mandate.expiryMinutes} min
             </span>
-            <span className="font-mono text-[11px] font-bold tabular-nums text-ink">
+            <span className="font-mono text-[14px] font-bold tabular-nums text-ink">
               {mandate.tokensConsumed.toLocaleString()} / {mandate.budgetTokens.toLocaleString()} tokens
             </span>
             <span
-              className="flex items-center gap-1.5 font-mono text-[11px] tabular-nums text-trust-passed"
+              className="flex items-center gap-1.5 font-mono text-[14px] tabular-nums text-trust-passed"
               title={`Spend on ${model.name} — ${spendBasis}`}
             >
               <Coins className="h-3 w-3" />
@@ -128,7 +128,7 @@ export function GroundedExecution() {
           title="Evidence_Pack.json — live"
           titleTip={GLOSSARY.evidencePack}
           action={
-            <span className="font-mono text-[10px] text-ink-faint">
+            <span className="font-mono text-[13px] text-ink-faint">
               {evidencePack.signature
                 ? `sig ${truncateHash(evidencePack.signature)}`
                 : `hash ${evidencePack.contextIntegrityHash}`}
@@ -143,12 +143,12 @@ export function GroundedExecution() {
 
           <div className="mt-4 space-y-2">
             <div className="flex items-center justify-between">
-              <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+              <p className="flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
                 <PlugZap className="h-3 w-3" />
                 MCP Gateway interceptions
                 <InfoTip definition={GLOSSARY.mcpGateway} side="bottom" />
               </p>
-              <span className="font-mono text-[10px] text-ink-faint">
+              <span className="font-mono text-[13px] text-ink-faint">
                 {interceptIndex} / {MCP_INTERCEPTS.length}
               </span>
             </div>
@@ -202,10 +202,10 @@ export function GroundedExecution() {
             <div className="mt-4 flex items-start gap-3 rounded-lg border-2 border-trust-violation/60 bg-trust-violation/10 px-3 py-2.5 shadow-glow-violation">
               <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-trust-violation-soft" />
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-trust-violation-soft">
+                <p className="text-[14px] font-bold uppercase tracking-wider text-trust-violation-soft">
                   Control plane lockout
                 </p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-ink-muted">
+                <p className="mt-0.5 text-[14px] leading-relaxed text-ink-muted">
                   Out-of-band file system mutation detected. Mandate voided immediately and the merge path is
                   frozen until the diff matches the signed Mandate.
                 </p>

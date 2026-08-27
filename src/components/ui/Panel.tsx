@@ -29,12 +29,12 @@ export function Panel({ title, titleTip, eyebrow, action, children, className, b
         <header className="flex items-start justify-between gap-4 border-b border-hairline/70 px-5 py-4">
           <div className="min-w-0">
             {eyebrow && (
-              <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-faint">
+              <p className="mb-1 text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
                 {eyebrow}
               </p>
             )}
             {title && (
-              <h2 className="flex items-center gap-1.5 text-sm font-semibold text-ink">
+              <h2 className="flex items-center gap-1.5 text-[16px] font-semibold text-ink">
                 <span className="truncate">{title}</span>
                 {titleTip && <InfoTip definition={titleTip} side="bottom" />}
               </h2>

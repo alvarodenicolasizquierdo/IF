@@ -33,9 +33,9 @@ export function TrackSelector({ compact = false }: { compact?: boolean }) {
               compact ? 'flex-1' : 'w-full',
             )}
           >
-            <span className="block text-[11px] font-bold uppercase tracking-wider">{track.shortLabel}</span>
+            <span className="block text-[14px] font-bold uppercase tracking-wider">{track.shortLabel}</span>
             {!compact && (
-              <span className="mt-0.5 block font-mono text-[10px] text-ink-faint">
+              <span className="mt-0.5 block font-mono text-[13px] text-ink-faint">
                 €{track.metrics.tcoPerCfp.toLocaleString()} / CFP · {track.metrics.maturityMultiplier.toFixed(2)}×
               </span>
             )}
