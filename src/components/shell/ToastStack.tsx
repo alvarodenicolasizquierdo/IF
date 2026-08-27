@@ -9,7 +9,14 @@ const ICON = {
   violation: AlertOctagon,
 } as const;
 
-/** MCP Gateway intercepts and control-plane events, slid in at the bottom centre. */
+/**
+ * MCP Gateway intercepts and control-plane events.
+ *
+ * Top right, not bottom centre. Every screen's primary action is now pinned to
+ * the bottom of its panel, and a toast centred down there landed squarely on
+ * the button the presenter had to click next — each tool-call fired a notice
+ * that covered the control advancing it.
+ */
 export function ToastStack() {
   const toasts = useDemoStore((s) => s.toasts);
   const dismissToast = useDemoStore((s) => s.dismissToast);
@@ -19,7 +26,7 @@ export function ToastStack() {
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none fixed inset-x-0 bottom-6 z-[60] flex flex-col items-center gap-2 px-4"
+      className="pointer-events-none fixed right-5 top-[76px] z-[60] flex w-full max-w-xl flex-col items-end gap-2 pl-4"
     >
       {toasts.map((toast) => {
         const t = TONE[toast.tone];
@@ -28,7 +35,7 @@ export function ToastStack() {
           <div
             key={toast.id}
             className={cx(
-              'pointer-events-auto flex w-full max-w-xl animate-slide-in-up items-start gap-3 rounded-lg border bg-surface/95 px-4 py-3 shadow-panel backdrop-blur',
+              'pointer-events-auto flex w-full animate-slide-in-down items-start gap-3 rounded-lg border bg-surface/95 px-4 py-3 shadow-panel backdrop-blur',
               t.border,
               t.glow,
             )}

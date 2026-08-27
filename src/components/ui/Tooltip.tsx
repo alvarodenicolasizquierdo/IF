@@ -1,4 +1,15 @@
-import { cloneElement, isValidElement, useId, useState, type ReactNode } from 'react';
+import {
+  cloneElement,
+  isValidElement,
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
+import { createPortal } from 'react-dom';
 import { cx } from './tone';
 
 type Side = 'top' | 'bottom' | 'left' | 'right';
@@ -19,15 +30,67 @@ interface TooltipProps {
   interactiveChild?: boolean;
 }
 
-const SIDE: Record<Side, string> = {
-  top: 'bottom-full left-1/2 mb-2 -translate-x-1/2',
-  bottom: 'top-full left-1/2 mt-2 -translate-x-1/2',
-  left: 'right-full top-1/2 mr-2 -translate-y-1/2',
-  right: 'left-full top-1/2 ml-2 -translate-y-1/2',
+/** Distance from the anchor, and the closest a tooltip may come to a screen edge. */
+const GAP = 8;
+const EDGE = 10;
+
+const OPPOSITE: Record<Side, Side> = {
+  top: 'bottom',
+  bottom: 'top',
+  left: 'right',
+  right: 'left',
 };
+
+interface Box {
+  width: number;
+  height: number;
+}
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.max(min, Math.min(value, Math.max(min, max)));
+
+/**
+ * Where the tooltip goes, in viewport coordinates.
+ *
+ * Flips to the opposite side when the preferred one would run off-screen, then
+ * clamps both axes into the viewport regardless — a definition that reads
+ * half-off the right edge of a projector is worse than one that is nudged.
+ */
+function place(anchor: DOMRect, tip: Box, preferred: Side, vw: number, vh: number) {
+  const fits = (s: Side) => {
+    if (s === 'top') return anchor.top - GAP - tip.height >= EDGE;
+    if (s === 'bottom') return anchor.bottom + GAP + tip.height <= vh - EDGE;
+    if (s === 'left') return anchor.left - GAP - tip.width >= EDGE;
+    return anchor.right + GAP + tip.width <= vw - EDGE;
+  };
+
+  const side = fits(preferred) || !fits(OPPOSITE[preferred]) ? preferred : OPPOSITE[preferred];
+
+  let top: number;
+  let left: number;
+  if (side === 'top' || side === 'bottom') {
+    top = side === 'top' ? anchor.top - GAP - tip.height : anchor.bottom + GAP;
+    left = anchor.left + anchor.width / 2 - tip.width / 2;
+  } else {
+    left = side === 'left' ? anchor.left - GAP - tip.width : anchor.right + GAP;
+    top = anchor.top + anchor.height / 2 - tip.height / 2;
+  }
+
+  return {
+    top: clamp(top, EDGE, vh - tip.height - EDGE),
+    left: clamp(left, EDGE, vw - tip.width - EDGE),
+  };
+}
 
 /**
  * Hover- and focus-triggered explanation.
+ *
+ * Rendered through a portal in viewport coordinates rather than positioned
+ * inside its anchor. Two reasons, both of which bit us in a real walkthrough:
+ * an absolutely-positioned tooltip is trapped in its nearest stacking context —
+ * the sticky left rail is one — so no z-index can lift it above the main
+ * workspace; and one anchored near a screen edge simply runs off it. Fixed
+ * positioning escapes every ancestor, and the placement below flips and clamps.
  *
  * Focus matters as much as hover: a presenter tabbing through the console on a
  * client's machine should reach the same copy. So the description is attached
@@ -43,10 +106,49 @@ export function Tooltip({
   interactiveChild = false,
 }: TooltipProps) {
   const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const anchorRef = useRef<HTMLSpanElement>(null);
+  const tipRef = useRef<HTMLSpanElement>(null);
   const id = useId();
 
   const show = () => setOpen(true);
-  const hide = () => setOpen(false);
+  const hide = () => {
+    setOpen(false);
+    setPos(null);
+  };
+
+  const reposition = useCallback(() => {
+    const anchor = anchorRef.current;
+    const tip = tipRef.current;
+    if (!anchor || !tip) return;
+    setPos(
+      place(
+        anchor.getBoundingClientRect(),
+        { width: tip.offsetWidth, height: tip.offsetHeight },
+        side,
+        window.innerWidth,
+        window.innerHeight,
+      ),
+    );
+  }, [side]);
+
+  // Measure before paint so the tooltip never appears at the wrong spot first.
+  useLayoutEffect(() => {
+    if (open) reposition();
+  }, [open, reposition, content]);
+
+  // The anchor moves when the page scrolls under it — including inside the
+  // scrollable rail, hence the capture phase.
+  useEffect(() => {
+    if (!open) return;
+    const onMove = () => reposition();
+    window.addEventListener('scroll', onMove, true);
+    window.addEventListener('resize', onMove);
+    return () => {
+      window.removeEventListener('scroll', onMove, true);
+      window.removeEventListener('resize', onMove);
+    };
+  }, [open, reposition]);
 
   // Describe the element the user is actually on. Wrapping an interactive
   // child in a focusable span would add a phantom tab stop and leave the
@@ -60,6 +162,8 @@ export function Tooltip({
 
   return (
     <span
+      ref={anchorRef}
+      data-tooltip-anchor=""
       className={cx('relative inline-flex', className)}
       onMouseEnter={show}
       onMouseLeave={hide}
@@ -81,20 +185,30 @@ export function Tooltip({
         </span>
       )}
 
-      {open && (
-        <span
-          role="tooltip"
-          id={id}
-          className={cx(
-            'pointer-events-none absolute z-[80] animate-fade-in rounded-lg border border-hairline bg-canvas px-3 py-2 shadow-panel',
-            'text-[14px] font-normal normal-case leading-relaxed tracking-normal text-ink-muted',
-            wide ? 'w-80' : 'w-64',
-            SIDE[side],
-          )}
-        >
-          {content}
-        </span>
-      )}
+      {open &&
+        createPortal(
+          <span
+            ref={tipRef}
+            role="tooltip"
+            id={id}
+            style={{
+              top: pos?.top ?? 0,
+              left: pos?.left ?? 0,
+              // Never wider than the screen it has to fit on.
+              maxWidth: `calc(100vw - ${EDGE * 2}px)`,
+              // Hidden for the single frame before it has been measured.
+              visibility: pos ? 'visible' : 'hidden',
+            }}
+            className={cx(
+              'pointer-events-none fixed z-[90] animate-fade-in rounded-lg border border-hairline bg-canvas px-3 py-2 shadow-panel',
+              'text-[14px] font-normal normal-case leading-relaxed tracking-normal text-ink-muted',
+              wide ? 'w-80' : 'w-64',
+            )}
+          >
+            {content}
+          </span>,
+          document.body,
+        )}
     </span>
   );
 }

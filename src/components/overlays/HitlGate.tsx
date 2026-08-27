@@ -46,11 +46,16 @@ export function HitlGate() {
       aria-labelledby="hitl-gate-title"
       className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-canvas/85 p-6 backdrop-blur-md"
     >
-      <div className="my-auto w-full max-w-6xl animate-scale-in overflow-hidden rounded-2xl border border-hairline bg-surface shadow-panel">
+      {/*
+        * Capped to the viewport with a scrolling body and a pinned ceremony:
+        * the signature is the beat the whole demo turns on, so it must never
+        * require scrolling to reach — least of all on a compressed share.
+        */}
+      <div className="my-auto flex max-h-[calc(100vh-3rem)] w-full max-w-6xl animate-scale-in flex-col overflow-hidden rounded-2xl border border-hairline bg-surface shadow-panel">
         {/* Thick Amber Gold top border — the HITL signature of the spectrum */}
-        <div className="h-1 w-full bg-trust-hitl shadow-glow-hitl" aria-hidden />
+        <div className="h-1 w-full shrink-0 bg-trust-hitl shadow-glow-hitl" aria-hidden />
 
-        <header className="flex items-start gap-3 border-b border-hairline px-7 py-5">
+        <header className="flex shrink-0 items-start gap-3 border-b border-hairline px-7 py-4">
           <TriangleAlert className="mt-0.5 h-6 w-6 shrink-0 text-trust-hitl-soft" strokeWidth={2.2} />
           <div>
             <h2
@@ -68,7 +73,8 @@ export function HitlGate() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 gap-6 px-7 py-6 lg:grid-cols-5">
+        <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="grid grid-cols-1 gap-6 px-7 py-5 lg:grid-cols-5">
           {/* Blast radius */}
           <section className="lg:col-span-2">
             <h3 className="mb-3 flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.16em] text-ink-faint">
@@ -101,7 +107,7 @@ export function HitlGate() {
           </section>
 
           {/* Diff under review */}
-          <section className="flex min-h-[340px] flex-col lg:col-span-3">
+          <section className="flex min-h-[200px] flex-col lg:col-span-3">
             <h3 className="mb-3 text-[13px] font-bold uppercase tracking-[0.16em] text-ink-faint">
               Change under review
             </h3>
@@ -110,9 +116,10 @@ export function HitlGate() {
             </div>
           </section>
         </div>
+        </div>
 
-        {/* Signature ceremony */}
-        <div className="border-t border-hairline bg-canvas/40 px-7 py-5">
+        {/* Signature ceremony — pinned. */}
+        <div className="shrink-0 border-t border-hairline bg-canvas/40 px-7 py-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <span
@@ -153,7 +160,7 @@ export function HitlGate() {
             )}
           </div>
 
-          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Button tone="violation" variant="outline" size="lg" onClick={rejectGate} icon={<Ban className="h-4 w-4" />}>
               Reject & void Mandate
             </Button>

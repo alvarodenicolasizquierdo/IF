@@ -62,9 +62,9 @@ export function GodModePanel() {
   return (
     <aside
       aria-label="Presenter God Mode panel"
-      className="fixed bottom-5 right-5 z-50 w-[340px] animate-slide-in-up overflow-hidden rounded-xl border-2 border-trust-active/60 bg-surface/95 shadow-panel shadow-glow-active backdrop-blur-md"
+      className="fixed bottom-5 right-5 z-50 flex max-h-[calc(100vh-2.5rem)] w-[340px] animate-slide-in-up flex-col overflow-hidden rounded-xl border-2 border-trust-active/60 bg-surface/95 shadow-panel shadow-glow-active backdrop-blur-md"
     >
-      <header className="flex items-center justify-between bg-trust-active px-4 py-2.5">
+      <header className="flex shrink-0 items-center justify-between bg-trust-active px-4 py-2.5">
         <span className="flex items-center gap-2 text-[14px] font-bold uppercase tracking-[0.14em] text-white">
           <Crown className="h-3.5 w-3.5" />
           Presenter God Mode
@@ -79,7 +79,7 @@ export function GodModePanel() {
         </button>
       </header>
 
-      <div className="scrollbar-thin max-h-[70vh] space-y-4 overflow-y-auto p-4">
+      <div className="scrollbar-thin min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
         <Group label="Jump to phase">
           <div className="grid grid-cols-5 gap-1">
             {PHASES.map((phase) => (

@@ -57,16 +57,16 @@ export function GroundedExecution() {
   };
 
   return (
-    <div className="flex h-full flex-col gap-5">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+    <div className="flex h-full flex-col gap-4">
+      <header className="flex shrink-0 flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-[13px] font-bold uppercase tracking-[0.16em] text-ink-faint">
             Build · grounded execution
           </p>
-          <h1 className="mt-1 font-display text-[30px] leading-tight tracking-tight text-ink">
+          <h1 className="mt-0.5 font-display text-[28px] leading-tight tracking-tight text-ink">
             Split-panel execution canvas
           </h1>
-          <p className="mt-1 font-mono text-[15px] text-ink-muted">{CLIENT_CONTEXT.targetFile}</p>
+          <p className="mt-0.5 font-mono text-[15px] text-ink-muted">{CLIENT_CONTEXT.targetFile}</p>
         </div>
         <div className="flex items-center gap-2">
           {driftDetected && <StatusBadge label="Control plane lockout" tone="violation" pulse />}
@@ -78,7 +78,7 @@ export function GroundedExecution() {
       </header>
 
       {/* ---------------- Mandate budget bar ---------------- */}
-      <div className="rounded-xl border border-hairline bg-surface/80 px-5 py-3.5">
+      <div className="shrink-0 rounded-xl border border-hairline bg-surface/80 px-5 py-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Fingerprint className="h-3.5 w-3.5 text-trust-active-soft" />
@@ -121,7 +121,7 @@ export function GroundedExecution() {
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-5 xl:grid-cols-2">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 xl:grid-cols-2">
         {/* ---------------- Strategy & Evidence pane ---------------- */}
         <Panel
           eyebrow="Layer 2 · Evidence Pack compiler"
@@ -137,11 +137,12 @@ export function GroundedExecution() {
           className="min-h-0"
           bodyClassName="flex min-h-0 flex-col p-4"
         >
-          <div className="min-h-[280px] flex-1">
+          {/* Scrolls inside the panel so the tool-call button never leaves. */}
+          <div className="min-h-[110px] flex-1 overflow-y-auto pr-1">
             <JsonTree value={packView} />
           </div>
 
-          <div className="mt-4 space-y-2">
+          <div className="-mx-5 -mb-5 mt-4 shrink-0 space-y-2 border-t border-hairline bg-canvas/40 px-5 py-3">
             <div className="flex items-center justify-between">
               <p className="flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
                 <PlugZap className="h-3 w-3" />
@@ -194,12 +195,12 @@ export function GroundedExecution() {
           className="min-h-0"
           bodyClassName="flex min-h-0 flex-col p-4"
         >
-          <div className="min-h-[280px] flex-1">
+          <div className="min-h-[110px] flex-1 overflow-y-auto pr-1">
             <CodeDiff before={LEGACY_CODE} after={GOVERNED_CODE} revealed={codeRevealed && !driftDetected} />
           </div>
 
           {driftDetected ? (
-            <div className="mt-4 flex items-start gap-3 rounded-lg border-2 border-trust-violation/60 bg-trust-violation/10 px-3 py-2.5 shadow-glow-violation">
+            <div className="mt-4 flex shrink-0 items-start gap-3 rounded-lg border-2 border-trust-violation/60 bg-trust-violation/10 px-3 py-2.5 shadow-glow-violation">
               <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-trust-violation-soft" />
               <div>
                 <p className="text-[14px] font-bold uppercase tracking-wider text-trust-violation-soft">
@@ -215,7 +216,7 @@ export function GroundedExecution() {
             <Button
               tone="hitl"
               size="lg"
-              className="mt-4 w-full"
+              className="-mx-5 -mb-5 mt-4 w-[calc(100%+2.5rem)] shrink-0 rounded-none border-t border-hairline"
               onClick={openHitlGate}
               disabled={!codeRevealed}
             >

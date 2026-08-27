@@ -46,6 +46,13 @@ jobs:
           npx wait-on --timeout 60000 http://localhost:4173
           BASE_URL=http://localhost:4173/ npm run test:smoke
 
+      # Geometry, not behaviour. The walkthrough drives the demo at a generous
+      # 1680x1000 and passed while a tooltip painted behind the workspace and
+      # the Mandate's signature sat below the fold at 100% zoom. This measures
+      # every screen and overlay at the viewports the demo is actually shown on.
+      - name: Audit the layout at every presenter viewport
+        run: BASE_URL=http://localhost:4173/ npm run test:layout
+
       - name: Build the standalone single-file console
         run: npm run build:standalone
 

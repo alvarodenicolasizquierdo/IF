@@ -29,9 +29,15 @@ export default function App() {
   const activePhase = useDemoStore((s) => s.activePhase);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    /*
+     * A fixed-height app frame, not a scrolling document. The workspace owns
+     * its own scrollport, which is what lets a screen say "fill the pane" and
+     * keep its primary action on screen — as a document, every panel grew to
+     * fit its content and pushed the button the story turns on below the fold.
+     */
+    <div className="flex h-screen flex-col overflow-hidden">
       {/* ---------------- Persistent global shell ---------------- */}
-      <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/90 backdrop-blur-md">
+      <header className="z-40 shrink-0 border-b border-hairline bg-canvas/90 backdrop-blur-md">
         <div className="flex items-center justify-between gap-4 px-5 py-2">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
@@ -57,7 +63,7 @@ export default function App() {
 
       <div className="flex min-h-0 flex-1">
         {/* ---------------- Left rail ---------------- */}
-        <aside className="sticky top-[69px] hidden h-[calc(100vh-69px)] w-[248px] shrink-0 flex-col gap-5 border-r border-hairline bg-surface/40 px-4 py-5 xl:flex">
+        <aside className="hidden h-full w-[248px] shrink-0 flex-col gap-5 overflow-y-auto border-r border-hairline bg-surface/40 px-4 py-5 xl:flex">
           <div>
             <p className="mb-2 text-[12px] font-bold uppercase tracking-[0.16em] text-ink-faint">Screens</p>
             <ScreenRail />
@@ -86,8 +92,8 @@ export default function App() {
         </aside>
 
         {/* ---------------- Main workspace ---------------- */}
-        <main className="min-w-0 flex-1 px-5 py-4">
-          <div className="mb-4 space-y-3">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col px-5 py-4">
+          <div className="mb-4 shrink-0 space-y-3">
             <ActionTray />
             <p className="px-1 text-[14px] leading-snug text-ink-muted">
               <span className="font-mono text-[13px] font-bold uppercase tracking-wider text-trust-active-soft">
@@ -97,10 +103,18 @@ export default function App() {
             </p>
           </div>
 
-          {activeScreen === 'dashboard' && <ExecutiveDashboard />}
-          {activeScreen === 'context' && <ContextAssembly />}
-          {activeScreen === 'execution' && <GroundedExecution />}
-          {activeScreen === 'evolution' && <ContinuousEvolution />}
+          {/*
+            * The screens' scrollport. Giving it a definite height (flex-1 with
+            * min-h-0) is what makes h-full mean something to a screen inside
+            * it, so a split canvas can fill the pane and scroll its panes
+            * rather than the page.
+            */}
+          <div className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1 pb-1">
+            {activeScreen === 'dashboard' && <ExecutiveDashboard />}
+            {activeScreen === 'context' && <ContextAssembly />}
+            {activeScreen === 'execution' && <GroundedExecution />}
+            {activeScreen === 'evolution' && <ContinuousEvolution />}
+          </div>
         </main>
       </div>
 

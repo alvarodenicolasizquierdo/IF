@@ -85,6 +85,7 @@ Other scripts:
 | `npm run simulate` | Headless state engine — writes a signed Evidence Pack to disk |
 | `npm run test:hash` | Verify the Evidence Pack signer against `node:crypto` |
 | `npm run test:smoke` | Playwright walkthrough of the presenter narrative |
+| `npm run test:layout` | Measure every screen and overlay at 1280×720, 1440×790 and 1680×1000 |
 | `npm run test:standalone` | Prove the single-file build runs with the network cut off |
 
 Fonts are self-hosted, so the console runs correctly offline or behind a client

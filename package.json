@@ -2,7 +2,7 @@
   "name": "intelligent-flow-canonical-demo",
   "private": true,
   "version": "5.0.0",
-  "description": "Avenga Intelligent Flow — Canonical Pre-Sales Demo Console (PRD v5)",
+  "description": "Avenga Intelligent Flow \u2014 Canonical Pre-Sales Demo Console (PRD v5)",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,7 @@
     "simulate": "node simulate-flow.js",
     "test:hash": "node src/lib/sha256.test.mjs",
     "test:smoke": "node scripts/smoke.mjs",
+    "test:layout": "node scripts/layout-audit.mjs",
     "build:standalone": "tsc --noEmit && vite build --config vite.standalone.config.ts",
     "test:standalone": "node scripts/verify-standalone.mjs"
   },
