@@ -1,0 +1,82 @@
+name: CI
+
+# Runs on every pull request as well as on main, so a change is validated
+# *before* it merges rather than only after it lands. Pages deployment is
+# gated to main pushes.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  verify:
+    name: Typecheck, build and drive the demo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck and build
+        run: npm run build
+
+      - name: Verify the Evidence Pack signer against node:crypto
+        run: npm run test:hash
+
+      - name: Install Chromium for the walkthrough
+        run: npx playwright install --with-deps chromium
+
+      - name: Drive the presenter walkthrough
+        run: |
+          npm run preview -- --port 4173 &
+          npx wait-on --timeout 60000 http://localhost:4173
+          BASE_URL=http://localhost:4173/ npm run test:smoke
+
+      - name: Build the standalone single-file console
+        run: npm run build:standalone
+
+      - name: Prove the standalone build runs with the network cut off
+        run: npm run test:standalone
+
+      # Ship the standalone build alongside the normal one so the Pages site
+      # also serves a file anyone can download and run offline.
+      - name: Assemble the site
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          cp dist-standalone/index.html dist/intelligent-flow-console.html
+          cp -f dist/index.html dist/404.html
+
+      - uses: actions/configure-pages@v5
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # One deploy at a time; let an in-flight run finish rather than cancelling it.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

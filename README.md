@@ -14,9 +14,11 @@ over pace and narrative.
 
 Three ways, depending on how much you want to install.
 
-**1 — Hosted.** Every push to `main` deploys the console to GitHub Pages. The
-site also serves `intelligent-flow-console.html`, a single self-contained file
-you can download and keep.
+**1 — Hosted.** CI typechecks, builds, verifies the Evidence Pack signer and
+drives the full presenter walkthrough on every pull request; a push to `main`
+then deploys to GitHub Pages. The site also serves
+`intelligent-flow-console.html`, a single self-contained file you can download
+and keep.
 
 > First time only: in the repository, **Settings → Pages → Build and deployment
 > → Source**, choose **GitHub Actions**. The workflow does the rest.
