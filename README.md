@@ -39,17 +39,26 @@ answers there — completely untouched.
    and repointing them is what takes a site down.
 
 2. **Repository → Settings → Pages → Custom domain**: enter the same
-   `flow.yourdomain.com` and save. Wait for the DNS check to go green, then
-   tick **Enforce HTTPS**.
+   `flow.yourdomain.com` and save, then tick **Enforce HTTPS**. Save it even
+   if the DNS check complains — see the note below.
 
-3. **Repository → Settings → Secrets and variables → Actions → Variables**:
-   add `PAGES_CUSTOM_DOMAIN` = `flow.yourdomain.com`.
+3. Nothing. The workflow writes the `CNAME` file into every build already —
+   it defaults to `flow.alvarodenicolas.com`. To publish under a different
+   domain, set the repository variable `PAGES_CUSTOM_DOMAIN`
+   (**Settings → Secrets and variables → Actions → Variables**) to that
+   hostname; set it to `none` to stay on `github.io`.
 
-Step 3 matters and is easy to miss. With Actions-based Pages the published
-artifact replaces the site wholesale on every deploy, so the `CNAME` file has
-to be written *into the build*. The workflow does that only when the variable
-is set, which is why nothing breaks if you skip it — the site simply stays on
-`github.io`.
+That third step used to be manual and was easy to miss, which broke the domain
+on the first deploy: with Actions-based Pages the published artifact replaces
+the site wholesale, so a domain entered only in Settings is dropped the moment
+a build ships without a `CNAME` in it.
+
+**If the Pages settings page says `InvalidDNSError`:** check whether the record
+actually resolves before touching it — `dig +short flow.yourdomain.com` should
+answer `<user>.github.io.` followed by the four `185.199.x.153` addresses. When
+it does, the banner is GitHub's own check lagging behind a freshly-added record
+and it clears on its own; changing DNS at that point only makes things worse.
+The banner does not block the deploy.
 
 **2 — One file, no install.** Download `intelligent-flow-console.html` from the
 Pages site (or build it with `npm run build:standalone`) and open it in any
