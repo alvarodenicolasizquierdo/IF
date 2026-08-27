@@ -85,6 +85,16 @@ reading it in reader view) and does not defeat anyone who opens the page source:
 `COMPETITOR_EXPLOITS` in `src/data/scenario.ts`, so the run-book cannot end up
 contradicting the demo it documents.
 
+**Branding it for a client.** Drop the client's artwork at
+`src/assets/client-logo.svg` (or `.png`/`.webp`) and it appears in the left
+rail and on the dashboard header. Nothing else to wire: the file is resolved at
+build time, so an absent one costs no request and falls back to the client's
+name in type, and a present one is hashed for the site and inlined into the
+single-file build like every other asset. Supply it on a **transparent**
+ground — a dark mark is flipped to read on this canvas, so a white rectangle
+would become a black one. `CLIENT_CONTEXT` in `src/data/scenario.ts` carries
+the name.
+
 **2 — One file, no install.** Open `download.html` on the site — `flow.alvarodenicolas.com/download.html`,
 or `<user>.github.io/<repo>/download.html` if you stayed on github.io — and press the button, or
 open presenter God Mode and use *Download single file*. A plain link to the file is
