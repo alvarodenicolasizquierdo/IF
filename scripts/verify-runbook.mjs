@@ -66,8 +66,6 @@ for (const [label, needle] of [
   ['the verbatim script is present', 'Let me start with the outcome'],
   ['the model-switch section is present', 'What actually changes when you switch the AI'],
   ['it documents the auto-play control', 'Run cycle'],
-  ['it documents how to reach God Mode', 'key immediately left of 1'],
-  ['it names the Spanish keyboard case', 'on a Spanish one'],
 ]) {
   check(label, rendered.includes(needle), needle);
 }
@@ -93,6 +91,49 @@ for (const scheme of ['dark', 'light']) {
   const painted = background !== 'rgba(0, 0, 0, 0)' && background !== 'transparent';
   check(`the ${scheme} theme paints its own ground`, painted, `${background} / ${colour}`);
 }
+
+// ---- the vault -------------------------------------------------------
+// Two properties, and the first is the one that matters: a client who opens
+// this link must not find the competitor material by scrolling or searching.
+await page.emulateMedia({ colorScheme: 'dark' });
+const beforeReveal = await page.locator('body').innerText();
+const SECRETS = ['EPAM', 'Coforge', 'Cognizant', 'Persistent', 'demolition matrix', 'God Mode'];
+const leaked = SECRETS.filter((needle) => beforeReveal.includes(needle));
+check('nothing presenter-only is visible before it is asked for', leaked.length === 0, leaked.join(', ') || 'clean');
+
+check('the vault section is empty until opened', (await page.locator('#vault').innerHTML()) === '');
+
+// The trigger is deliberately unmarked, so this is also a check that a
+// presenter who knows the gesture can still find it.
+await page.locator('#vault-key').click();
+await page.waitForTimeout(400);
+const afterReveal = (await page.locator('#vault').innerText()).replace(/\s+/g, ' ');
+
+check('clicking the unmarked trigger opens it', afterReveal.length > 0);
+for (const vendor of ['EPAM', 'Coforge', 'Cognizant', 'Persistent', 'Wonderful']) {
+  check(`the ${vendor} demolition point is present`, afterReveal.includes(vendor));
+}
+// Case-insensitive: these labels are uppercased by CSS, and innerText
+// reports what is rendered rather than what is in the markup.
+check('each one carries a line to say', (afterReveal.match(/\bSay\b/gi) ?? []).length >= 5);
+check('each one carries a live proof', (afterReveal.match(/Prove it live/gi) ?? []).length >= 5);
+check('God Mode itself is documented', /key immediately left of 1/i.test(afterReveal));
+check('it names the Spanish keyboard case', /on a Spanish one/i.test(afterReveal));
+check(
+  'it warns that this is concealment, not protection',
+  /concealed, not protected/i.test(afterReveal),
+);
+
+// Mid-meeting, the way out has to be instant.
+await page.keyboard.press('Escape');
+await page.waitForTimeout(300);
+check('Escape hides it again', await page.locator('#vault').isHidden());
+
+// And the same gesture as the console reopens it.
+await page.keyboard.press('Backquote');
+await page.waitForTimeout(300);
+check('the console\'s own key opens it too', await page.locator('#vault').isVisible());
+await page.keyboard.press('Escape');
 
 check('no page errors', pageErrors.length === 0, pageErrors.join('; ') || undefined);
 

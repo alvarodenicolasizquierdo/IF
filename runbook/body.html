@@ -293,6 +293,57 @@
   .caveat h3 { font-size: var(--step-0); font-weight: 700; color: var(--accent); }
   .caveat p { margin: 0; max-width: var(--measure); color: var(--ink-soft); font-size: .9375rem; }
 
+  /* ------------------------------------------------------------- vault
+     Visually distinct from every other section, because a presenter must be
+     able to tell at a glance that what is on screen is not for the room. */
+  #vault[hidden] { display: none; }
+  #vault {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--accent) 6%, var(--ground-raised));
+  }
+  #vault .vault-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  #vault .warn {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  #vault h2 { margin-top: .35rem; }
+  #vault .hide {
+    appearance: none;
+    padding: .4rem .9rem;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  #vault .hide:hover { background: color-mix(in oklab, var(--accent) 12%, transparent); }
+  #vault .hide:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .kill { display: flex; flex-direction: column; gap: .6rem; padding: 1.25rem 1.4rem; border: 1px solid var(--rule); border-radius: 4px; background: var(--ground); }
+  .kill .vendor { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem .75rem; }
+  .kill .vendor h3 { font-size: var(--step-1); font-weight: 700; }
+  .kill .vendor .product { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .8125rem; color: var(--ink-faint); }
+  .kill .trap { align-self: flex-start; padding: .12em .5em; border: 1px solid var(--accent); border-radius: 999px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  .kill dl { display: flex; flex-direction: column; gap: .5rem; margin: 0; }
+  .kill dt { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
+  .kill dd { margin: 0; max-width: var(--measure); color: var(--ink-soft); font-size: .9375rem; }
+
+  #vault-key { cursor: default; }
+
   /* ------------------------------------------------------------ footer */
   .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem 2rem; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); }
   .checks li { display: flex; gap: .6rem; align-items: baseline; color: var(--ink-soft); font-size: .9375rem; }
@@ -712,11 +763,10 @@
           you have; don't rush past it.</p>
       </div>
       <div class="card">
-        <h3>Lost, or asked to skip ahead?</h3>
-        <p>Press <code>?</code> for help on the screen in front of you — including what changes when
-          you switch the AI model. For the hidden presenter panel, click the crown at the
-          bottom-right, or press the key immediately left of <strong>1</strong> (backtick on a US or
-          UK keyboard; <code>º</code> on a Spanish one — same physical key).</p>
+        <h3>Lost mid-demo?</h3>
+        <p>Press <code>?</code> in the console for help on the screen in front of you — what each
+          control does, and what changes when you switch the AI model. It reads the live route, so
+          it is never describing a configuration you are not in.</p>
       </div>
     </div>
   </section>
@@ -763,9 +813,78 @@
     </ul>
   </section>
 
+  <!--
+    The vault is injected here on demand. Its content is not in the rendered
+    page until then: not in the DOM, not findable with a browser search, not
+    picked up by reader mode.
+  -->
+  <section id="vault" hidden></section>
+
   <footer>
-    <p>Avenga Intelligent Flow · canonical pre-sales console · PRD v5</p>
+    <!--
+      The trigger. Deliberately unmarked and deliberately the same gesture as
+      the console itself — the key immediately left of "1" — so a presenter who
+      knows one knows the other. The product name is the click target; nothing
+      about it announces that it is one.
+    -->
+    <p><span id="vault-key" role="presentation">Avenga Intelligent Flow</span> · canonical pre-sales console · PRD v5</p>
     <p>Scenario data is Azercell Telecom LLC, work item AZ-7001. All figures are illustrative.</p>
   </footer>
 
 </div>
+
+<script>
+  /*
+   * Concealment, not protection — and the difference matters.
+   *
+   * The competitor material is base64 in this file, decoded and injected only
+   * when a presenter asks for it. That defeats the realistic case: a client
+   * sent this link, scrolling or searching it, or a browser reader view. It
+   * does not defeat anyone who opens the page source, and it is not meant to.
+   * Nothing here is confidential; it is simply not for a client to read.
+   */
+  (function () {
+    var PAYLOAD = '__VAULT_PAYLOAD__';
+    var vault = document.getElementById('vault');
+    var trigger = document.getElementById('vault-key');
+    var loaded = false;
+
+    function open() {
+      if (!loaded) {
+        vault.innerHTML = decodeURIComponent(escape(window.atob(PAYLOAD)));
+        loaded = true;
+        var close = vault.querySelector('[data-vault-close]');
+        if (close) close.addEventListener('click', hide);
+      }
+      vault.hidden = false;
+      vault.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function hide() {
+      vault.hidden = true;
+      // Back to where the reader was, rather than stranding them at the end.
+      document.querySelector('footer').scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+
+    function toggle() {
+      if (vault.hidden) open();
+      else hide();
+    }
+
+    trigger.addEventListener('click', toggle);
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !vault.hidden) {
+        hide();
+        return;
+      }
+      // Matched by physical position, not the character printed on the key, so
+      // the gesture is identical on a Spanish or French layout.
+      if (event.code !== 'Backquote' && event.key !== '`') return;
+      var target = event.target;
+      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      event.preventDefault();
+      toggle();
+    });
+  })();
+</script>

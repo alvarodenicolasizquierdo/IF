@@ -67,9 +67,18 @@ The banner does not block the deploy.
 Artifact; one source, so the hosted page and the shared link cannot drift.
 
 It is served `noindex` and listed in `robots.txt`. That keeps it out of search
-results, and nothing more: it carries the verbatim script, competitor matter and
-a section on presenter-only controls, so **anyone with the link can read it**.
-Send it to colleagues, not into a client thread.
+results, and nothing more — **anyone with the link can read the page**. Send it
+to colleagues, not into a client thread.
+
+The presenter-only half — God Mode and the competitor demolition matrix — is not
+in the rendered page at all. It is base64 in the file, decoded and injected only
+when a presenter asks for it, by clicking the product name in the footer or
+pressing the same key that opens God Mode in the console. `Esc` puts it away.
+That defeats the realistic case (a client scrolling the page, searching it, or
+reading it in reader view) and does not defeat anyone who opens the page source:
+**concealment, not protection.** The competitor cards are generated from
+`COMPETITOR_EXPLOITS` in `src/data/scenario.ts`, so the run-book cannot end up
+contradicting the demo it documents.
 
 **2 — One file, no install.** Open `download.html` on the site — `flow.alvarodenicolas.com/download.html`,
 or `<user>.github.io/<repo>/download.html` if you stayed on github.io — and press the button, or

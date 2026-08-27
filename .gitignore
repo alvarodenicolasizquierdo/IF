@@ -13,3 +13,4 @@ dist-standalone/
 
 # Generated from runbook/body.html by scripts/build-runbook.mjs
 public/runbook.html
+runbook/.generated-body.html
