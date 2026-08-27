@@ -13,7 +13,7 @@ import { cx } from './tone';
  * inlined into the standalone copy like every other asset.
  *
  * To brand the demo for a client, drop the artwork at
- * `src/assets/client-logo.svg` (or .png). Nothing else to wire.
+ * `src/assets/client-logo.svg`, `.png` or `.webp`. Nothing else to wire.
  */
 const candidates = import.meta.glob('../../assets/client-logo.{svg,png,webp}', {
   eager: true,
@@ -21,7 +21,19 @@ const candidates = import.meta.glob('../../assets/client-logo.{svg,png,webp}', {
   import: 'default',
 });
 
-const LOGO_URL = Object.values(candidates)[0] as string | undefined;
+/**
+ * Explicit priority rather than whichever key the glob happens to enumerate
+ * first. Someone will one day leave both an .svg and a .png in place, and
+ * which one ships should not depend on object key ordering. Vector first: it
+ * stays crisp on a projector and inlines smaller into the standalone build.
+ */
+const PREFERRED = ['svg', 'png', 'webp'] as const;
+
+const LOGO_URL = PREFERRED.reduce<string | undefined>((found, extension) => {
+  if (found) return found;
+  const key = Object.keys(candidates).find((path) => path.endsWith(`.${extension}`));
+  return key ? (candidates[key] as string) : undefined;
+}, undefined);
 
 export function ClientLogo({
   className,
@@ -35,9 +47,15 @@ export function ClientLogo({
    */
   invert?: boolean;
 }) {
+  // The fallback takes the caller's className too: it occupies the same slot,
+  // and a height or width constraint that applies only when the asset happens
+  // to exist is how the two states end up laid out differently.
   if (!LOGO_URL) {
     return (
-      <span className="truncate font-mono text-[13px] text-ink-muted" title={CLIENT_CONTEXT.client}>
+      <span
+        className={cx('truncate font-mono text-[13px] text-ink-muted', className)}
+        title={CLIENT_CONTEXT.client}
+      >
         {CLIENT_CONTEXT.client}
       </span>
     );
