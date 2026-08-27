@@ -1,0 +1,432 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; background: #170D26; }
+    * { box-sizing: border-box; }
+    a { color: #9F7AEA; text-decoration: none; }
+    a:hover { color: #B79BF0; }
+    .tnum { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #170D26; color: #FFFFFF; font-family: Manrope, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+  <!-- ── Shell header ─────────────────────────────────────────── -->
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 56px; padding: 0 24px; border-bottom: 1px solid #4A3568; background: rgba(44,24,71,0.6); flex-shrink: 0">
+    <div style="display: flex; align-items: center; gap: 20px">
+      <div style="display: flex; align-items: center; gap: 9px">
+        <img src="avenga-symbol.png" alt="Avenga" style="height: 21px; width: auto; display: block">
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: -0.01em">Intelligent Flow</div>
+      </div>
+      <div style="width: 1px; height: 20px; background: #4A3568"></div>
+      <div style="display: flex; align-items: center; gap: 3px">
+        <div style="padding: 5px 11px; border-radius: 5px; background: rgba(16,185,129,0.10); color: #10B981; font-size: 9px; font-weight: 700; letter-spacing: 0.11em">DISCOVER</div>
+        <div style="padding: 5px 11px; border-radius: 5px; background: rgba(16,185,129,0.10); color: #10B981; font-size: 9px; font-weight: 700; letter-spacing: 0.11em">DECIDE</div>
+        <div style="padding: 5px 11px; border-radius: 5px; background: rgba(16,185,129,0.10); color: #10B981; font-size: 9px; font-weight: 700; letter-spacing: 0.11em">BUILD</div>
+        <div style="padding: 5px 11px; border-radius: 5px; background: rgba(16,185,129,0.10); color: #10B981; font-size: 9px; font-weight: 700; letter-spacing: 0.11em">OPERATE</div>
+        <div style="padding: 5px 11px; border-radius: 5px; background: rgba(124,93,199,0.22); color: #9F7AEA; font-size: 9px; font-weight: 700; letter-spacing: 0.11em; box-shadow: 0 0 18px rgba(124,93,199,0.40)">IMPROVE</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px">
+      <div style="text-align: right">
+        <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">MODEL ROUTING</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: #9F7AEA">bedrock · claude-3-5-sonnet · eu-central-1</div>
+      </div>
+      <div style="width: 1px; height: 22px; background: #4A3568"></div>
+      <div style="text-align: right">
+        <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">RBAC PERSONA</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: #9F7AEA">Lead FDE</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 5px; padding: 4px 9px; border: 1px solid rgba(16,185,129,0.35); border-radius: 5px; background: rgba(16,185,129,0.08)">
+        <div style="width: 5px; height: 5px; border-radius: 999px; background: #10B981"></div>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: #10B981">OIDC VERIFIED</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Page head + track segmented control ──────────────────── -->
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 18px 24px 14px; flex-shrink: 0">
+    <div>
+      <div style="font-size: 9px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0; margin-bottom: 5px">AZERCELL TELECOM LLC · BILLING ENGINE MODERNISATION</div>
+      <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.1">Executive Trust Dashboard</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="display: flex; padding: 3px; gap: 2px; border: 1px solid #4A3568; border-radius: 8px; background: rgba(44,24,71,0.8)">
+        <div onClick="{{ pickT1 }}" style="{{ seg.t1 }}">Track 1</div>
+        <div onClick="{{ pickT15 }}" style="{{ seg.t15 }}">Track 1.5</div>
+        <div onClick="{{ pickT2 }}" style="{{ seg.t2 }}">Track 2</div>
+      </div>
+      <div style="padding: 7px 11px; border: 1px solid #4A3568; border-radius: 8px; font-size: 10px; font-weight: 600; color: #C7BDCB">Sprint 1–6</div>
+    </div>
+  </div>
+
+  <!-- ── Body ─────────────────────────────────────────────────── -->
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0,1fr) 340px; gap: 16px; padding: 0 24px 20px">
+
+    <!-- Left column -->
+    <div style="display: flex; flex-direction: column; gap: 14px; min-height: 0">
+
+      <!-- Metric tiles -->
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="4">
+          <div style="border: 1px solid #4A3568; border-radius: 11px; background: rgba(44,24,71,0.7); padding: 13px 14px">
+            <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0; height: 20px">{{ t.label }}</div>
+            <div style="display: flex; align-items: baseline; gap: 7px; margin-top: 3px">
+              <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 25px; font-weight: 700; letter-spacing: -0.03em; color: {{ t.color }}">{{ t.value }}</span>
+              <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #8B7CA0; text-decoration: line-through">{{ t.baseline }}</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 9px">
+              <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: {{ t.deltaColor }}">{{ t.delta }}</span>
+              <svg width="76" height="22" viewBox="0 0 76 22" fill="none">
+                <path d="{{ t.spark }}" stroke="{{ t.color }}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- Hero chart -->
+      <div style="flex: 1; min-height: 0; border: 1px solid #4A3568; border-radius: 11px; background: rgba(44,24,71,0.7); display: flex; flex-direction: column">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 14px 18px 10px; border-bottom: 1px solid rgba(74,53,104,0.7)">
+          <div>
+            <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0; margin-bottom: 3px">THE TRACEABILITY SPINE · OBSERVED TELEMETRY</div>
+            <div style="font-size: 13px; font-weight: 600">A-UPI composite index</div>
+          </div>
+          <div style="display: flex; gap: 16px; padding-top: 4px">
+            <div style="display: flex; align-items: center; gap: 6px">
+              <span style="width: 7px; height: 7px; border-radius: 2px; background: #DD2C00"></span>
+              <span style="font-size: 9px; font-weight: 600; letter-spacing: 0.06em; color: #C7BDCB">UNGOVERNED AI</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px">
+              <span style="width: 7px; height: 7px; border-radius: 2px; background: #0E9F6E"></span>
+              <span style="font-size: 9px; font-weight: 600; letter-spacing: 0.06em; color: #C7BDCB">INTELLIGENT FLOW</span>
+            </div>
+          </div>
+        </div>
+        <div style="flex: 1; min-height: 0; padding: 14px 18px 8px">
+          <svg width="100%" height="100%" viewBox="0 0 760 210" preserveAspectRatio="none" fill="none">
+            <defs>
+              <linearGradient id="gGov" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0E9F6E" stop-opacity="0.30"/>
+                <stop offset="100%" stop-color="#0E9F6E" stop-opacity="0.02"/>
+              </linearGradient>
+              <linearGradient id="gUng" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#DD2C00" stop-opacity="0.22"/>
+                <stop offset="100%" stop-color="#DD2C00" stop-opacity="0.02"/>
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="0.5" x2="760" y2="0.5" stroke="#3A2359"/>
+            <line x1="0" y1="52.5" x2="760" y2="52.5" stroke="#3A2359"/>
+            <line x1="0" y1="105.5" x2="760" y2="105.5" stroke="#3A2359"/>
+            <line x1="0" y1="157.5" x2="760" y2="157.5" stroke="#3A2359"/>
+            <line x1="0" y1="209.5" x2="760" y2="209.5" stroke="#3A2359"/>
+            <path d="{{ chart.ungArea }}" fill="url(#gUng)"/>
+            <path d="{{ chart.ung }}" stroke="#DD2C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="{{ chart.govArea }}" fill="url(#gGov)"/>
+            <path d="{{ chart.gov }}" stroke="#0E9F6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="760" cy="{{ chart.govEndY }}" r="4" fill="#0E9F6E" stroke="#2C1847" stroke-width="2"/>
+            <circle cx="760" cy="{{ chart.ungEndY }}" r="4" fill="#DD2C00" stroke="#2C1847" stroke-width="2"/>
+          </svg>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 0 18px 12px">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #8B7CA0">S1</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #8B7CA0">S2</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #8B7CA0">S3</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #8B7CA0">S4</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #8B7CA0">S5</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #8B7CA0">S6</span>
+        </div>
+      </div>
+
+      <!-- Itemised breakdown — the Stripe Radar pattern -->
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; flex-shrink: 0">
+        <sc-for list="{{ columns }}" as="col" hint-placeholder-count="3">
+          <div style="border: 1px solid #4A3568; border-radius: 11px; background: rgba(44,24,71,0.7); padding: 13px 14px">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-bottom: 9px; border-bottom: 1px solid rgba(74,53,104,0.7)">
+              <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">{{ col.label }}</span>
+              <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: {{ col.color }}">{{ col.headline }}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 9px">
+              <sc-for list="{{ col.rows }}" as="r" hint-placeholder-count="4">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+                  <div style="display: flex; align-items: center; gap: 6px; min-width: 0">
+                    <span style="width: 5px; height: 5px; border-radius: 999px; background: {{ r.dot }}; flex-shrink: 0"></span>
+                    <span style="font-size: 10px; color: #C7BDCB; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.name }}</span>
+                  </div>
+                  <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: #FFFFFF; flex-shrink: 0">{{ r.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Right rail -->
+    <div style="display: flex; flex-direction: column; gap: 14px; min-height: 0">
+
+      <!-- Maturity gauge — the Semrush pattern -->
+      <div style="border: 1px solid rgba(217,119,6,0.45); border-radius: 11px; background: rgba(44,24,71,0.7); padding: 16px; box-shadow: 0 0 22px rgba(217,119,6,0.16)">
+        <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">A-UPI MATURITY MULTIPLIER</div>
+        <div style="display: flex; justify-content: center; padding: 12px 0 4px">
+          <svg width="200" height="112" viewBox="0 0 200 112" fill="none">
+            <path d="M16 100 A 84 84 0 0 1 184 100" stroke="#3A2359" stroke-width="11" stroke-linecap="round" fill="none"/>
+            <path d="M16 100 A 84 84 0 0 1 184 100" stroke="#D97706" stroke-width="11" stroke-linecap="round" fill="none"
+                  stroke-dasharray="{{ gauge.dash }}" />
+            <text x="100" y="86" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="34" font-weight="700" fill="#F59E0B" letter-spacing="-1">{{ gauge.value }}</text>
+            <text x="100" y="104" text-anchor="middle" font-family="Manrope, sans-serif" font-size="10" font-weight="600" fill="#8B7CA0" letter-spacing="1.4">{{ gauge.band }}</text>
+          </svg>
+        </div>
+        <div style="font-size: 10px; line-height: 1.55; color: #C7BDCB; border-top: 1px solid rgba(74,53,104,0.7); padding-top: 10px">
+          Computed from OPA gate adherence and context freshness, applied to raw DORA metrics.
+        </div>
+      </div>
+
+      <!-- TCO -->
+      <div style="border: 1px solid #4A3568; border-radius: 11px; background: rgba(44,24,71,0.7); padding: 14px 16px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px">
+          <span style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">TCO PER COSMIC FP</span>
+          <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: #9F7AEA; letter-spacing: -0.02em">{{ tco.value }}</span>
+        </div>
+        <svg width="100%" height="58" viewBox="0 0 292 58" preserveAspectRatio="none" fill="none" style="margin-top: 8px">
+          <defs>
+            <linearGradient id="gTco" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#9F7AEA" stop-opacity="0.32"/>
+              <stop offset="100%" stop-color="#9F7AEA" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          <path d="{{ tco.area }}" fill="url(#gTco)"/>
+          <path d="{{ tco.line }}" stroke="#9F7AEA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <div style="display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #8B7CA0; margin-top: 4px">
+          <span>€1,200 baseline</span>
+          <span>{{ tco.deltaLabel }}</span>
+        </div>
+      </div>
+
+      <!-- Way of working -->
+      <div style="flex: 1; min-height: 0; border: 1px solid #4A3568; border-radius: 11px; background: rgba(44,24,71,0.7); padding: 14px 16px; display: flex; flex-direction: column">
+        <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">WAY OF WORKING</div>
+        <div style="font-size: 12px; font-weight: 600; margin-top: 5px; color: {{ wow.color }}">{{ wow.title }}</div>
+        <div style="font-size: 10px; line-height: 1.6; color: #C7BDCB; margin-top: 7px; overflow: hidden">{{ wow.body }}</div>
+        <div style="margin-top: auto; padding-top: 11px; border-top: 1px solid rgba(74,53,104,0.7); display: flex; align-items: center; gap: 7px">
+          <span style="width: 6px; height: 6px; border-radius: 999px; background: {{ wow.color }}"></span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; color: {{ wow.color }}">{{ wow.badge }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { track: 'track2' };
+  }
+
+  data() {
+    return {
+      track1: {
+        name: 'Track 1 — Core Resourcing',
+        badge: 'NO ACTIVE CONTROL PLANE',
+        color: '#FF5A2C',
+        wow: 'Ticket-by-ticket sprint resourcing. Engineers placed as individuals into whatever tooling the client already runs. No standardised SLAs, no non-bypassable gates, review is manual and inconsistent.',
+        lead: 14.2, cfr: 28.0, defect: 12.0, maturity: 1.00, tco: 1200,
+        aupi: [42, 41, 39, 38, 36, 34],
+        tcoSeries: [1200, 1215, 1240, 1260, 1285, 1310],
+        columns: [
+          { label: 'GATE ADHERENCE', headline: '0 / 5', color: '#FF5A2C', rows: [
+            { name: 'Requirements traceability', value: '—', dot: '#8B7CA0' },
+            { name: 'Finance policy pack v1', value: '—', dot: '#8B7CA0' },
+            { name: 'Dependency scan', value: '—', dot: '#8B7CA0' },
+            { name: 'PII egress control', value: '—', dot: '#8B7CA0' },
+            { name: 'GitOps provenance', value: '—', dot: '#8B7CA0' } ] },
+          { label: 'AGENT ACTIVITY', headline: 'Ungoverned', color: '#FF5A2C', rows: [
+            { name: 'Mandates issued', value: '0', dot: '#8B7CA0' },
+            { name: 'Tool-calls intercepted', value: '0', dot: '#8B7CA0' },
+            { name: 'Out-of-band writes', value: '31', dot: '#DD2C00' },
+            { name: 'Token spend visibility', value: 'None', dot: '#DD2C00' } ] },
+          { label: 'HUMAN OVERSIGHT', headline: 'Retrospective', color: '#FF5A2C', rows: [
+            { name: 'Gates raised', value: '0', dot: '#8B7CA0' },
+            { name: 'Evidence Packs signed', value: '0', dot: '#8B7CA0' },
+            { name: 'Merges without review', value: '18', dot: '#DD2C00' },
+            { name: 'Median time to audit', value: '6 wks', dot: '#DD2C00' } ] }
+        ]
+      },
+      'track1.5': {
+        name: 'Track 1.5 — Forward-Deployed',
+        badge: 'TELEMETRY PULSE LOGGING',
+        color: '#F59E0B',
+        wow: 'Consultative FDE Mod Squads embedded for 60–90 days. Eight-dimensional readiness assessment and the non-disruptive Pulse collector establishing a measured baseline before any platform change.',
+        lead: 9.2, cfr: 18.5, defect: 7.4, maturity: 1.15, tco: 750,
+        aupi: [42, 48, 54, 58, 61, 64],
+        tcoSeries: [1200, 1040, 930, 855, 790, 750],
+        columns: [
+          { label: 'GATE ADHERENCE', headline: '2 / 5', color: '#F59E0B', rows: [
+            { name: 'Requirements traceability', value: 'PASS', dot: '#10B981' },
+            { name: 'Finance policy pack v1', value: 'PASS', dot: '#10B981' },
+            { name: 'Dependency scan', value: 'ADVISORY', dot: '#D97706' },
+            { name: 'PII egress control', value: 'ADVISORY', dot: '#D97706' },
+            { name: 'GitOps provenance', value: '—', dot: '#8B7CA0' } ] },
+          { label: 'AGENT ACTIVITY', headline: 'Observed', color: '#F59E0B', rows: [
+            { name: 'Mandates issued', value: '12', dot: '#D97706' },
+            { name: 'Tool-calls intercepted', value: '340', dot: '#D97706' },
+            { name: 'Out-of-band writes', value: '4', dot: '#D97706' },
+            { name: 'Token spend visibility', value: 'Sampled', dot: '#D97706' } ] },
+          { label: 'HUMAN OVERSIGHT', headline: 'Advisory', color: '#F59E0B', rows: [
+            { name: 'Gates raised', value: '9', dot: '#D97706' },
+            { name: 'Evidence Packs signed', value: '6', dot: '#10B981' },
+            { name: 'Merges without review', value: '3', dot: '#D97706' },
+            { name: 'Median time to sign', value: '4h 20m', dot: '#D97706' } ] }
+        ]
+      },
+      track2: {
+        name: 'Track 2 — Intelligent Flow Platform',
+        badge: 'MANDATE ACTIVE',
+        color: '#10B981',
+        wow: 'Senior-weighted Mod Squads under full control plane enforcement. Operations-as-Code: requirements become in-repo ADRs, agents execute under cryptographic Mandates, non-bypassable OPA gates compile signed Evidence Packs.',
+        lead: 2.1, cfr: 4.2, defect: 1.1, maturity: 1.44, tco: 180,
+        aupi: [42, 51, 62, 73, 81, 91],
+        tcoSeries: [1200, 720, 470, 320, 235, 180],
+        columns: [
+          { label: 'GATE ADHERENCE', headline: '5 / 5', color: '#10B981', rows: [
+            { name: 'Requirements traceability', value: 'PASS', dot: '#10B981' },
+            { name: 'Finance policy pack v1', value: 'PASS', dot: '#10B981' },
+            { name: 'Dependency scan', value: 'PASS', dot: '#10B981' },
+            { name: 'PII egress control', value: 'PASS', dot: '#10B981' },
+            { name: 'GitOps provenance', value: 'PASS', dot: '#10B981' } ] },
+          { label: 'AGENT ACTIVITY', headline: 'Bounded', color: '#10B981', rows: [
+            { name: 'Mandates issued', value: '48', dot: '#10B981' },
+            { name: 'Tool-calls intercepted', value: '2,914', dot: '#10B981' },
+            { name: 'Out-of-band writes', value: '0', dot: '#10B981' },
+            { name: 'Token spend visibility', value: 'Per call', dot: '#10B981' } ] },
+          { label: 'HUMAN OVERSIGHT', headline: 'In-line', color: '#10B981', rows: [
+            { name: 'Gates raised', value: '48', dot: '#10B981' },
+            { name: 'Evidence Packs signed', value: '46', dot: '#10B981' },
+            { name: 'Merges without review', value: '0', dot: '#10B981' },
+            { name: 'Median time to sign', value: '11m', dot: '#10B981' } ] }
+        ]
+      }
+    };
+  }
+
+  // ── geometry helpers ──────────────────────────────────────────
+  path(vals, w, h, max, min) {
+    const lo = min ?? 0;
+    const span = max - lo;
+    return vals.map((v, i) => {
+      const x = (i / (vals.length - 1)) * w;
+      const y = h - ((v - lo) / span) * h;
+      return (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1);
+    }).join(' ');
+  }
+
+  area(vals, w, h, max, min) {
+    return this.path(vals, w, h, max, min) + ' L' + w + ',' + h + ' L0,' + h + ' Z';
+  }
+
+  endY(vals, h, max, min) {
+    const lo = min ?? 0;
+    const v = vals[vals.length - 1];
+    return (h - ((v - lo) / (max - lo)) * h).toFixed(1);
+  }
+
+  segStyle(on) {
+    const base = 'padding: 6px 13px; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; cursor: pointer; transition: all 160ms; white-space: nowrap; ';
+    return on
+      ? base + 'background: rgba(124,93,199,0.24); color: #9F7AEA; box-shadow: 0 0 18px rgba(124,93,199,0.40);'
+      : base + 'background: transparent; color: #8B7CA0;';
+  }
+
+  pct(base, now) {
+    const d = ((now - base) / base) * 100;
+    return (d > 0 ? '+' : '') + d.toFixed(0) + '%';
+  }
+
+  renderVals() {
+    const all = this.data();
+    const t = all[this.state.track];
+    const base = all.track1;
+
+    const tile = (label, value, baseline, raw, rawBase, series, invert) => {
+      const better = invert ? raw > rawBase : raw < rawBase;
+      const same = raw === rawBase;
+      return {
+        label: label,
+        value: value,
+        baseline: baseline,
+        delta: same ? 'baseline' : this.pct(rawBase, raw) + ' vs baseline',
+        deltaColor: same ? '#8B7CA0' : (better ? '#10B981' : '#FF5A2C'),
+        color: same ? '#FFFFFF' : (better ? '#10B981' : '#FF5A2C'),
+        spark: this.path(series, 74, 18, Math.max.apply(null, series), Math.min.apply(null, series) * 0.9)
+      };
+    };
+
+    const cfrSeries = { track1: [28, 29, 32, 35, 39, 44], 'track1.5': [28, 25, 21, 20, 19, 18.5], track2: [28, 17, 11, 7.5, 5.4, 4.2] }[this.state.track];
+    const leadSeries = { track1: [14.2, 14.4, 14.9, 15.2, 15.8, 16.1], 'track1.5': [14.2, 12.8, 11.4, 10.5, 9.8, 9.2], track2: [14.2, 9.1, 5.8, 3.9, 2.7, 2.1] }[this.state.track];
+    const defSeries = { track1: [12, 12.4, 13.1, 13.8, 14.6, 15.2], 'track1.5': [12, 10.6, 9.3, 8.4, 7.8, 7.4], track2: [12, 7.4, 4.2, 2.6, 1.6, 1.1] }[this.state.track];
+    const matSeries = { track1: [1.0, 1.0, 0.98, 0.97, 0.95, 0.94], 'track1.5': [1.0, 1.04, 1.08, 1.11, 1.13, 1.15], track2: [1.0, 1.12, 1.24, 1.34, 1.4, 1.44] }[this.state.track];
+
+    return {
+      // segmented control
+      seg: {
+        t1: this.segStyle(this.state.track === 'track1'),
+        t15: this.segStyle(this.state.track === 'track1.5'),
+        t2: this.segStyle(this.state.track === 'track2')
+      },
+      pickT1: () => this.setState({ track: 'track1' }),
+      pickT15: () => this.setState({ track: 'track1.5' }),
+      pickT2: () => this.setState({ track: 'track2' }),
+
+      tiles: [
+        tile('DELIVERY LEAD TIME', t.lead.toFixed(1) + 'd', base.lead.toFixed(1) + 'd', t.lead, base.lead, leadSeries, false),
+        tile('CHANGE FAILURE RATE', t.cfr.toFixed(1) + '%', base.cfr.toFixed(1) + '%', t.cfr, base.cfr, cfrSeries, false),
+        tile('DEFECT ESCAPE RATIO', t.defect.toFixed(1) + '%', base.defect.toFixed(1) + '%', t.defect, base.defect, defSeries, false),
+        tile('MATURITY MULTIPLIER', t.maturity.toFixed(2) + '×', base.maturity.toFixed(2) + '×', t.maturity, base.maturity, matSeries, true)
+      ],
+
+      chart: {
+        gov: this.path(t.aupi, 760, 210, 100),
+        govArea: this.area(t.aupi, 760, 210, 100),
+        govEndY: this.endY(t.aupi, 210, 100),
+        ung: this.path(base.aupi, 760, 210, 100),
+        ungArea: this.area(base.aupi, 760, 210, 100),
+        ungEndY: this.endY(base.aupi, 210, 100)
+      },
+
+      gauge: (() => {
+        const score = t.aupi[t.aupi.length - 1];
+        const arc = 264;                       // length of the 168px-radius semicircle path
+        return {
+          value: t.maturity.toFixed(2) + '×',
+          band: score >= 80 ? 'COMPOUNDING' : score >= 55 ? 'IMPROVING' : 'ERODING',
+          dash: ((score / 100) * arc).toFixed(0) + ' ' + arc
+        };
+      })(),
+
+      tco: {
+        value: '€' + t.tco.toLocaleString(),
+        line: this.path(t.tcoSeries, 292, 58, 1400),
+        area: this.area(t.tcoSeries, 292, 58, 1400),
+        deltaLabel: t.tco === 1200 ? 'no change' : this.pct(1200, t.tco) + ' per CFP'
+      },
+
+      columns: t.columns,
+
+      wow: { title: t.name, body: t.wow, badge: t.badge, color: t.color }
+    };
+  }
+}
+</script>
+</body>
+</html>

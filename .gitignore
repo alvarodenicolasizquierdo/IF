@@ -1,0 +1,11 @@
+node_modules/
+dist/
+evidence-packs/
+context-store/
+mock-repos/
+*.local
+.DS_Store
+.vite/
+
+# Seeded design canvas — regenerate from design/*.dc.html with the design skill
+design/intelligent-flow-console.html

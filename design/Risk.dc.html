@@ -1,0 +1,292 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; background: #170D26; }
+    * { box-sizing: border-box; }
+    a { color: #9F7AEA; text-decoration: none; }
+    a:hover { color: #B79BF0; }
+    .tnum { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #170D26; color: #FFFFFF; font-family: Manrope, system-ui, sans-serif; display: flex; overflow: hidden">
+
+  <!-- ── Compliance rail — the Vanta pattern ──────────────────── -->
+  <div style="width: 208px; flex-shrink: 0; border-right: 1px solid #4A3568; background: rgba(44,24,71,0.45); padding: 16px 12px; display: flex; flex-direction: column; gap: 18px">
+    <div style="display: flex; align-items: center; gap: 9px; padding: 0 6px">
+      <img src="avenga-symbol.png" alt="Avenga" style="height: 21px; width: auto; display: block">
+      <div>
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: -0.01em">Control Plane</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; color: #8B7CA0">COMPLIANCE</div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 1px">
+      <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0; padding: 0 8px 6px">PROGRAMME</div>
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
+        <div style="{{ n.style }}">
+          <span style="width: 5px; height: 5px; border-radius: 999px; background: {{ n.dot }}; flex-shrink: 0"></span>
+          <span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ n.label }}</span>
+          <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: {{ n.countColor }}">{{ n.count }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: auto; border: 1px solid #4A3568; border-radius: 9px; padding: 11px; background: rgba(23,13,38,0.6)">
+      <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">ASSESSED ESTATE</div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #C7BDCB; margin-top: 6px; line-height: 1.7">
+        Bitbucket DC<br>mock-repos/core-service<br>Azercell Telecom LLC
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main ─────────────────────────────────────────────────── -->
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+
+    <div style="padding: 20px 26px 0; flex-shrink: 0">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px">
+        <div>
+          <div style="font-size: 9px; font-weight: 700; letter-spacing: 0.16em; color: #8B7CA0; margin-bottom: 6px">OPERATE · COMPLIANCE SUBSYSTEM</div>
+          <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; font-weight: 400; letter-spacing: -0.01em; line-height: 1.1">Regulatory Exposure Assessment</div>
+          <div style="font-size: 11px; color: #C7BDCB; margin-top: 5px; max-width: 620px; line-height: 1.6">
+            Scans the delivery pipeline as it stands today against the regulations that bind it. Each finding carries the
+            remediation the Control Plane installs when enforced.
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 9px; flex-shrink: 0">
+          <div onClick="{{ rescan }}" style="padding: 9px 15px; border: 1px solid #4A3568; border-radius: 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: #C7BDCB; cursor: pointer">RE-RUN SCAN</div>
+          <div onClick="{{ enforce }}" style="{{ enforceStyle }}">{{ enforceLabel }}</div>
+        </div>
+      </div>
+
+      <!-- Tab strip -->
+      <div style="display: flex; gap: 22px; margin-top: 18px; border-bottom: 1px solid #4A3568">
+        <div style="padding-bottom: 10px; border-bottom: 2px solid #9F7AEA; font-size: 11px; font-weight: 600; color: #FFFFFF">Findings</div>
+        <div style="padding-bottom: 10px; border-bottom: 2px solid transparent; font-size: 11px; font-weight: 600; color: #8B7CA0">Remediation SLAs</div>
+        <div style="padding-bottom: 10px; border-bottom: 2px solid transparent; font-size: 11px; font-weight: 600; color: #8B7CA0">Evidence ledger</div>
+        <div style="padding-bottom: 10px; border-bottom: 2px solid transparent; font-size: 11px; font-weight: 600; color: #8B7CA0">Scanners</div>
+      </div>
+    </div>
+
+    <!-- Summary strip -->
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; padding: 16px 26px 0; flex-shrink: 0">
+      <sc-for list="{{ summary }}" as="s" hint-placeholder-count="4">
+        <div style="border: 1px solid {{ s.border }}; border-radius: 10px; background: {{ s.bg }}; padding: 12px 14px">
+          <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">{{ s.label }}</div>
+          <div style="display: flex; align-items: baseline; gap: 7px; margin-top: 5px">
+            <span class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: {{ s.color }}">{{ s.value }}</span>
+            <span style="font-size: 10px; color: #8B7CA0">{{ s.unit }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- Findings — severity-banded rows -->
+    <div style="flex: 1; min-height: 0; overflow: hidden; padding: 16px 26px 20px; display: flex; flex-direction: column; gap: 10px">
+      <sc-for list="{{ findings }}" as="f" hint-placeholder-count="4">
+        <div style="border: 1px solid {{ f.border }}; border-radius: 11px; background: {{ f.bg }}; display: flex; overflow: hidden">
+
+          <!-- Severity band -->
+          <div style="width: 4px; background: {{ f.accent }}; flex-shrink: 0"></div>
+
+          <div style="flex: 1; min-width: 0; padding: 13px 16px">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 18px">
+              <div style="min-width: 0; flex: 1">
+                <div style="display: flex; align-items: center; gap: 9px">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: {{ f.accent }}">{{ f.reg }}</span>
+                  <span style="width: 3px; height: 3px; border-radius: 999px; background: #4A3568"></span>
+                  <span style="font-size: 11px; font-weight: 600; color: #FFFFFF">{{ f.article }}</span>
+                </div>
+                <div style="font-size: 11px; line-height: 1.65; color: #C7BDCB; margin-top: 6px; max-width: 860px">{{ f.body }}</div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0">
+                <div style="text-align: right">
+                  <div style="font-size: 8px; font-weight: 700; letter-spacing: 0.14em; color: #8B7CA0">{{ f.metaLabel }}</div>
+                  <div class="tnum" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: {{ f.accent }}; margin-top: 3px">{{ f.meta }}</div>
+                </div>
+                <div style="padding: 5px 10px; border: 1px solid {{ f.border }}; border-radius: 6px; background: {{ f.chipBg }}; font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; color: {{ f.accent }}; white-space: nowrap">{{ f.verdict }}</div>
+              </div>
+            </div>
+
+            <!-- Remediation footer -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 11px; padding-top: 10px; border-top: 1px solid rgba(74,53,104,0.55)">
+              <div style="display: flex; align-items: center; gap: 8px; min-width: 0">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="{{ f.remedyColor }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span style="font-size: 10px; line-height: 1.5; color: {{ f.remedyColor }}; min-width: 0">{{ f.remedy }}</span>
+              </div>
+              <div style="display: flex; gap: 7px; flex-shrink: 0">
+                <span style="padding: 4px 9px; border: 1px solid #4A3568; border-radius: 5px; font-size: 9px; font-weight: 600; color: #8B7CA0; white-space: nowrap">View history</span>
+                <span style="padding: 4px 9px; border: 1px solid #4A3568; border-radius: 5px; font-size: 9px; font-weight: 600; color: #8B7CA0; white-space: nowrap">{{ f.action }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { enforced: false };
+  }
+
+  findingData() {
+    return [
+      {
+        reg: 'EU AI ACT',
+        article: 'Article 14 — Human Oversight',
+        body: 'Autonomous agents execute raw, un-monitored file-writes directly to the main branch. No non-bypassable manual verification checkpoint exists anywhere in the pipeline.',
+        verdict: 'FAILED',
+        severity: 'Extreme',
+        meta: '31 writes',
+        metaLabel: 'UNREVIEWED',
+        remedy: 'Aviation-style HITL gate installed — irreversible actions hard-stop pending a named, OIDC-verified signature.',
+        action: 'Assign owner',
+        tone: 'violation'
+      },
+      {
+        reg: 'EU AI ACT',
+        article: 'Article 15 — Traceability & Logging',
+        body: 'AI-generated merges are checked in under shared developer Git credentials. No cryptographically signed, immutable Evidence Packs are compiled at any stage.',
+        verdict: 'FAILED',
+        severity: 'High',
+        meta: '18 merges',
+        metaLabel: 'UNATTRIBUTED',
+        remedy: 'Evidence Pack compiler active — every merge carries a signed hash chain binding prompt, model version, policy verdicts and signatory.',
+        action: 'Assign owner',
+        tone: 'violation'
+      },
+      {
+        reg: 'DORA',
+        article: 'Articles 8–9 — ICT Risk & Supply Chain',
+        body: 'Third-party libraries pulled by the coding assistant bypass automated policy-as-code licence and vulnerability scanning before they enter the build environment.',
+        verdict: 'HIGH RISK',
+        severity: 'Elevated',
+        meta: '7 packages',
+        metaLabel: 'UN-SCANNED',
+        remedy: 'Dependency scan promoted to a blocking OPA gate — un-scanned transitive dependencies cannot enter the build.',
+        action: 'Set SLA',
+        tone: 'hitl'
+      },
+      {
+        reg: 'GDPR',
+        article: 'Data Minimisation & PII Leakage',
+        body: 'Unmasked customer billing records — local telephone numbers and tax IDs — are transmitted in plaintext to public, US-hosted frontier model endpoints.',
+        verdict: 'FAILED',
+        severity: 'Extreme',
+        meta: '2.4k records',
+        metaLabel: 'EGRESSED',
+        remedy: 'Sovereign routing enforced at the LLM Gateway — classified payloads pinned to the region-isolated or self-hosted tier.',
+        action: 'Assign owner',
+        tone: 'violation'
+      }
+    ];
+  }
+
+  tone(name) {
+    const map = {
+      violation: { accent: '#FF5A2C', border: 'rgba(221,44,0,0.42)', bg: 'rgba(221,44,0,0.07)', chipBg: 'rgba(221,44,0,0.14)' },
+      hitl:      { accent: '#F59E0B', border: 'rgba(217,119,6,0.42)',  bg: 'rgba(217,119,6,0.07)',  chipBg: 'rgba(217,119,6,0.14)' },
+      passed:    { accent: '#10B981', border: 'rgba(16,185,129,0.42)', bg: 'rgba(16,185,129,0.07)', chipBg: 'rgba(16,185,129,0.14)' }
+    };
+    return map[name];
+  }
+
+  renderVals() {
+    const enforced = this.state.enforced;
+    const raw = this.findingData();
+
+    const findings = raw.map((f) => {
+      const t = this.tone(enforced ? 'passed' : f.tone);
+      return {
+        reg: f.reg,
+        article: f.article,
+        body: enforced ? f.remedy : f.body,
+        verdict: enforced ? 'ENFORCED' : f.verdict,
+        meta: enforced ? 'Blocking' : f.meta,
+        metaLabel: enforced ? 'GATE STATE' : f.metaLabel,
+        remedy: enforced
+          ? 'Control installed and evaluated on every commit. Bypass requires a signed exception.'
+          : 'Remediation available — ' + f.remedy,
+        remedyColor: enforced ? '#10B981' : '#8B7CA0',
+        action: enforced ? 'View control' : f.action,
+        accent: t.accent,
+        border: t.border,
+        bg: t.bg,
+        chipBg: t.chipBg
+      };
+    });
+
+    const navRow = (label, count, dot, countColor, on) => ({
+      label: label,
+      count: count,
+      dot: dot,
+      countColor: countColor,
+      style: 'display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; cursor: pointer; '
+        + (on ? 'background: rgba(124,93,199,0.14); color: #FFFFFF;' : 'color: #C7BDCB;')
+    });
+
+    return {
+      rescan: () => this.setState({ enforced: false }),
+      enforce: () => this.setState({ enforced: true }),
+      enforceLabel: enforced ? 'CONTROL PLANE ENFORCED' : 'ENFORCE CONTROL PLANE',
+      enforceStyle: 'padding: 9px 15px; border-radius: 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; white-space: nowrap; transition: all 200ms; '
+        + (enforced
+          ? 'background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.45); color: #10B981;'
+          : 'background: #10B981; border: 1px solid #10B981; color: #170D26; box-shadow: 0 0 18px rgba(16,185,129,0.30);'),
+
+      nav: [
+        navRow('Findings', enforced ? '0' : '4', enforced ? '#10B981' : '#FF5A2C', enforced ? '#10B981' : '#FF5A2C', true),
+        navRow('Trust Center', '—', '#8B7CA0', '#8B7CA0', false),
+        navRow('Risk register', enforced ? '0' : '4', enforced ? '#10B981' : '#F59E0B', '#8B7CA0', false),
+        navRow('Vendors', '12', '#8B7CA0', '#8B7CA0', false),
+        navRow('Assets', '38', '#8B7CA0', '#8B7CA0', false),
+        navRow('Personnel', '24', '#8B7CA0', '#8B7CA0', false)
+      ],
+
+      summary: [
+        {
+          label: 'OPEN AUDIT VULNERABILITIES', value: enforced ? '0' : '4', unit: enforced ? 'all enforced' : 'across 3 regulations',
+          color: enforced ? '#10B981' : '#FF5A2C',
+          border: enforced ? 'rgba(16,185,129,0.42)' : 'rgba(221,44,0,0.42)',
+          bg: enforced ? 'rgba(16,185,129,0.07)' : 'rgba(221,44,0,0.07)'
+        },
+        {
+          label: 'HIGHEST SEVERITY', value: enforced ? 'None' : 'Extreme', unit: enforced ? 'nothing open' : '2 findings',
+          color: enforced ? '#10B981' : '#FF5A2C',
+          border: '#4A3568', bg: 'rgba(44,24,71,0.7)'
+        },
+        {
+          label: 'BLOCKING GATES INSTALLED', value: enforced ? '5 / 5' : '0 / 5', unit: 'policy-as-code',
+          color: enforced ? '#10B981' : '#8B7CA0',
+          border: '#4A3568', bg: 'rgba(44,24,71,0.7)'
+        },
+        {
+          label: 'EVIDENCE PACKS SIGNED', value: enforced ? '46' : '0', unit: 'last 30 days',
+          color: enforced ? '#10B981' : '#8B7CA0',
+          border: '#4A3568', bg: 'rgba(44,24,71,0.7)'
+        }
+      ],
+
+      findings: findings
+    };
+  }
+}
+</script>
+</body>
+</html>
