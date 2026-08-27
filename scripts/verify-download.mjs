@@ -30,8 +30,24 @@ const check = (label, ok, detail) => {
 const browser = await chromium.launch(launch);
 const page = await browser.newPage({ viewport: { width: 1000, height: 900 } });
 
+// Console errors count too: a blocked resource or a failed request never
+// throws, so watching pageerror alone would let a page that is quietly broken
+// pass. Off-origin requests are recorded rather than blocked so the failure
+// message can name what reached out.
 const pageErrors = [];
-page.on('pageerror', (e) => pageErrors.push(e.message));
+page.on('pageerror', (e) => pageErrors.push(`pageerror: ${e.message}`));
+page.on('console', (m) => {
+  if (m.type() === 'error') pageErrors.push(`console: ${m.text()}`);
+});
+
+const origin = new URL(BASE).origin;
+const offOrigin = new Set();
+page.on('request', (request) => {
+  const url = request.url();
+  if (!url.startsWith('data:') && !url.startsWith('blob:') && new URL(url).origin !== origin) {
+    offOrigin.add(url);
+  }
+});
 
 await page.goto(new URL('download.html', BASE).href, { waitUntil: 'domcontentloaded' });
 
@@ -69,6 +85,15 @@ if (saved) {
 // reads as a broken one.
 const status = (await page.locator('#status').innerText()).trim();
 check('the page confirms the save in words', /saved/i.test(status), status);
+
+// This page is what a presenter reaches for when the network is already being
+// difficult, so it must not depend on anyone else's. The console self-hosts
+// its fonts for the same reason; this keeps the download page honest about it.
+check(
+  'nothing on the page is fetched from a third party',
+  offOrigin.size === 0,
+  [...offOrigin].join(', ') || 'same-origin only',
+);
 
 check('no page errors', pageErrors.length === 0, pageErrors.join('; ') || undefined);
 

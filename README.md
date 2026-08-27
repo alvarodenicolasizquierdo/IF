@@ -60,7 +60,8 @@ it does, the banner is GitHub's own check lagging behind a freshly-added record
 and it clears on its own; changing DNS at that point only makes things worse.
 The banner does not block the deploy.
 
-**2 — One file, no install.** Go to `/download.html` and press the button, or
+**2 — One file, no install.** Open `download.html` on the site — `flow.alvarodenicolas.com/download.html`,
+or `<user>.github.io/<repo>/download.html` if you stayed on github.io — and press the button, or
 open presenter God Mode and use *Take it offline*. A plain link to the file is
 not enough: it is served as `text/html`, so a browser renders the console in a
 tab instead of saving it — the download page fetches it same-origin and hands

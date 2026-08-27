@@ -5,10 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Download the offline console — Avenga Intelligent Flow</title>
 <link rel="icon" href="./favicon.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap">
 <style>
+  /*
+   * Fonts are served from this origin, never a CDN. The console self-hosts
+   * for exactly this reason — a client network that blocks Google Fonts is
+   * the normal case, not the edge case — and this is the page a presenter
+   * reaches for when the network is already being difficult. It also keeps
+   * the page from telling a third party who is downloading the demo.
+   */
+  @font-face {
+    font-family: 'Instrument Serif';
+    src: url('./fonts/instrument-serif-400.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Manrope';
+    src: url('./fonts/manrope-400.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Manrope';
+    src: url('./fonts/manrope-700.woff2') format('woff2');
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'JetBrains Mono';
+    src: url('./fonts/jetbrains-mono-400.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'JetBrains Mono';
+    src: url('./fonts/jetbrains-mono-700.woff2') format('woff2');
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+
   /*
    * Deliberately single-theme: this page is the console's own front door and
    * lives in the same Premium Purple world, so it paints every colour rather
