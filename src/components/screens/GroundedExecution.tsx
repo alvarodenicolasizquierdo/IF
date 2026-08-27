@@ -49,7 +49,7 @@ export function GroundedExecution() {
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
             Build · grounded execution
           </p>
-          <h1 className="mt-1 text-xl font-bold tracking-tight text-ink">
+          <h1 className="mt-1 font-display text-[26px] leading-tight tracking-tight text-ink">
             Split-panel execution canvas
           </h1>
           <p className="mt-1 font-mono text-xs text-ink-muted">{CLIENT_CONTEXT.targetFile}</p>

@@ -1,24 +1,24 @@
 /**
  * Chart palette, validated with the dataviz palette validator against the
- * #111827 chart surface (dark mode). All six checks pass:
- *   lightness band · chroma floor · CVD separation (ΔE 8.7 deutan)
- *   · normal-vision floor (ΔE 32.7) · contrast ≥ 3:1
+ * #2C1847 Premium Purple chart surface (dark mode). All six checks pass:
+ *   lightness band · chroma floor · CVD separation (ΔE 9.5 deutan)
+ *   · normal-vision floor (ΔE 32.0) · contrast ≥ 3:1
  *
- * Note the two deliberate deviations from the UI chrome palette:
- *   - governed emerald is deepened #10B981 → #0E9F6E, which is what brings the
- *     mark inside the lightness band on this surface;
- *   - TCO indigo is #4F46E5 → #6366F1, because #4F46E5 sits at 2.82:1 against
- *     the surface and fails the contrast floor for a plotted mark.
- * The brand hexes remain exact everywhere in the UI chrome; only plotted marks
- * are stepped, which is what the Trust Accent Spectrum reads as anyway.
+ * Creative Red is the exact brand hex and needs no adjustment as a plotted
+ * mark on this ground. Two marks are stepped from the UI chrome:
+ *   - governed emerald #10B981 → #0E9F6E, which brings it inside the
+ *     lightness band on this surface;
+ *   - TCO indigo is the brand-family lavender rather than the chrome's
+ *     #7C5DC7, which sits at 3.20:1 and fails the contrast floor for a mark.
+ * The brand hexes remain exact everywhere in the UI chrome.
  */
 export const CHART = {
-  ungoverned: '#DC2626',
+  ungoverned: '#DD2C00', // Creative Red (exact brand hex)
   governed: '#0E9F6E',
-  tco: '#6366F1',
-  grid: '#1F2937',
-  axis: '#6B7280',
-  surface: '#111827',
+  tco: '#9F7AEA',
+  grid: '#3A2359',
+  axis: '#8B7CA0',
+  surface: '#2C1847', // Premium Purple (exact brand hex)
 } as const;
 
 export const SPRINT_LABELS = ['Sprint 1', 'Sprint 2', 'Sprint 3', 'Sprint 4', 'Sprint 5', 'Sprint 6'];

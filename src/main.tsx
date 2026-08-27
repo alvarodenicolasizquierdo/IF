@@ -1,10 +1,13 @@
 // Self-hosted fonts: a client roadshow may run offline or behind a guest
 // network that blocks font CDNs, and the console must never fall back mid-demo.
-import '@fontsource/inter/400.css';
-import '@fontsource/inter/500.css';
-import '@fontsource/inter/600.css';
-import '@fontsource/inter/700.css';
-import '@fontsource/inter/800.css';
+// Manrope and Instrument Serif stand in for Avenga's licensed Haffer and
+// Reckless — swap both here and in tailwind.config.js once the licences land.
+import '@fontsource/manrope/400.css';
+import '@fontsource/manrope/500.css';
+import '@fontsource/manrope/600.css';
+import '@fontsource/manrope/700.css';
+import '@fontsource/manrope/800.css';
+import '@fontsource/instrument-serif/400.css';
 import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/500.css';
 import '@fontsource/jetbrains-mono/700.css';

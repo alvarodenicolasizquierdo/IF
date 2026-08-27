@@ -19,7 +19,7 @@ export function ContinuousEvolution() {
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
             Improve · post-deployment
           </p>
-          <h1 className="mt-1 text-xl font-bold tracking-tight text-ink">Continuous Evolution Engine</h1>
+          <h1 className="mt-1 font-display text-[26px] leading-tight tracking-tight text-ink">Continuous Evolution Engine</h1>
           <p className="mt-1 text-xs text-ink-muted">
             What happens after the merge — the loop that stops post-deployment software decay.
           </p>

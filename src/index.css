@@ -17,8 +17,8 @@
     @apply bg-canvas text-ink font-sans antialiased;
     /* Faint enterprise grid — audit-suite texture, never decorative noise */
     background-image:
-      linear-gradient(rgba(55, 65, 81, 0.16) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(55, 65, 81, 0.16) 1px, transparent 1px);
+      linear-gradient(rgba(74, 53, 104, 0.22) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74, 53, 104, 0.22) 1px, transparent 1px);
     background-size: 56px 56px;
     background-attachment: fixed;
   }

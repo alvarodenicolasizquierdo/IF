@@ -41,7 +41,7 @@ export function ContextAssembly() {
         <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
           Discover → Decide
         </p>
-        <h1 className="mt-1 text-xl font-bold tracking-tight text-ink">Context Assembly & the Mandate</h1>
+        <h1 className="mt-1 font-display text-[26px] leading-tight tracking-tight text-ink">Context Assembly & the Mandate</h1>
         <p className="mt-1 text-xs text-ink-muted">
           {CLIENT_CONTEXT.requirement} · Jira {CLIENT_CONTEXT.workItem} · {CLIENT_CONTEXT.adr}
         </p>

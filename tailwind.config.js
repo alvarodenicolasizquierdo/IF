@@ -4,37 +4,51 @@ export default {
   theme: {
     extend: {
       colors: {
-        /* ---- Avenga Enterprise Dark canvas ---- */
-        canvas: '#0B0F19', // Dark Slate primary background
-        surface: '#111827', // Panel / shell surface
-        card: '#1F2937', // Muted Charcoal card background
-        hairline: '#374151', // Thin card borders
-        ink: '#F9FAFB', // Crisp White primary text
-        'ink-muted': '#9CA3AF', // Soft Gray muted text
-        'ink-faint': '#6B7280', // Cool gray sub-elements
+        /* ---- Ground: Premium Purple, the brand book's colour for large solid backgrounds ---- */
+        canvas: '#170D26', // Premium Purple, darkened — deepest ground
+        surface: '#2C1847', // Premium Purple (exact brand hex) — panel / shell surface
+        card: '#3A2359', // Premium Purple, raised — card background
+        hairline: '#4A3568', // Premium Purple, border weight
 
-        /* ---- The Trust Accent Spectrum ---- */
+        /* ---- Text: the brand's own neutrals ---- */
+        ink: '#FFFFFF', // Visionary White (exact brand hex)
+        'ink-warm': '#E0DACE', // Trustful Beige (exact brand hex)
+        'ink-muted': '#C7BDCB', // Compassionate Lavender (exact brand hex)
+        'ink-faint': '#8B7CA0', // derived from Premium Purple
+
+        /* ---- The Trust Accent Spectrum, re-rooted in the brand ---- */
         trust: {
-          active: '#4F46E5', // Electric Indigo  — active processing / focus
-          'active-soft': '#6366F1',
-          passed: '#10B981', // Emerald Green    — governance passed / immutable
+          // Active processing. Purple was already this role's hue; taking it from
+          // the brand's own family puts it on-brand without changing its meaning.
+          active: '#7C5DC7',
+          'active-soft': '#9F7AEA',
+          // Governance passed and HITL checkpoint are functional additions —
+          // the brand book defines no status colours, and a governance console
+          // cannot work without them.
+          passed: '#10B981',
           'passed-soft': '#34D399',
-          hitl: '#D97706', // Amber Gold       — human-in-the-loop checkpoint
+          hitl: '#D97706',
           'hitl-soft': '#F59E0B',
-          violation: '#DC2626', // Crimson Red      — policy violation / audit vulnerability
-          'violation-soft': '#EF4444',
+          // Creative Red (exact brand hex) carries both the mark and the
+          // policy-violation semantic — in a governance console red already
+          // means stop, so the two readings reinforce rather than fight.
+          violation: '#DD2C00',
+          'violation-soft': '#FF5A2C',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Manrope and Instrument Serif stand in for Avenga's licensed Haffer and
+        // Reckless. Swap both here once the web licences land.
+        sans: ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"Instrument Serif"', 'Georgia', 'ui-serif', 'serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       boxShadow: {
         /* Trust Accent Spectrum glows — exposed as utilities so components stay class-only */
-        'glow-active': '0 0 18px rgba(79, 70, 229, 0.40)',
+        'glow-active': '0 0 18px rgba(124, 93, 199, 0.45)',
         'glow-passed': '0 0 18px rgba(16, 185, 129, 0.30)',
         'glow-hitl': '0 0 22px rgba(217, 119, 6, 0.30)',
-        'glow-violation': '0 0 22px rgba(220, 38, 38, 0.32)',
+        'glow-violation': '0 0 22px rgba(221, 44, 0, 0.34)',
         panel: '0 12px 40px -12px rgba(0, 0, 0, 0.75)',
       },
       keyframes: {

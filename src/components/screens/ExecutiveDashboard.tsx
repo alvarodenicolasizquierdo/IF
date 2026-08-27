@@ -54,7 +54,7 @@ export function ExecutiveDashboard() {
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint">
             A-UPI metric system · normalised baseline vs current pilot
           </p>
-          <h1 className="mt-1 text-xl font-bold tracking-tight text-ink">Executive Trust Dashboard</h1>
+          <h1 className="mt-1 font-display text-[26px] leading-tight tracking-tight text-ink">Executive Trust Dashboard</h1>
           <p className="mt-1 text-xs text-ink-muted">
             {CLIENT_CONTEXT.client} — {CLIENT_CONTEXT.project} · {track.label}
           </p>
@@ -189,7 +189,7 @@ export function ExecutiveDashboard() {
                     value={String(finalGoverned)}
                     position="right"
                     offset={10}
-                    style={{ fill: '#F9FAFB', fontSize: 12, fontWeight: 700 }}
+                    style={{ fill: '#FFFFFF', fontSize: 12, fontWeight: 700 }}
                   />
                 </ReferenceDot>
                 <ReferenceDot
@@ -204,7 +204,7 @@ export function ExecutiveDashboard() {
                     value={String(finalUngoverned)}
                     position="right"
                     offset={10}
-                    style={{ fill: '#9CA3AF', fontSize: 12, fontWeight: 700 }}
+                    style={{ fill: '#C7BDCB', fontSize: 12, fontWeight: 700 }}
                   />
                 </ReferenceDot>
               </AreaChart>
@@ -275,7 +275,7 @@ export function ExecutiveDashboard() {
                     value={`€${finalTco}`}
                     position="right"
                     offset={10}
-                    style={{ fill: '#F9FAFB', fontSize: 12, fontWeight: 700 }}
+                    style={{ fill: '#FFFFFF', fontSize: 12, fontWeight: 700 }}
                   />
                 </ReferenceDot>
               </AreaChart>

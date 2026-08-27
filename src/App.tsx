@@ -30,15 +30,16 @@ export default function App() {
       <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/90 backdrop-blur-md">
         <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-3">
           <div className="flex items-center gap-5">
-            <div className="flex items-center gap-2.5">
-              <span
-                aria-hidden
-                className="flex h-7 w-7 items-center justify-center rounded bg-trust-active font-mono text-[11px] font-bold text-white"
-              >
-                IF
-              </span>
+            <div className="flex items-center gap-3">
+              {/* Avenga is the company; Intelligent Flow is the product it wraps around. */}
+              <img
+                src="/avenga-wordmark.png"
+                alt="Avenga"
+                className="h-[15px] w-auto"
+              />
+              <span aria-hidden className="h-6 w-px bg-hairline" />
               <div className="leading-tight">
-                <p className="text-xs font-bold tracking-tight text-ink">Intelligent Flow</p>
+                <p className="font-display text-sm tracking-tight text-ink">Intelligent Flow</p>
                 <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-ink-faint">
                   Engineering Operating System
                 </p>

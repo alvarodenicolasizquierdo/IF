@@ -124,11 +124,26 @@ ceremony must never degrade mid-pitch. Verified against `node:crypto`:
 node src/lib/sha256.test.mjs
 ```
 
-**Colour.** The Trust Accent Spectrum is defined once in `tailwind.config.js` and
-consumed through `src/components/ui/tone.ts`; no component hand-picks a hex.
-Chart marks are stepped one notch from the UI chrome hexes so they clear the
-contrast and colour-vision-deficiency thresholds against the dark chart surface —
-see the note in `src/components/ui/chartTokens.ts`.
+**Colour.** Rooted in the Avenga brand book. The ground is **Premium Purple
+`#2C1847`** — the brand's own colour for large solid backgrounds — with
+**Visionary White**, **Trustful Beige** and **Compassionate Lavender** carrying
+text and **Creative Red `#DD2C00`** carrying both the mark and the
+policy-violation semantic. Emerald (passed) and Amber (HITL) are functional
+additions; the brand book defines no status colours, and a governance console
+cannot work without them.
+
+Tokens live once in `tailwind.config.js` and are consumed through
+`src/components/ui/tone.ts`; no component hand-picks a hex. Two plotted marks
+are stepped from the chrome so they clear contrast and colour-vision-deficiency
+thresholds on the purple surface — see the note in
+`src/components/ui/chartTokens.ts`.
+
+**Type.** Manrope and Instrument Serif stand in for Avenga's licensed Haffer and
+Reckless. Swap both in `tailwind.config.js` and `src/main.tsx` once the web
+licences are available.
+
+The visual direction is explorable as a design canvas:
+<https://claude.ai/code/artifact/d748fc67-fac1-48fd-9b78-6c694010fd6c>
 
 ---
 
