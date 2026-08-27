@@ -8,7 +8,7 @@ export type TrackId = 'track1' | 'track1.5' | 'track2';
 
 export type PhaseId = 'DISCOVER' | 'DECIDE' | 'BUILD' | 'OPERATE' | 'IMPROVE';
 
-export type PersonaId = 'lead-fde' | 'ai-agent' | 'ciso';
+export type PersonaId = 'traditional-dev' | 'lead-fde' | 'ai-agent' | 'ciso';
 
 export type ScreenId =
   | 'dashboard'
@@ -60,7 +60,8 @@ export interface Persona {
   /** Governing track context for the presenter script */
   trackContext: string;
   canSignEvidencePack: boolean;
-  tone: 'active' | 'hitl' | 'passed';
+  /** 'violation' is reachable: Track 1's identity is the ungoverned one. */
+  tone: 'active' | 'hitl' | 'passed' | 'violation';
 }
 
 export interface ContextPill {

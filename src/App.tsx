@@ -1,7 +1,7 @@
 import avengaWordmark from '@/assets/avenga-wordmark.png';
 import { GLOSSARY } from '@/data/glossary';
 import { CLIENT_CONTEXT, PHASE_BLURB } from '@/data/scenario';
-import { useDemoStore } from '@/store/demoStore';
+import { AUTO_PLAY_LENGTH, useDemoStore } from '@/store/demoStore';
 
 import { PhaseBanner } from '@/components/shell/PhaseBanner';
 import { IdentityConsole } from '@/components/shell/IdentityConsole';
@@ -10,7 +10,8 @@ import { TrackSelector } from '@/components/shell/TrackSelector';
 import { ScreenRail } from '@/components/shell/ScreenRail';
 import { ActionTray } from '@/components/shell/ActionTray';
 import { ToastStack } from '@/components/shell/ToastStack';
-import { InfoTip } from '@/components/ui/Tooltip';
+import { HelpCircle } from 'lucide-react';
+import { InfoTip, Tooltip } from '@/components/ui/Tooltip';
 import { AuditLog } from '@/components/shell/AuditLog';
 
 import { ExecutiveDashboard } from '@/components/screens/ExecutiveDashboard';
@@ -22,11 +23,15 @@ import { HitlGate } from '@/components/overlays/HitlGate';
 import { RegulatoryOverlay } from '@/components/overlays/RegulatoryOverlay';
 import { AvengaIntelligenceModal } from '@/components/overlays/AvengaIntelligenceModal';
 import { ExploitBriefing } from '@/components/overlays/ExploitBriefing';
+import { HelpOverlay } from '@/components/overlays/HelpOverlay';
+import { ContextGraph } from '@/components/overlays/ContextGraph';
 import { GodModePanel } from '@/components/presenter/GodModePanel';
 
 export default function App() {
   const activeScreen = useDemoStore((s) => s.activeScreen);
   const activePhase = useDemoStore((s) => s.activePhase);
+  const autoPlayLabel = useDemoStore((s) => s.autoPlayLabel);
+  const autoPlayIndex = useDemoStore((s) => s.autoPlayIndex);
 
   return (
     /*
@@ -57,6 +62,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <ModelSwitcher />
             <IdentityConsole />
+            <HelpButton />
           </div>
         </div>
       </header>
@@ -95,12 +101,45 @@ export default function App() {
         <main className="flex min-h-0 min-w-0 flex-1 flex-col px-5 py-4">
           <div className="mb-4 shrink-0 space-y-3">
             <ActionTray />
-            <p className="px-1 text-[14px] leading-snug text-ink-muted">
-              <span className="font-mono text-[13px] font-bold uppercase tracking-wider text-trust-active-soft">
-                {activePhase}
-              </span>{' '}
-              — {PHASE_BLURB[activePhase]}
-            </p>
+            {/*
+              * One slot, two jobs. While a scripted run is going the narration
+              * line becomes the run's own commentary, so the progress readout
+              * costs no vertical space on a 720p share.
+              */}
+            {autoPlayLabel !== null ? (
+              <div className="px-1">
+                <p className="flex items-center gap-2 text-[14px] leading-snug text-ink">
+                  <span className="relative flex h-2 w-2 shrink-0">
+                    <span className="absolute inline-flex h-full w-full animate-pulse-ring rounded-full bg-trust-passed" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-trust-passed" />
+                  </span>
+                  <span className="font-mono text-[13px] font-bold uppercase tracking-wider text-trust-passed">
+                    Auto-play
+                  </span>
+                  <span className="text-ink-muted">— {autoPlayLabel}</span>
+                </p>
+                <div
+                  className="mt-1.5 h-0.5 w-full overflow-hidden rounded-full bg-hairline"
+                  role="progressbar"
+                  aria-label="Scripted run progress"
+                  aria-valuenow={(autoPlayIndex ?? 0) + 1}
+                  aria-valuemin={1}
+                  aria-valuemax={AUTO_PLAY_LENGTH}
+                >
+                  <div
+                    className="h-full rounded-full bg-trust-passed transition-all duration-500"
+                    style={{ width: `${(((autoPlayIndex ?? 0) + 1) / AUTO_PLAY_LENGTH) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ) : (
+              <p className="px-1 text-[14px] leading-snug text-ink-muted">
+                <span className="font-mono text-[13px] font-bold uppercase tracking-wider text-trust-active-soft">
+                  {activePhase}
+                </span>{' '}
+                — {PHASE_BLURB[activePhase]}
+              </p>
+            )}
           </div>
 
           {/*
@@ -123,9 +162,32 @@ export default function App() {
       <RegulatoryOverlay />
       <AvengaIntelligenceModal />
       <ExploitBriefing />
+      <HelpOverlay />
+      <ContextGraph />
       <GodModePanel />
       <ToastStack />
     </div>
+  );
+}
+
+/**
+ * Deliberately in the header rather than tucked away. The help is where a
+ * presenter finds out that God Mode exists at all, so it cannot itself be
+ * hidden behind a shortcut nobody has been told about.
+ */
+function HelpButton() {
+  const openHelp = useDemoStore((s) => s.openHelp);
+  return (
+    <Tooltip content="What am I looking at? Explains this screen, what a model change rewrites, and the presenter-only controls." side="bottom" wide interactiveChild>
+      <button
+        type="button"
+        onClick={openHelp}
+        aria-label="Open help"
+        className="flex h-8 w-8 items-center justify-center rounded-lg border border-hairline text-ink-faint transition hover:border-trust-active/50 hover:text-trust-active-soft"
+      >
+        <HelpCircle className="h-4 w-4" />
+      </button>
+    </Tooltip>
   );
 }
 

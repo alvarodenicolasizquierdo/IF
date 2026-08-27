@@ -20,7 +20,7 @@ export const TRACKS: Record<TrackId, TrackProfile> = {
       maturityMultiplier: 1.0,
       tcoPerCfp: 1200,
     },
-    defaultPersona: 'lead-fde',
+    defaultPersona: 'traditional-dev',
     aupiSeries: [42, 41, 39, 38, 36, 34],
     cfrSeries: [28, 29, 32, 35, 39, 44],
     tcoSeries: [1200, 1215, 1240, 1260, 1285, 1310],
@@ -84,6 +84,20 @@ export const SIGNED_UPLIFT = {
  * Article 14 proof point — only the CISO identity can sign an Evidence Pack.
  */
 export const PERSONAS: Record<PersonaId, Persona> = {
+  /*
+   * Track 1's identity is the point of Track 1: an ordinary developer with
+   * standing write access to the whole repository and no control plane
+   * watching. Showing a Forward-Deployed Engineer here — as this did — quietly
+   * conceded the contrast the whole demo is built on.
+   */
+  'traditional-dev': {
+    id: 'traditional-dev',
+    name: 'Developer (Ungoverned)',
+    accessLevel: 'STANDING FULL REPO WRITE',
+    trackContext: 'Track 1 — No task scoping, no expiry',
+    canSignEvidencePack: false,
+    tone: 'violation',
+  },
   'lead-fde': {
     id: 'lead-fde',
     name: 'Lead FDE',
@@ -110,4 +124,4 @@ export const PERSONAS: Record<PersonaId, Persona> = {
   },
 };
 
-export const PERSONA_ORDER: PersonaId[] = ['lead-fde', 'ai-agent', 'ciso'];
+export const PERSONA_ORDER: PersonaId[] = ['traditional-dev', 'lead-fde', 'ai-agent', 'ciso'];

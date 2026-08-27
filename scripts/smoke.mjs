@@ -68,6 +68,52 @@ await step('enforcing the control plane clears them', async () => {
   await click(/^Close$/);
 });
 
+await step('Track 1 shows an ungoverned identity, not an FDE', async () => {
+  await click(/^Track 1 €/);
+  const persona = await page.locator('text=Developer (Ungoverned)').first().innerText();
+  if (!/Ungoverned/.test(persona)) throw new Error(`Track 1 persona was "${persona}"`);
+  await click(/^Track 2 €/);
+});
+
+await step('contextual help explains this screen and the live route', async () => {
+  await page.getByRole('button', { name: /Open help/i }).click();
+  await page.waitForSelector('text=What am I looking at?');
+  // Contextual: it must name the screen the presenter is actually on.
+  await page.waitForSelector('text=Continuous Evolution');
+  // And it must read the live route rather than describing routing abstractly.
+  await page.waitForSelector('text=/pii_egress_control: (PASSED|FAILED)/');
+  await page.waitForSelector('text=/key immediately left of/');
+  await page.keyboard.press('Escape');
+});
+
+await step('the traceability spine reflects the library it is drawing', async () => {
+  // The context library was remediated earlier in this walkthrough, so the
+  // spine must show every path whole rather than a stock diagram.
+  await click(/Context & Mandate/);
+  await click(/View spine/);
+  await page.waitForSelector('text=The traceability spine');
+  await page.waitForSelector('text=/Every path is whole/');
+  await click(/^Close$/);
+
+  // Back to the baseline, the same graph must show the broken edge.
+  await click(/^Reset$/);
+  await click(/Context & Mandate/);
+  await click(/View spine/);
+  await page.waitForSelector('text=/dashed red path is the reason/');
+  await click(/^Close$/);
+});
+
+await step('auto-play runs the narrative and stops at the human decision', async () => {
+  await click(/Run cycle/);
+  await page.waitForSelector('text=/AUTO-PLAY|Auto-play/', { timeout: 5000 });
+  await page.waitForSelector('text=Approve & cryptographically sign', { timeout: 60000 });
+  // It must hand back rather than clicking through the gate itself.
+  const stillRunning = await page.getByRole('button', { name: /^Stop$/ }).count();
+  if (stillRunning) throw new Error('auto-play did not stop at the gate');
+  await click(/Reject & void Mandate/);
+  await click(/^Reset$/);
+});
+
 await step('God Mode toggles on backtick', () => page.keyboard.press('`'));
 await step('EPAM demolition point fires live drift', async () => {
   await click('EPAM');
