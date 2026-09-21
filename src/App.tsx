@@ -1,6 +1,6 @@
 import avengaWordmark from '@/assets/avenga-wordmark.png';
 import { GLOSSARY } from '@/data/glossary';
-import { CLIENT_CONTEXT, PHASE_BLURB } from '@/data/scenario';
+import { CLIENT_CONTEXT, PHASE_BLURB, PHASE_LEAD } from '@/data/scenario';
 import { AUTO_PLAY_LENGTH, useDemoStore } from '@/store/demoStore';
 
 import { PhaseBanner } from '@/components/shell/PhaseBanner';
@@ -13,6 +13,7 @@ import { ToastStack } from '@/components/shell/ToastStack';
 import { HelpCircle } from 'lucide-react';
 import { ClientLogo } from '@/components/ui/ClientLogo';
 import { InfoTip, Tooltip } from '@/components/ui/Tooltip';
+import { Reveal } from '@/components/ui/Reveal';
 import { AuditLog } from '@/components/shell/AuditLog';
 
 import { ExecutiveDashboard } from '@/components/screens/ExecutiveDashboard';
@@ -146,7 +147,12 @@ export default function App() {
                 <span className="font-mono text-[13px] font-bold uppercase tracking-wider text-trust-active-soft">
                   {activePhase}
                 </span>{' '}
-                — {PHASE_BLURB[activePhase]}
+                —{' '}
+                <Reveal
+                  label={PHASE_LEAD[activePhase]}
+                  detail={PHASE_BLURB[activePhase]}
+                  side="bottom"
+                />
               </p>
             )}
           </div>

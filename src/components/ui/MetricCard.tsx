@@ -15,6 +15,7 @@ interface MetricCardProps {
   lowerIsBetter?: boolean;
   hero?: boolean;
   footnote?: string;
+  className?: string;
 }
 
 /**
@@ -30,6 +31,7 @@ export function MetricCard({
   hero = false,
   footnote,
   definition,
+  className,
 }: MetricCardProps) {
   const improved = lowerIsBetter ? delta < 0 : delta > 0;
   const tone: Tone = delta === 0 ? 'neutral' : improved ? 'passed' : 'violation';
@@ -41,6 +43,7 @@ export function MetricCard({
       className={cx(
         'rounded-xl border bg-surface/70 px-3.5 py-3',
         hero ? cx('border-2 border-trust-hitl/50 shadow-glow-hitl') : 'border-hairline',
+        className,
       )}
     >
       <p className="flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">

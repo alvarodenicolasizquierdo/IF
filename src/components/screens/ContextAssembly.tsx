@@ -71,15 +71,15 @@ export function ContextAssembly() {
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-5 lg:grid-cols-2">
         {/* -------------------- Hot-path memory context -------------------- */}
         <Panel
-          eyebrow="Layer 3 · Context Registry"
-          title="Hot-path memory context"
+          eyebrow="What the agent is allowed to know"
+          title="The context library"
           titleTip={GLOSSARY.contextFreshness}
           action={
             <div className="flex items-center gap-2">
               <Button size="sm" tone="active" variant="outline" onClick={openContextGraph}>
                 View spine
               </Button>
-              <StatusBadge label="Top-k semantic" tone="active" />
+              <StatusBadge label="Assembled" tone="active" />
             </div>
           }
           className="min-h-0"
@@ -206,8 +206,8 @@ export function ContextAssembly() {
 
         {/* -------------------- The cryptographic Mandate -------------------- */}
         <Panel
-          eyebrow="Layer 2 · Mandate Guardrail"
-          title="The cryptographic Mandate"
+          eyebrow="What the agent is allowed to do"
+          title="The Mandate"
           titleTip={GLOSSARY.mandate}
           className="min-h-0"
           bodyClassName="flex min-h-0 flex-col p-5"

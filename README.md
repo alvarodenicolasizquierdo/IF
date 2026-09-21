@@ -162,7 +162,7 @@ It gives you:
 
 | Screen | Phase | What it proves |
 |---|---|---|
-| Executive Trust Dashboard | Improve / overview | A-UPI measures outcomes, and TCO per COSMIC Function Point falls €1,200 → €180 |
+| Executive Trust Dashboard | Improve / overview | The Maturity multiplier leads; cost per feature falls €1,200 → €180. Surface labels are in the client's language and the platform's own terms (A-UPI, COSMIC function points) sit behind each (i) |
 | Context Assembly & the Mandate | Discover → Decide | Context is governed before an agent starts; the Mandate is a cryptographic hall-pass, not a master key |
 | Grounded Execution | Build | Every tool-call is intercepted and schema-validated at the MCP Gateway; the Evidence Pack compiles live |
 | Aviation-style HITL Gate | Operate | Irreversible actions hard-stop until a named, OIDC-verified human signs |

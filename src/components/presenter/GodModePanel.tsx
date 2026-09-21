@@ -108,7 +108,15 @@ export function GodModePanel() {
           </div>
         </Group>
 
-        <Group label="Force engagement track">
+        {/*
+          * Track and identity are not two independent switches, and showing
+          * them as two plain grids hid that. Each track carries a default
+          * identity, and picking a track moves the identity with it — so the
+          * identity list now says which track each one belongs to and marks
+          * the one the current track implies. The coupling was always in the
+          * data; it just was not on the screen.
+          */}
+        <Group label="Track">
           <div className="grid grid-cols-3 gap-1">
             {TRACK_ORDER.map((id) => (
               <GodButton key={id} on={activeTrack === id} onClick={() => setTrack(id)}>
@@ -118,12 +126,13 @@ export function GodModePanel() {
           </div>
         </Group>
 
-        <Group label="Force RBAC persona">
+        <Group label="Identity">
           <div className="flex flex-col gap-1">
             {PERSONA_ORDER.map((id) => {
               const persona = PERSONAS[id];
               const t = TONE[persona.tone];
               const on = activePersona === id;
+              const impliedByTrack = TRACKS[activeTrack].defaultPersona === id;
               return (
                 <button
                   key={id}
@@ -137,7 +146,14 @@ export function GodModePanel() {
                   <span className={cx('font-mono text-[13px] font-bold', on ? t.text : 'text-ink-muted')}>
                     {persona.name}
                   </span>
-                  <span className="font-mono text-[12px] text-ink-faint">{persona.trackContext}</span>
+                  <span className="flex items-center gap-1.5 font-mono text-[12px] text-ink-faint">
+                    {impliedByTrack && !on && (
+                      <span className="rounded-sm border border-hairline px-1 text-[11px] uppercase tracking-wider">
+                        default here
+                      </span>
+                    )}
+                    {persona.trackContext.split(' — ')[0]}
+                  </span>
                 </button>
               );
             })}
