@@ -243,7 +243,7 @@ export const FCEE_STEPS: FceeStep[] = [
   {
     id: 'validate',
     name: 'Validate',
-    detail: 'Post-merge telemetry compared against the pre-change A-UPI baseline.',
+    detail: 'Post-merge telemetry compared against the pre-change Pulse baseline.',
   },
   {
     id: 'learn',

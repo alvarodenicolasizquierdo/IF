@@ -28,7 +28,7 @@ export function ActionTray() {
   const autoPlaying = useDemoStore((s) => s.autoPlayIndex !== null);
 
   return (
-    <div className="grid grid-cols-2 gap-2 lg:grid-cols-6">
+    <div data-testid="action-tray" className="grid grid-cols-2 gap-2 lg:grid-cols-6">
       {/*
         * First, because it is the control a presenter reaches for before the
         * room has settled. It runs the narrative from the baseline through to

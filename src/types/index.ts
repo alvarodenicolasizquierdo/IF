@@ -27,7 +27,7 @@ export interface TrackMetrics {
   changeFailureRate: number;
   /** Defect escape ratio, percent */
   defectEscapeRatio: number;
-  /** A-UPI maturity multiplier applied to raw DORA metrics */
+  /** Pulse maturity multiplier applied to raw DORA metrics */
   maturityMultiplier: number;
   /** Total Cost of Ownership per COSMIC Function Point, EUR */
   tcoPerCfp: number;
@@ -45,8 +45,8 @@ export interface TrackProfile {
   metrics: TrackMetrics;
   /** Default persona bound to this track */
   defaultPersona: PersonaId;
-  /** A-UPI composite index per sprint — the governed delivery curve */
-  aupiSeries: number[];
+  /** Pulse index per sprint — the governed delivery curve */
+  pulseSeries: number[];
   /** Change failure rate per sprint — the ungoverned volatility curve */
   cfrSeries: number[];
   /** TCO per CFP per sprint */

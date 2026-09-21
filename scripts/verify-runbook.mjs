@@ -58,10 +58,16 @@ check(
 // A generated page is only as good as its last regeneration. Assert on content
 // that only exists in the current source, so a stale build is caught.
 //
-// Substring search over the rendered text, not a locator: several of these
-// phrases are split across inline markup, and an element-level matcher would
-// report the page as stale when it is simply marked up.
-const rendered = (await page.locator('body').innerText()).replace(/\s+/g, ' ');
+// textContent rather than innerText, and the difference matters: the verbatim
+// script now lives inside a collapsed <details>, so it is in the document but
+// not rendered until somebody asks for it. This block is checking the build is
+// current. Whether something is *visible* is a separate question and is asked
+// separately, below, with innerText — which is the tool for that job.
+//
+// Substring search rather than a locator: several of these phrases are split
+// across inline markup, and an element-level matcher would report the page as
+// stale when it is simply marked up.
+const rendered = (await page.locator('body').textContent()).replace(/\s+/g, ' ');
 for (const [label, needle] of [
   ['the verbatim script is present', 'Let me start with the outcome'],
   ['the model-switch section is present', 'What actually changes when you switch the AI'],
@@ -73,6 +79,47 @@ for (const [label, needle] of [
 // Its own front door has to work from here.
 const download = await page.locator('a[href*="download.html"]').count();
 check('it links to the offline download', download > 0);
+
+// ---- the stages read short, and open long ----------------------------
+// The whole point of collapsing the script is that twelve stages fit in a
+// skim. If a build shipped them open the page would silently go back to
+// being five screens of prose, which is the thing this was meant to fix.
+const says = page.locator('details.say');
+const sayCount = await says.count();
+check('every stage has its script behind a disclosure', sayCount === 12, `${sayCount} found`);
+
+const openAtRest = await page.locator('details.say[open]').count();
+check('the scripts are closed until asked for', openAtRest === 0, `${openAtRest} open`);
+
+const firstSay = says.first();
+await firstSay.locator('summary').click();
+await page.waitForTimeout(250);
+check(
+  'clicking a stage opens its script',
+  (await firstSay.locator('.words').innerText()).includes('Let me start with the outcome'),
+);
+await firstSay.locator('summary').click();
+
+// Every thumbnail has to have actually loaded. A broken image on a presenter's
+// screen ninety seconds before they walk on is worse than no image at all.
+const shots = await page.locator('figure.shot img').count();
+check('each stage that needs one carries a thumbnail', shots === 9, `${shots} found`);
+// The thumbnails load lazily, which is right for a page carrying nine of
+// them — so scroll the page the way a reader does before asking whether they
+// arrived. Checking without scrolling measures the loading strategy, not the
+// images.
+await page.evaluate(async () => {
+  for (const f of document.querySelectorAll('figure.shot')) {
+    f.scrollIntoView();
+    await new Promise((r) => setTimeout(r, 120));
+  }
+  window.scrollTo(0, 0);
+});
+await page.waitForTimeout(1200);
+const broken = await page.evaluate(() =>
+  [...document.querySelectorAll('figure.shot img')].filter((i) => !i.complete || i.naturalWidth === 0).length,
+);
+check('every thumbnail loaded', broken === 0, `${broken} broken`);
 
 const overflowX = await page.evaluate(
   () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

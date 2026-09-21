@@ -267,16 +267,64 @@
     color: var(--ink-soft);
     font-size: 1rem;
   }
-  .say::before {
-    content: 'Say';
+  /* The script is the bulk of this page and the part a presenter needs least
+     while skimming it ninety seconds beforehand. Collapsed by default; one
+     click, or one press of Enter on the keyboard, opens it. */
+  .say > summary {
+    cursor: pointer;
     display: block;
-    margin-bottom: .5rem;
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-size: .7rem;
     font-weight: 700;
     letter-spacing: .16em;
     text-transform: uppercase;
     color: var(--accent);
+    list-style: none;
+  }
+  .say > summary::-webkit-details-marker { display: none; }
+  .say > summary::after {
+    content: ' +';
+    font-weight: 700;
+  }
+  .say[open] > summary::after { content: ' –'; }
+  .say > summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .say > summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .say .words { margin-top: .7rem; }
+
+  /* What to look at, beside what to say about it. Small on purpose — it is a
+     pointer to the screen, not a substitute for looking at the screen. */
+  .shot {
+    margin: 0 0 1rem;
+    max-width: 26rem;
+  }
+  /* Capped, because some of these panels are tall and an uncapped thumbnail
+     pushes the thing a presenter actually needs — what to click — off the
+     bottom of the stage. It is a pointer to the screen, not the screen. */
+  .shot img {
+    display: block;
+    width: 100%;
+    max-height: 17rem;
+    height: auto;
+    object-fit: contain;
+    object-position: left top;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+  .shot figcaption {
+    margin-top: .4rem;
+    font-size: .8125rem;
+    color: var(--ink-soft);
+  }
+
+  /* Printed, the page has to work without anybody clicking anything. */
+  @media print {
+    .say[open] > summary::after,
+    .say > summary::after { content: ''; }
+    .say > .words { display: block !important; }
   }
 
   /* ------------------------------------------------------------ caveat */
@@ -413,8 +461,9 @@
         <dd>What changes, so you know the click landed before you speak.</dd>
       </div>
       <div>
-        <dt>Say</dt>
-        <dd>Read it aloud as written. No jargon, no acronyms, nothing to decode.</dd>
+        <dt>Say it</dt>
+        <dd>Folded away so the twelve stages fit in one skim. Click it for the words, read
+          them aloud as written. No jargon, no acronyms, nothing to decode.</dd>
       </div>
       <div>
         <dt>Running time</dt>
@@ -441,6 +490,7 @@
       <!-- 01 ---------------------------------------------------------- -->
       <li class="stage"><span class="n">01</span><div class="body">
         <h3>The money slide</h3>
+        <figure class="shot"><img src="__SHOT:metrics__" alt="The five numbers, with the Maturity multiplier leading" loading="lazy"><figcaption>The five numbers, with the Maturity multiplier leading</figcaption></figure>
         <dl class="line">
           <dt>Do</dt>
           <dd>In the left column, click <span class="ctl">TRACK 1</span>, then click <span class="ctl">TRACK 2</span>.</dd>
@@ -448,19 +498,20 @@
           <dd>Every number on the dashboard repaints. Cost per unit of software delivered falls from
             €1,200 to €180. Delivery time drops from 14 days to 2.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>Let me start with the outcome, and then I'll show you how it's earned.</p>
           <p>These two views are the same team, the same client, the same piece of work. The only
             difference is how much control sits around the AI doing it.</p>
           <p>On the left, the traditional way of buying people by the hour. On the right, the same
             work delivered under full governance — and it costs about a seventh as much. That's the
             claim. Everything after this is me proving it isn't a slide.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 02 ---------------------------------------------------------- -->
       <li class="stage pivot"><span class="n">02</span><div class="body">
         <h3>It refuses to start</h3>
+        <figure class="shot"><img src="__SHOT:probe-blocked__" alt="The context library with the hygiene block showing" loading="lazy"><figcaption>The context library with the hygiene block showing</figcaption></figure>
         <dl class="line">
           <dt>Do</dt>
           <dd>Click <span class="ctl">Context &amp; Mandate</span> on the left, then click
@@ -471,7 +522,7 @@
             out-of-date tax table, and a customer billing file whose contents were never labelled.
             The big button on the right greys out.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>Before this AI is allowed to touch anything, it checks the information it's about to
             rely on. Not the code — the <em>facts</em>.</p>
           <p class="aside">If you opened the spine: this is every piece of information the AI may
@@ -486,12 +537,13 @@
           <p>This is the single most expensive failure in AI projects right now: a confident answer
             built on stale or unlicensed data, delivered fast, and wrong. Most tools would have
             carried on. This one refuses — and that refusal is the product.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 03 ---------------------------------------------------------- -->
       <li class="stage"><span class="n">03</span><div class="body">
         <h3>Fix it in front of them</h3>
+        <figure class="shot"><img src="__SHOT:context-library__" alt="The context library, freshness restored" loading="lazy"><figcaption>The context library, freshness restored</figcaption></figure>
         <dl class="line">
           <dt>Do</dt>
           <dd>Click <span class="ctl">Fix with Avenga Intelligence</span>, then
@@ -500,17 +552,18 @@
           <dd>A green confirmation. The tax table is rebuilt, the billing file is labelled as
             sensitive, and the quality score climbs back to 97%.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>Finding the problem is only half of it. This repairs it — rebuilds the out-of-date
             table, and labels that customer file as sensitive so everything downstream knows to
             treat it carefully.</p>
           <p>Ninety seconds, and the ground the AI stands on is solid. Now it's allowed to start.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 04 ---------------------------------------------------------- -->
       <li class="stage"><span class="n">04</span><div class="body">
         <h3>The permission slip</h3>
+        <figure class="shot"><img src="__SHOT:mandate__" alt="The Mandate panel and its three limits" loading="lazy"><figcaption>The Mandate panel and its three limits</figcaption></figure>
         <dl class="line">
           <dt>Do</dt>
           <dd>Point at the three sliders and the file list on the right, then click
@@ -518,7 +571,7 @@
           <dt>They see</dt>
           <dd>The status badge flips from <em>Unsigned</em> to <em>Active</em> and starts pulsing.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>This is the permission slip. Before the AI does anything, somebody writes down exactly
             what it's allowed to do.</p>
           <p>How many attempts it gets. How much it's allowed to spend. When that permission expires
@@ -526,12 +579,13 @@
             it can reach. Everything crossed out is off limits: the payment systems, the production
             servers, the deployment pipeline. It cannot get to them. Not "shouldn't" — cannot.</p>
           <p>I'll sign it, and the AI starts work inside that box and nowhere else.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 05 ---------------------------------------------------------- -->
       <li class="stage"><span class="n">05</span><div class="body">
         <h3>Every action, checked</h3>
+        <figure class="shot"><img src="__SHOT:evidence-pack__" alt="The Evidence Pack building itself" loading="lazy"><figcaption>The Evidence Pack building itself</figcaption></figure>
         <dl class="line">
           <dt>Do</dt>
           <dd>Click <span class="ctl">Grounded Execution</span>, then click
@@ -540,18 +594,19 @@
           <dd>A notice slides in at the top right for each action. The record on the left grows. The
             before-and-after code appears on the right.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>Now it's working. Every single thing it does — reading a file, running a test, making a
             change — passes through a checkpoint first, and each one is logged as it happens.</p>
           <p>That panel on the left is the record building itself in real time. Nobody writes it
             afterwards, nobody can forget to write it, and nobody can quietly tidy it up later.</p>
           <p>On the right is the actual change. Old version, new version, side by side.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 06 ---------------------------------------------------------- -->
       <li class="stage"><span class="n">06</span><div class="body">
         <h3>The hard stop</h3>
+        <figure class="shot"><img src="__SHOT:gate__" alt="The governance gate, mid-stop" loading="lazy"><figcaption>The governance gate, mid-stop</figcaption></figure>
         <dl class="line">
           <dt>Do</dt>
           <dd>Click <span class="ctl">Request production merge</span>.</dd>
@@ -559,13 +614,13 @@
           <dd>A full-screen amber gate: <em>manual authorisation required</em>, with the impact
             analysis on the left and the change on the right.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>Here's where it wants to put this change live — and it stops dead.</p>
           <p>This is the one action it can't undo, so it isn't allowed to take it alone. It has done
             the homework for you: what this touches, what it doesn't, and the one thing it flagged
             as needing a named human to agree — it touches regional payment routing.</p>
           <p>A person decides. Not as a policy we've written down somewhere. As a wall.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 07 ---------------------------------------------------------- -->
@@ -579,7 +634,7 @@
           <dd>The gate closes and the record is sealed. <em>Optional:</em> before approving, switch
             the persona in the top right to one without signing rights — the same button refuses.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>Look at whose name is on this. The system knows who I am, and it knows I'm allowed to
             approve this particular kind of change. If I were somebody else, this button would
             refuse me — and I can show you that if it's useful.</p>
@@ -588,12 +643,13 @@
             you know.</p>
           <p>So when your auditor asks "who approved this, and what exactly did they approve?", the
             answer isn't a meeting invitation and somebody's memory. It's a sealed record.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 08 ---------------------------------------------------------- -->
       <li class="stage"><span class="n">08</span><div class="body">
         <h3>It keeps watching after go-live</h3>
+        <figure class="shot"><img src="__SHOT:loop__" alt="The seven-step loop after go-live" loading="lazy"><figcaption>The seven-step loop after go-live</figcaption></figure>
         <dl class="line">
           <dt>Do</dt>
           <dd>Click <span class="ctl">Continuous Evolution</span>, then
@@ -601,7 +657,7 @@
           <dt>They see</dt>
           <dd>A flagged security risk in a supplier component, and a fix drafted automatically.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>Most projects end at go-live. This is what happens for the two years afterwards, which
             is where the cost actually lives.</p>
           <p>It's still watching. It's found a piece of supplier software this system depends on
@@ -609,12 +665,13 @@
             and queued it for the same approval you just watched.</p>
           <p>Nobody filed a ticket. Nobody noticed on a Tuesday. That's the difference between
             software that decays and software that maintains itself.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 09 ---------------------------------------------------------- -->
       <li class="stage"><span class="n">09</span><div class="body">
         <h3>The regulator turns up</h3>
+        <figure class="shot"><img src="__SHOT:regulation__" alt="The regulatory assessment, opened red" loading="lazy"><figcaption>The regulatory assessment, opened red</figcaption></figure>
         <dl class="line">
           <dt>Do</dt>
           <dd>Click <span class="ctl">Regulation</span> in the top row. Wait for the scan — about
@@ -623,7 +680,7 @@
           <dt>They see</dt>
           <dd>A red verdict with named failures, which then turn green.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>Now imagine the regulator asks tomorrow morning. Not in six months — tomorrow.</p>
           <p>This checks the work against the European AI rules, the financial resilience rules, and
             data protection, and it tells you the truth: right now, some of it fails. That is
@@ -633,12 +690,13 @@
             and it clears.</p>
           <p>The point isn't the green ticks. It's that you got an answer in two seconds, instead of
             three consultants and six weeks.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 10 ---------------------------------------------------------- -->
       <li class="stage"><span class="n">10</span><div class="body">
         <h3>Break it on purpose</h3>
+        <figure class="shot"><img src="__SHOT:tray__" alt="The presenter tray" loading="lazy"><figcaption>The presenter tray</figcaption></figure>
         <dl class="line">
           <dt>Do</dt>
           <dd>Click <span class="ctl">Inject drift</span> in the top row.</dd>
@@ -646,12 +704,12 @@
           <dd>A red lockout banner. The permission is voided instantly and the path to production
             freezes.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>Let me try to cheat. I've just changed a file outside the boundary we agreed — the sort
             of thing that normally goes unnoticed for months.</p>
           <p>Permission revoked, immediately. Everything downstream frozen. Not a warning email
             somebody archives — the work simply stops until what's on disk matches what was agreed.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 11 ---------------------------------------------------------- -->
@@ -665,7 +723,7 @@
           <dd>With a public option chosen, the data-protection check fails. With the private option,
             it clears — and the cost line stops counting usage and starts counting hardware hours.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>Last thing, and this one is for whoever in your organisation has to sign off on where
             your data goes.</p>
           <p>You choose which AI does the work. Pick one running in somebody else's cloud, and watch
@@ -676,7 +734,7 @@
             the word, you're using machines you've already paid for.</p>
           <p>I'm not asking you to take my word for where your data goes. Take the controls and
             change it yourself.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
       <!-- 12 ---------------------------------------------------------- -->
@@ -688,14 +746,14 @@
           <dt>They see</dt>
           <dd>Everything back to baseline.</dd>
         </dl>
-        <blockquote class="say">
+        <details class="say"><summary>Say it</summary><div class="words">
           <p>So — same team, same work, a seventh of the cost. But that isn't really what I came to
             show you.</p>
           <p>What I came to show you is that every claim I just made, you watched the system prove
             on itself. It refused to start on bad data. It stopped before the irreversible step. It
             reported itself as non-compliant when it was. It caught me cheating.</p>
           <p>That's what makes this safe to put in front of your board — and your regulator.</p>
-        </blockquote>
+        </div></details>
       </div></li>
 
     </ol>

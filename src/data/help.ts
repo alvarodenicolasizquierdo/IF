@@ -29,7 +29,7 @@ export const SCREEN_HELP: Record<ScreenId, ScreenHelp> = {
           'Swaps the whole dataset: lead time, change failure rate, defect escape, Maturity Multiplier, cost per function point, both curves, the control-plane badge and the active identity.',
       },
       {
-        label: 'A-UPI composite index',
+        label: 'Pulse index',
         effect:
           'Both lines are the same measure on one axis — ungoverned delivery decaying, governed delivery compounding. Deliberately not a dual axis, which would let the shape be chosen rather than measured.',
       },
@@ -205,6 +205,6 @@ export const PRESENTER_SECRETS: PresenterSecret[] = [
     label: 'Glossary tooltips',
     how: 'Hover or tab to any (i) or dotted term',
     detail:
-      'Every piece of vocabulary a client will not know on sight carries its own definition — A-UPI, the Maturity Multiplier, function points, the Mandate, the Evidence Pack, blast radius and the rest. They work on keyboard focus too, so a keyboard-driven walkthrough reaches the same copy.',
+      'Every piece of vocabulary a client will not know on sight carries its own definition — Pulse, the Maturity Multiplier, function points, the Mandate, the Evidence Pack, blast radius and the rest. They work on keyboard focus too, so a keyboard-driven walkthrough reaches the same copy.',
   },
 ];

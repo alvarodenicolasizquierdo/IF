@@ -7,8 +7,8 @@
  * each, no acronym left unexpanded.
  */
 export const GLOSSARY = {
-  aupi:
-    'Avenga Unified Productivity Index. A composite of speed, quality and sustainability, normalised so two teams on different stacks can be compared. Raw DORA metrics go in; the Maturity Multiplier scales them by how much governance is actually enforced.',
+  pulse:
+    'Pulse is the single number for how delivery is actually going. It folds speed, quality and how sustainable the pace is into one score, normalised so two teams on different stacks can be compared. Raw delivery metrics go in; the Maturity multiplier scales them by how much governance is genuinely enforced.',
 
   maturityMultiplier:
     'How much of the raw productivity gain is real and durable. Computed from OPA gate adherence and context freshness — an ungoverned team scores 1.00× no matter how fast it looks, because its speed is borrowed against future rework.',

@@ -16,7 +16,7 @@
  *
  *   node scripts/build-runbook.mjs
  */
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { transform } from 'esbuild';
@@ -180,11 +180,47 @@ const favicon = STANDALONE
   ? `data:image/svg+xml;base64,${(await readFile(resolve(root, 'public/favicon.svg'))).toString('base64')}`
   : './favicon.svg';
 
+/**
+ * The stage thumbnails, captured from the running console by
+ * scripts/capture-runbook-shots.mjs and referenced in the fragment as
+ * __SHOT:name__.
+ *
+ * Same split as the fonts, for the same reason: the hosted page reads them
+ * from /runbook-shots/ so the browser can cache them, and a standalone copy
+ * that has to open from a USB stick carries them inline. One source either
+ * way, so the two cannot show different screens.
+ */
+const SHOTS_DIR = resolve(root, 'runbook/shots');
+const HOSTED_SHOTS = resolve(root, 'public/runbook-shots');
+
+async function resolveShot(name) {
+  const file = resolve(SHOTS_DIR, `${name}.png`);
+  if (STANDALONE) {
+    const bytes = await readFile(file);
+    return `data:image/png;base64,${bytes.toString('base64')}`;
+  }
+  await mkdir(HOSTED_SHOTS, { recursive: true });
+  await copyFile(file, resolve(HOSTED_SHOTS, `${name}.png`));
+  return `./runbook-shots/${name}.png`;
+}
+
 const rawBody = await readFile(SOURCE, 'utf8');
 if (!rawBody.includes('__VAULT_PAYLOAD__')) {
   throw new Error('runbook/body.html has no __VAULT_PAYLOAD__ placeholder to fill');
 }
-const body = rawBody.replace('__VAULT_PAYLOAD__', vaultPayload);
+let body = rawBody.replace('__VAULT_PAYLOAD__', vaultPayload);
+
+// Only what the fragment actually references gets carried, so an unused
+// capture costs nothing and a missing one fails loudly rather than rendering
+// a broken image on a presenter's screen.
+const wanted = [...new Set([...body.matchAll(/__SHOT:([a-z-]+)__/g)].map((m) => m[1]))];
+const available = new Set((await readdir(SHOTS_DIR)).map((f) => f.replace(/\.png$/, '')));
+for (const name of wanted) {
+  if (!available.has(name)) {
+    throw new Error(`runbook/body.html references __SHOT:${name}__ but runbook/shots/${name}.png does not exist — run npm run capture:runbook`);
+  }
+  body = body.replaceAll(`__SHOT:${name}__`, await resolveShot(name));
+}
 
 const titleMatch = body.match(/<title>([\s\S]*?)<\/title>/i);
 if (!titleMatch) throw new Error('runbook/body.html has no <title> to hoist into the document head');

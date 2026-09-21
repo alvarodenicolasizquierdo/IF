@@ -12,13 +12,14 @@ import {
 import { Gauge, TrendingDown } from 'lucide-react';
 import { TRACKS } from '@/data/tracks';
 import { GLOSSARY } from '@/data/glossary';
-import { selectAupiSeries, selectMetrics, selectTrack, useDemoStore } from '@/store/demoStore';
+import { selectPulseSeries, selectMetrics, selectTrack, useDemoStore } from '@/store/demoStore';
 import { Panel } from '@/components/ui/Panel';
 import { MetricCard } from '@/components/ui/MetricCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ClientLogo } from '@/components/ui/ClientLogo';
 import { CHART, SPRINT_LABELS } from '@/components/ui/chartTokens';
 import { ChartTooltip } from '@/components/ui/ChartTooltip';
+import { AcceleratorStrip } from './AcceleratorStrip';
 
 const BASELINE = TRACKS.track1.metrics;
 
@@ -28,24 +29,24 @@ const pctDelta = (baseline: number, current: number) =>
 export function ExecutiveDashboard() {
   const metrics = useDemoStore(selectMetrics);
   const track = useDemoStore(selectTrack);
-  const governedSeries = useDemoStore(selectAupiSeries);
+  const governedSeries = useDemoStore(selectPulseSeries);
   const signed = useDemoStore((s) => s.evidencePack.verificationStatus === 'SIGNED_AND_SEALED');
 
   /**
-   * One measure, one axis. Both series are the A-UPI composite index, so the
+   * One measure, one axis. Both series are the Pulse index, so the
    * governed and ungoverned trajectories are directly comparable — never a
    * second y-scale bolted onto the same plot.
    */
-  const aupiData = SPRINT_LABELS.map((sprint, i) => ({
+  const pulseData = SPRINT_LABELS.map((sprint, i) => ({
     sprint,
-    ungoverned: TRACKS.track1.aupiSeries[i],
+    ungoverned: TRACKS.track1.pulseSeries[i],
     governed: governedSeries[i],
   }));
 
   const tcoData = SPRINT_LABELS.map((sprint, i) => ({ sprint, tco: track.tcoSeries[i] }));
 
   const finalGoverned = governedSeries[governedSeries.length - 1];
-  const finalUngoverned = TRACKS.track1.aupiSeries[TRACKS.track1.aupiSeries.length - 1];
+  const finalUngoverned = TRACKS.track1.pulseSeries[TRACKS.track1.pulseSeries.length - 1];
   const finalTco = track.tcoSeries[track.tcoSeries.length - 1];
 
   return (
@@ -77,10 +78,10 @@ export function ExecutiveDashboard() {
         *
         * Labels are in the language of the person being shown this. The
         * platform's own vocabulary — COSMIC function points, defect escape
-        * ratio, A-UPI — is intact behind each (i), so nothing is lost for a
+        * ratio, Pulse — is intact behind each (i), so nothing is lost for a
         * client who wants it and nothing is imposed on one who does not.
         */}
-      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-6">
+      <div data-testid="metric-row" className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-6">
         <MetricCard
           label="Maturity multiplier"
           definition={GLOSSARY.maturityMultiplier}
@@ -127,7 +128,7 @@ export function ExecutiveDashboard() {
           className="xl:col-span-2"
           eyebrow="Governed against ungoverned, same measure"
           title="Delivery performance"
-          titleTip={GLOSSARY.aupi}
+          titleTip={GLOSSARY.pulse}
           action={
             <div className="flex items-center gap-4">
               <LegendChip color={CHART.ungoverned} label="Ungoverned" />
@@ -138,7 +139,7 @@ export function ExecutiveDashboard() {
         >
           <div className="h-[240px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={aupiData} margin={{ top: 14, right: 78, left: 6, bottom: 4 }}>
+              <AreaChart data={pulseData} margin={{ top: 14, right: 78, left: 6, bottom: 4 }}>
                 <defs>
                   <linearGradient id="fill-ungoverned" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={CHART.ungoverned} stopOpacity={0.22} />
@@ -238,12 +239,16 @@ export function ExecutiveDashboard() {
           </p>
         </Panel>
 
+        <AcceleratorStrip />
+      </div>
+
+      <div className="grid grid-cols-1">
         <Panel
           eyebrow="What one unit of delivery costs"
           title="Cost per feature"
           bodyClassName="p-4"
         >
-          <div className="h-[240px]">
+          <div className="h-[190px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={tcoData} margin={{ top: 14, right: 72, left: 6, bottom: 4 }}>
                 <defs>
@@ -310,9 +315,7 @@ export function ExecutiveDashboard() {
         </Panel>
       </div>
 
-      <Panel eyebrow="Way of working" title={track.label}>
-        <p className="text-[16px] leading-relaxed text-ink-muted">{track.wow}</p>
-      </Panel>
+      <AcceleratorStrip />
     </div>
   );
 }

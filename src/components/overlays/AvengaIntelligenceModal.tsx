@@ -22,7 +22,7 @@ const PHASES = [
     name: 'Phase 3 — Amplify',
     price: 'Control Plane',
     detail:
-      'Scale Intelligent Flow gates across the estate, compile cryptographic Evidence Packs, and hold outcome-based A-UPI commitments.',
+      'Scale Intelligent Flow gates across the estate, compile cryptographic Evidence Packs, and hold outcome-based Pulse commitments.',
   },
 ];
 

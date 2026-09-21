@@ -177,7 +177,7 @@ interface DemoState {
   /** Which route in the LLM Gateway catalogue is live. */
   activeModelId: string;
   metricsOverride: TrackMetrics | null;
-  aupiOverride: number[] | null;
+  pulseOverride: number[] | null;
 
   /* ---- Execution state ---- */
   /**
@@ -288,7 +288,7 @@ const initialState = () => ({
   dataRemediated: false,
   activeModelId: DEFAULT_MODEL_ID,
   metricsOverride: null,
-  aupiOverride: null,
+  pulseOverride: null,
 
   probeRun: false,
   autoPlayIndex: null as number | null,
@@ -328,7 +328,7 @@ export const useDemoStore = create<DemoState>((set, get) => ({
       // track mid-demo would show an agent identity on a human-owned phase.
       activePersona: personaForPhase(track, get().activePhase, get().activePersona),
       metricsOverride: null,
-      aupiOverride: null,
+      pulseOverride: null,
       controlPlaneEnforced: track === 'track2',
     });
     get().log({
@@ -631,7 +631,7 @@ export const useDemoStore = create<DemoState>((set, get) => ({
       hitlGateOpen: false,
       mandate: { ...get().mandate, status: 'DISCHARGED' },
       metricsOverride: SIGNED_UPLIFT.metrics,
-      aupiOverride: SIGNED_UPLIFT.aupiSeries,
+      pulseOverride: SIGNED_UPLIFT.pulseSeries,
       evidencePack: {
         ...evidencePack,
         verificationStatus: 'SIGNED_AND_SEALED',
@@ -911,9 +911,9 @@ export const useDemoStore = create<DemoState>((set, get) => ({
 export const selectMetrics = (s: DemoState): TrackMetrics =>
   s.metricsOverride ?? TRACKS[s.activeTrack].metrics;
 
-/** The governed A-UPI curve, lifted after a human signs the Evidence Pack. */
-export const selectAupiSeries = (s: DemoState): number[] =>
-  s.aupiOverride ?? TRACKS[s.activeTrack].aupiSeries;
+/** The governed Pulse curve, lifted after a human signs the Evidence Pack. */
+export const selectPulseSeries = (s: DemoState): number[] =>
+  s.pulseOverride ?? TRACKS[s.activeTrack].pulseSeries;
 
 export const selectModel = (s: DemoState) => getModel(s.activeModelId);
 
