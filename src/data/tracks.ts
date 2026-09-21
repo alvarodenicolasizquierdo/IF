@@ -21,7 +21,7 @@ export const TRACKS: Record<TrackId, TrackProfile> = {
       tcoPerCfp: 1200,
     },
     defaultPersona: 'traditional-dev',
-    aupiSeries: [42, 41, 39, 38, 36, 34],
+    pulseSeries: [42, 41, 39, 38, 36, 34],
     cfrSeries: [28, 29, 32, 35, 39, 44],
     tcoSeries: [1200, 1215, 1240, 1260, 1285, 1310],
   },
@@ -40,7 +40,7 @@ export const TRACKS: Record<TrackId, TrackProfile> = {
       tcoPerCfp: 750,
     },
     defaultPersona: 'lead-fde',
-    aupiSeries: [42, 48, 54, 58, 61, 64],
+    pulseSeries: [42, 48, 54, 58, 61, 64],
     cfrSeries: [28, 25, 21, 20, 19, 18.5],
     tcoSeries: [1200, 1040, 930, 855, 790, 750],
   },
@@ -59,7 +59,7 @@ export const TRACKS: Record<TrackId, TrackProfile> = {
       tcoPerCfp: 180,
     },
     defaultPersona: 'ai-agent',
-    aupiSeries: [42, 51, 62, 73, 81, 91],
+    pulseSeries: [42, 51, 62, 73, 81, 91],
     cfrSeries: [28, 17, 11, 7.5, 5.4, 4.2],
     tcoSeries: [1200, 720, 470, 320, 235, 180],
   },
@@ -67,9 +67,9 @@ export const TRACKS: Record<TrackId, TrackProfile> = {
 
 export const TRACK_ORDER: TrackId[] = ['track1', 'track1.5', 'track2'];
 
-/** A-UPI curve after a human signs the Evidence Pack at the HITL gate. */
+/** Pulse curve after a human signs the Evidence Pack at the HITL gate. */
 export const SIGNED_UPLIFT = {
-  aupiSeries: [42, 55, 68, 79, 88, 97],
+  pulseSeries: [42, 55, 68, 79, 88, 97],
   metrics: {
     leadTimeDays: 1.3,
     changeFailureRate: 1.2,

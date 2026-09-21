@@ -1,5 +1,6 @@
 import { TRACK_ORDER, TRACKS } from '@/data/tracks';
 import { useDemoStore } from '@/store/demoStore';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { cx } from '@/components/ui/tone';
 
 const TRACK_TONE = {
@@ -18,25 +19,27 @@ export function TrackSelector({ compact = false }: { compact?: boolean }) {
         const track = TRACKS[id];
         const on = activeTrack === id;
         return (
-          <button
-            key={id}
-            type="button"
-            data-on={on}
-            onClick={() => setTrack(id)}
-            className={cx(
-              'rounded-lg border border-hairline bg-card/40 px-3 py-2 text-left transition',
-              'hover:border-hairline hover:bg-card/70',
-              TRACK_TONE[id],
-              compact ? 'flex-1' : 'w-full',
-            )}
-          >
-            <span className="block text-[14px] font-bold uppercase tracking-wider">{track.shortLabel}</span>
-            {!compact && (
-              <span className="mt-0.5 block font-mono text-[13px] text-ink-faint">
-                €{track.metrics.tcoPerCfp.toLocaleString()} per feature · {track.metrics.maturityMultiplier.toFixed(2)}×
-              </span>
-            )}
-          </button>
+          // What each track means used to be a paragraph on the dashboard that
+          // nobody reached. It belongs on the control that selects it.
+          <Tooltip key={id} content={track.wow} side="right" wide interactiveChild className={compact ? 'flex-1' : 'w-full'}>
+            <button
+              type="button"
+              data-on={on}
+              onClick={() => setTrack(id)}
+              className={cx(
+                'w-full rounded-lg border border-hairline bg-card/40 px-3 py-2 text-left transition',
+                'hover:border-hairline hover:bg-card/70',
+                TRACK_TONE[id],
+              )}
+            >
+              <span className="block text-[14px] font-bold uppercase tracking-wider">{track.shortLabel}</span>
+              {!compact && (
+                <span className="mt-0.5 block font-mono text-[13px] text-ink-faint">
+                  €{track.metrics.tcoPerCfp.toLocaleString()} per feature · {track.metrics.maturityMultiplier.toFixed(2)}×
+                </span>
+              )}
+            </button>
+          </Tooltip>
         );
       })}
     </div>
