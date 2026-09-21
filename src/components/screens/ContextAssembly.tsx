@@ -115,7 +115,7 @@ export function ContextAssembly() {
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-trust-hitl" />
               </span>
               <p className="font-mono text-[13px] text-ink-muted">
-                Async Context Consolidation Engine processing session transcript…
+                Reading the last session's transcript into the library…
               </p>
             </div>
 
@@ -271,7 +271,7 @@ export function ContextAssembly() {
 
             <div className="mt-4">
               <p className="mb-1.5 text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
-                Repository scope allowlist — file-system firewall
+                What it may touch — everything else is refused
               </p>
               <ul className="space-y-0.5 rounded-lg border border-hairline bg-canvas/60 p-2">
                 {SCOPE_TREE.map((node) => {
