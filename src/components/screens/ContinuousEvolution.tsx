@@ -37,8 +37,14 @@ export function ContinuousEvolution() {
           title="The loop"
           titleTip={GLOSSARY.fcee}
           action={
-            <Button size="sm" tone="active" variant="outline" onClick={advanceFcee} disabled={stepIndex >= 6}>
-              {stepIndex >= 6 ? 'Loop complete' : 'Advance loop'}
+            /*
+             * Never disabled. The loop is continuous — that is the screen's
+             * whole claim — so the last step closes it and starts it again
+             * rather than leaving the presenter with a dead button and
+             * nothing to say.
+             */
+            <Button size="sm" tone="active" variant="outline" onClick={advanceFcee}>
+              {stepIndex >= FCEE_STEPS.length - 1 ? 'Close the loop' : 'Advance loop'}
             </Button>
           }
         >
@@ -84,6 +90,18 @@ export function ContinuousEvolution() {
                       </h3>
                       {active && <StatusBadge label="Active" tone="active" />}
                     </div>
+                    {/*
+                      * The sentence, for the active step only.
+                      *
+                      * Seven of these on screen at once was the crowding
+                      * Miguel objected to, and hiding all seven behind a
+                      * hover made advancing the loop invisible. One at a
+                      * time is both: the screen stays calm, and the line
+                      * changes under your eye when you click.
+                      */}
+                    {active && (
+                      <p className="mt-1 text-[13px] leading-snug text-ink-muted">{step.detail}</p>
+                    )}
                   </div>
                 </li>
               );

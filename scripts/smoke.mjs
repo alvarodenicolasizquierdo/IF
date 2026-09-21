@@ -157,6 +157,72 @@ await step('tooltips explain the non-obvious terms', async () => {
   if (tooltip.length < 40) throw new Error(`tooltip looks empty: "${tooltip}"`);
 });
 
+// Both of these were reported from the running demo: a control that moved an
+// index and nothing else, and a price that only existed inside a dropdown
+// nobody keeps open. Neither would have failed a build.
+await step('changing the model moves the money, where you can see it', async () => {
+  await click(/Executive Trust/);
+  await page.waitForTimeout(300);
+  const chipOf = async () => (await page.getByTitle('Change the routed model').innerText()).replace(/\s+/g, ' ');
+  const inferenceOf = async () =>
+    (await page.locator('section:has-text("Cost per feature")').first().innerText()).match(
+      /AI inference on this route: €([\d.]+)/,
+    )?.[1];
+
+  if (!/\$/.test(await chipOf())) throw new Error('the model control does not show what the route costs');
+  if (!(await inferenceOf())) throw new Error('the cost panel does not show the inference share');
+
+  // Asserted as an ordering between two named routes rather than against
+  // whatever the previous step happened to leave selected: the dearest
+  // frontier model has to cost more per feature than the cheapest one.
+  const route = async (name) => {
+    await page.getByTitle('Change the routed model').click();
+    await page.waitForTimeout(250);
+    await page.getByRole('option', { name: new RegExp(name) }).first().click();
+    await page.waitForTimeout(450);
+    return { chip: await chipOf(), inference: Number(await inferenceOf()) };
+  };
+
+  const dear = await route('Claude Fable 5');
+  const cheap = await route('Claude Haiku 4.5');
+  if (dear.chip === cheap.chip) throw new Error(`the price on the model control did not change: ${cheap.chip}`);
+  if (!(cheap.inference < dear.inference)) {
+    throw new Error(`inference per feature did not follow the route: ${dear.inference} → ${cheap.inference}`);
+  }
+  const toast = await page.locator('text=LLM Gateway re-routed').first().locator('xpath=ancestor::*[3]').innerText();
+  if (!/Was \$.*now \$/.test(toast.replace(/\n/g, ' '))) {
+    throw new Error('the re-route notice does not name both prices');
+  }
+});
+
+await step('the evolution loop advances, and says so in the record', async () => {
+  await click(/Continuous Evolution/);
+  await page.waitForTimeout(350);
+  const active = async () => (await page.locator('li:has-text("ACTIVE")').first().innerText()).replace(/\s+/g, ' ');
+  const trail = async () => await page.locator('aside').innerText();
+
+  const before = await active();
+  const trailBefore = await trail();
+  await click(/Advance loop|Close the loop/);
+  const after = await active();
+
+  if (after === before) throw new Error(`the loop did not advance: still ${before}`);
+  // The sentence under the active step is the thing that makes the click
+  // visible at a glance, so it has to be on screen rather than behind a hover.
+  if (after.length < 40) throw new Error(`the active step does not explain itself: "${after}"`);
+  if ((await trail()) === trailBefore) throw new Error('advancing the loop left nothing in the audit trail');
+
+  // The loop is continuous: the last step closes it and starts it again
+  // rather than leaving a dead button.
+  for (let i = 0; i < 7; i += 1) {
+    await page.getByRole('button', { name: /Advance loop|Close the loop/ }).click();
+    await page.waitForTimeout(120);
+  }
+  if (await page.getByRole('button', { name: /Advance loop|Close the loop/ }).isDisabled()) {
+    throw new Error('the loop dead-ends on a disabled button');
+  }
+});
+
 await step('reset restores the baseline', async () => {
   await click(/^Reset$/);
   await click(/Executive Trust/);

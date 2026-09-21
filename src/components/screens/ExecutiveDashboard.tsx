@@ -12,7 +12,9 @@ import {
 import { Gauge, TrendingDown } from 'lucide-react';
 import { TRACKS } from '@/data/tracks';
 import { GLOSSARY } from '@/data/glossary';
-import { selectPulseSeries, selectMetrics, selectTrack, useDemoStore } from '@/store/demoStore';
+import { selectModel, selectPulseSeries, selectMetrics, selectTrack, useDemoStore } from '@/store/demoStore';
+import { inferenceCostPerCfpEur, TOKENS_PER_CFP } from '@/data/models';
+import { Reveal } from '@/components/ui/Reveal';
 import { Panel } from '@/components/ui/Panel';
 import { MetricCard } from '@/components/ui/MetricCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
@@ -29,6 +31,9 @@ const pctDelta = (baseline: number, current: number) =>
 export function ExecutiveDashboard() {
   const metrics = useDemoStore(selectMetrics);
   const track = useDemoStore(selectTrack);
+  const model = useDemoStore(selectModel);
+  const inference = inferenceCostPerCfpEur(model);
+  const share = (inference / metrics.tcoPerCfp) * 100;
   const governedSeries = useDemoStore(selectPulseSeries);
   const signed = useDemoStore((s) => s.evidencePack.verificationStatus === 'SIGNED_AND_SEALED');
 
@@ -247,6 +252,25 @@ export function ExecutiveDashboard() {
           eyebrow="What one unit of delivery costs"
           title="Cost per feature"
           bodyClassName="p-4"
+          action={
+            /*
+             * The part of this number the model choice actually controls.
+             *
+             * Asked why cost per feature does not move when the route changes,
+             * the true answer is that it barely should: inference is a couple
+             * of per cent of what a feature costs, and the saving is in the
+             * rework that does not happen. Saying that out loud, with the
+             * figure, is a better answer than a headline that swings on a
+             * model change and cannot survive the arithmetic.
+             */
+            <Reveal
+              className="whitespace-nowrap text-[12px] text-ink-faint"
+              label={`AI inference on this route: €${inference.toFixed(2)} (${share.toFixed(1)}%)`}
+              detail={`This is the only part of the figure the model choice moves, and it moves while you watch — switch the route in the header and read it again. It assumes about ${(TOKENS_PER_CFP / 1000).toFixed(0)}k tokens for one unit of delivered functionality, across the specification, the implementation, a review by a second model, the tests and the retries. The rest of the €${metrics.tcoPerCfp.toLocaleString()} is engineering time, rework, defects that escape and compliance effort — which is where governance earns its money, and why the argument for this platform is not the token price.`}
+              side="left"
+              muted
+            />
+          }
         >
           <div className="h-[190px]">
             <ResponsiveContainer width="100%" height="100%">

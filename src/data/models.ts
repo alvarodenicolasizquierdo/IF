@@ -241,6 +241,41 @@ export function mandateGpuCostUsd(model: ModelOption, tokens: number): number | 
   return (seconds / 3_600) * model.gpuHourUsd;
 }
 
+/**
+ * How many tokens one unit of delivered functionality actually costs.
+ *
+ * A COSMIC function point of governed work is not one prompt. It is the spec,
+ * the implementation, the review by a second model, the tests, and the retries
+ * — across several agent runs. 400,000 is the working figure, and it is an
+ * assumption rather than a measurement: say so if anybody asks, because
+ * somebody in the room will divide it by the run budget and check.
+ */
+export const TOKENS_PER_CFP = 400_000;
+
+/**
+ * The catalogue prices in dollars and the dashboard reports in euros, so one
+ * of them has to move. A round 0.92 rather than today's mid-market rate: the
+ * figure it produces is a share of a feature's cost, and a third decimal place
+ * of FX precision on a four-per-cent line would be false confidence.
+ */
+export const USD_TO_EUR = 0.92;
+
+/**
+ * What the model choice is worth, per feature, in euros.
+ *
+ * The honest number, and a smaller one than most people expect — which is the
+ * point of showing it. Switching from the most expensive frontier route to
+ * open weights on the client's own GPUs saves a few euros on a feature that
+ * costs a hundred and eighty. The argument for this platform is governance and
+ * rework, not the token price, and a dashboard that implied otherwise would be
+ * beaten to death by the first procurement analyst who did the division.
+ */
+export function inferenceCostPerCfpEur(model: ModelOption): number {
+  const usd =
+    mandateCostUsd(model, TOKENS_PER_CFP) ?? mandateGpuCostUsd(model, TOKENS_PER_CFP) ?? 0;
+  return usd * USD_TO_EUR;
+}
+
 export function formatUsd(value: number): string {
   if (value >= 1) return `$${value.toFixed(2)}`;
   if (value >= 0.01) return `$${value.toFixed(3)}`;
