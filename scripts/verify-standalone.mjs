@@ -9,9 +9,25 @@
  * Set PW_CHROMIUM to override the browser binary.
  */
 import { chromium } from 'playwright';
+import { copyFile, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 
-const FILE = path.resolve('dist-standalone/index.html');
+/**
+ * Copied somewhere empty before it is opened, and that is the whole point.
+ *
+ * Opening it in dist-standalone proves nothing about being self-contained:
+ * every asset the build copies from public/ sits right beside it there, so a
+ * relative reference that survived inlining resolves anyway. It took handing
+ * the file to someone on its own to notice the favicon was still `./favicon.svg`
+ * and 404ing. A file claimed to run from a USB stick has to be tested the way
+ * it will be used — alone.
+ */
+const source = path.resolve('dist-standalone/index.html');
+const isolated = await mkdtemp(path.join(tmpdir(), 'if-standalone-'));
+const FILE = path.join(isolated, 'intelligent-flow-console.html');
+await copyFile(source, FILE);
+
 const launch = process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {};
 
 const browser = await chromium.launch(launch);
@@ -56,6 +72,7 @@ const markOk = await page.evaluate(() => {
 });
 
 await browser.close();
+await rm(isolated, { recursive: true, force: true });
 
 let fail = 0;
 const check = (label, ok) => { if (!ok) fail += 1; console.log(`${ok ? '✓' : '✗'} ${label}`); };

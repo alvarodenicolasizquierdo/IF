@@ -4,7 +4,18 @@ import { useDemoStore } from '@/store/demoStore';
 import { Button } from '@/components/ui/Button';
 import { Tooltip } from '@/components/ui/Tooltip';
 
-/** The presenter's always-visible control tray. */
+/**
+ * The presenter's always-visible control tray.
+ *
+ * Six filled buttons in six different hues was the loudest thing on the screen
+ * and the reason the eye had nowhere to land. Only one of these is pressed at
+ * the start of a demo, so only one is filled; the rest are outlines and read as
+ * what they are — things available if the room asks for them.
+ *
+ * Colour now means something rather than decorating: the two buttons that break
+ * the demo on purpose keep their accent so nobody fires them by accident, and
+ * everything else is neutral.
+ */
 export function ActionTray() {
   const advancePhase = useDemoStore((s) => s.advancePhase);
   const runOpaCheck = useDemoStore((s) => s.runOpaCheck);
@@ -35,7 +46,7 @@ export function ActionTray() {
         interactiveChild
       >
         <Button
-          tone={autoPlaying ? 'hitl' : 'passed'}
+          tone={autoPlaying ? 'hitl' : 'active'}
           onClick={autoPlaying ? stopAutoPlay : startAutoPlay}
           icon={autoPlaying ? <Square className="h-4 w-4" /> : <Zap className="h-4 w-4" />}
           className="w-full"
@@ -43,17 +54,18 @@ export function ActionTray() {
           {autoPlaying ? 'Stop' : 'Run cycle'}
         </Button>
       </Tooltip>
-      <Button tone="active" onClick={advancePhase} icon={<PlayCircle className="h-4 w-4" />}>
+      <Button tone="neutral" variant="outline" onClick={advancePhase} icon={<PlayCircle className="h-4 w-4" />}>
         Next phase
       </Button>
       <Tooltip content={GLOSSARY.opa} side="bottom" wide interactiveChild>
-        <Button tone="active" variant="outline" onClick={runOpaCheck} icon={<ShieldCheck className="h-4 w-4" />} className="w-full">
-          OPA check
+        <Button tone="neutral" variant="outline" onClick={runOpaCheck} icon={<ShieldCheck className="h-4 w-4" />} className="w-full">
+          Policy check
         </Button>
       </Tooltip>
       <Tooltip content={GLOSSARY.codeDrift} side="bottom" wide interactiveChild>
         <Button
           tone="hitl"
+          variant="outline"
           onClick={injectDrift}
           disabled={driftDetected}
           icon={<AlertTriangle className="h-4 w-4" />}

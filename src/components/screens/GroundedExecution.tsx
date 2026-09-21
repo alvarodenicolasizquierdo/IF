@@ -124,8 +124,8 @@ export function GroundedExecution() {
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 xl:grid-cols-2">
         {/* ---------------- Strategy & Evidence pane ---------------- */}
         <Panel
-          eyebrow="Layer 2 · Evidence Pack compiler"
-          title="Evidence_Pack.json — live"
+          eyebrow="Written as the work happens, not afterwards"
+          title="The Evidence Pack"
           titleTip={GLOSSARY.evidencePack}
           action={
             <span className="font-mono text-[13px] text-ink-faint">
@@ -184,8 +184,8 @@ export function GroundedExecution() {
 
         {/* ---------------- Execution canvas ---------------- */}
         <Panel
-          eyebrow="Layer 3 · Grounded repository"
-          title="Code diff canvas"
+          eyebrow="Inside the boundary it was given"
+          title="The change"
           action={
             <StatusBadge
               label={codeRevealed ? 'Mutation applied' : 'Awaiting agent'}

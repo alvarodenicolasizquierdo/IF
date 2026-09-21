@@ -15,10 +15,27 @@ import '@fontsource/jetbrains-mono/700.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { StageRoot } from './stage/StageRoot';
 import './index.css';
 
+/*
+ * Two surfaces, one build. The console is the presales tool; Stage Mode is the
+ * surface the Prague cuts are recorded from. They share this bundle so they
+ * cannot drift into looking like two different products, which is the whole
+ * reason Stage Mode is not a separate app.
+ *
+ * The switch is on the hash rather than the path because the console also
+ * ships as one file that opens from a USB stick with the network off, and
+ * path routing does not survive file://.
+ */
+const isStage = window.location.hash.startsWith('#/stage');
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <React.StrictMode>{isStage ? <StageRoot /> : <App />}</React.StrictMode>,
 );
+
+// Entering or leaving Stage Mode swaps the whole surface, so it is a reload
+// rather than a re-render: the two share tokens but not layout assumptions.
+window.addEventListener('hashchange', () => {
+  if (window.location.hash.startsWith('#/stage') !== isStage) window.location.reload();
+});

@@ -1,0 +1,104 @@
+/*
+ * Stage Mode design tokens — TalkTrack draft 4.5, part three.
+ *
+ * Deliberately plain CSS rather than Tailwind utilities. The spec is
+ * geometric: 1400 by 720, 96px gutters, 140px type. Those numbers are the
+ * contract with the camera, and writing them once as tokens keeps a frame
+ * from drifting between the build and the recording.
+ *
+ * These are scoped to .stage so nothing here can leak into the console,
+ * which keeps its own palette and its own scale.
+ */
+.stage {
+  --ink: #2B2622;
+  --surface: #FFFFFF;
+  --panel: #F5F2EF;
+  --border: #D6D0C9;
+  --muted: #6E6862;
+  --accent: #DD2C00;
+  --accent-ink: #FFFFFF;
+  --clock-bg: #2B2622;
+
+  --t-hero: 140px;
+  --t-display: 72px;
+  --t-title: 48px;
+  --t-body: 32px;
+  --t-caption: 34px;
+  --t-meta: 26px;
+  --t-clock: 56px;
+
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 40px;
+  --s-5: 64px;
+  --s-6: 96px;
+
+  --r-panel: 12px;
+  --r-pill: 999px;
+
+  /* The capture frame. Everything is authored at 1920x1080 and scaled to fit
+   * the viewport, so a laptop preview and the recording are the same frame. */
+  --frame-w: 1920px;
+  --frame-h: 1080px;
+
+}
+
+/* ---- frame ------------------------------------------------------------ */
+
+.stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+  font-family: 'Manrope', system-ui, sans-serif;
+  /* Tabular figures everywhere: the clock and every timestamp must not
+   * jitter as digits change, and a jitter is visible at 140px. */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+.stage-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--frame-w);
+  height: var(--frame-h);
+  transform: translate(-50%, -50%) scale(var(--stage-scale, 1));
+  transform-origin: center center;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.stage-frame--light { background: var(--surface); color: var(--ink); }
+.stage-frame--panel { background: var(--panel); color: var(--ink); }
+
+/* Safe area. Nothing carrying meaning inside 96px of any edge. */
+.stage-safe {
+  position: absolute;
+  inset: var(--s-6);
+}
+
+/* ---- type ------------------------------------------------------------- */
+
+.t-hero    { font-size: var(--t-hero);    font-weight: 700; line-height: 1;    letter-spacing: -0.02em; }
+.t-display { font-size: var(--t-display); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; }
+.t-title   { font-size: var(--t-title);   font-weight: 600; line-height: 1.2; }
+.t-body    { font-size: var(--t-body);    font-weight: 400; line-height: 1.45; }
+.t-caption { font-size: var(--t-caption); font-weight: 600; line-height: 1.2; }
+.t-meta    { font-size: var(--t-meta);    font-weight: 400; line-height: 1.3;  color: var(--muted); }
+.t-clock   { font-size: var(--t-clock);   font-weight: 600; line-height: 1;    font-variant-numeric: tabular-nums; }
+
+/* ---- motion ----------------------------------------------------------- */
+
+@keyframes stage-fade-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes stage-rise    { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
+
+.anim-caption { animation: stage-fade-in 200ms ease-out both; }
+.anim-panel   { animation: stage-rise 300ms ease-out both; }
+
+/* A recording must never catch a half-played animation on a re-render. */
+@media (prefers-reduced-motion: reduce) {
+  .anim-caption, .anim-panel { animation: none; }
+}

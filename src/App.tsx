@@ -1,6 +1,6 @@
 import avengaWordmark from '@/assets/avenga-wordmark.png';
 import { GLOSSARY } from '@/data/glossary';
-import { CLIENT_CONTEXT, PHASE_BLURB } from '@/data/scenario';
+import { CLIENT_CONTEXT, PHASE_BLURB, PHASE_LEAD } from '@/data/scenario';
 import { AUTO_PLAY_LENGTH, useDemoStore } from '@/store/demoStore';
 
 import { PhaseBanner } from '@/components/shell/PhaseBanner';
@@ -11,7 +11,9 @@ import { ScreenRail } from '@/components/shell/ScreenRail';
 import { ActionTray } from '@/components/shell/ActionTray';
 import { ToastStack } from '@/components/shell/ToastStack';
 import { HelpCircle } from 'lucide-react';
+import { ClientLogo } from '@/components/ui/ClientLogo';
 import { InfoTip, Tooltip } from '@/components/ui/Tooltip';
+import { Reveal } from '@/components/ui/Reveal';
 import { AuditLog } from '@/components/shell/AuditLog';
 
 import { ExecutiveDashboard } from '@/components/screens/ExecutiveDashboard';
@@ -85,8 +87,16 @@ export default function App() {
 
           <div className="rounded-lg border border-hairline bg-canvas/60 px-3 py-3">
             <p className="text-[12px] font-bold uppercase tracking-[0.16em] text-ink-faint">Client context</p>
-            <dl className="mt-2 space-y-1.5">
-              <Meta label="Client" value={CLIENT_CONTEXT.client} />
+            {/*
+              * The client's mark reads faster than their name in a room that
+              * already knows who they are. It replaces the Client row rather
+              * than sitting beside it — the same fact twice is noise — and
+              * falls back to that row's text if the asset is not there.
+              */}
+            <div className="mt-2 flex h-6 items-center">
+              <ClientLogo className="max-h-5 max-w-full" />
+            </div>
+            <dl className="mt-2.5 space-y-1.5 border-t border-hairline pt-2.5">
               <Meta label="Work item" value={CLIENT_CONTEXT.workItem} />
               <Meta label="SCM" value={CLIENT_CONTEXT.scmConnector} />
             </dl>
@@ -137,7 +147,12 @@ export default function App() {
                 <span className="font-mono text-[13px] font-bold uppercase tracking-wider text-trust-active-soft">
                   {activePhase}
                 </span>{' '}
-                — {PHASE_BLURB[activePhase]}
+                —{' '}
+                <Reveal
+                  label={PHASE_LEAD[activePhase]}
+                  detail={PHASE_BLURB[activePhase]}
+                  side="bottom"
+                />
               </p>
             )}
           </div>

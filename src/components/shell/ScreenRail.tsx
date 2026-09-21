@@ -4,7 +4,7 @@ import { useDemoStore } from '@/store/demoStore';
 import { cx } from '@/components/ui/tone';
 
 const SCREENS: { id: ScreenId; label: string; sub: string; Icon: typeof Boxes }[] = [
-  { id: 'dashboard', label: 'Executive Trust', sub: 'A-UPI & TCO', Icon: LayoutDashboard },
+  { id: 'dashboard', label: 'Executive Trust', sub: 'The numbers', Icon: LayoutDashboard },
   { id: 'context', label: 'Context & Mandate', sub: 'Discover · Decide', Icon: Boxes },
   { id: 'execution', label: 'Grounded Execution', sub: 'Build · Operate', Icon: GitPullRequestArrow },
   { id: 'evolution', label: 'Continuous Evolution', sub: 'Improve', Icon: Repeat },

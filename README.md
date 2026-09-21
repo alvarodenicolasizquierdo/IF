@@ -85,6 +85,16 @@ reading it in reader view) and does not defeat anyone who opens the page source:
 `COMPETITOR_EXPLOITS` in `src/data/scenario.ts`, so the run-book cannot end up
 contradicting the demo it documents.
 
+**Branding it for a client.** Drop the client's artwork at
+`src/assets/client-logo.svg` (or `.png`/`.webp`) and it appears in the left
+rail and on the dashboard header. Nothing else to wire: the file is resolved at
+build time, so an absent one costs no request and falls back to the client's
+name in type, and a present one is hashed for the site and inlined into the
+single-file build like every other asset. Supply it on a **transparent**
+ground — a dark mark is flipped to read on this canvas, so a white rectangle
+would become a black one. `CLIENT_CONTEXT` in `src/data/scenario.ts` carries
+the name.
+
 **2 — One file, no install.** Open `download.html` on the site — `flow.alvarodenicolas.com/download.html`,
 or `<user>.github.io/<repo>/download.html` if you stayed on github.io — and press the button, or
 open presenter God Mode and use *Download single file*. A plain link to the file is
@@ -152,7 +162,7 @@ It gives you:
 
 | Screen | Phase | What it proves |
 |---|---|---|
-| Executive Trust Dashboard | Improve / overview | A-UPI measures outcomes, and TCO per COSMIC Function Point falls €1,200 → €180 |
+| Executive Trust Dashboard | Improve / overview | The Maturity multiplier leads; cost per feature falls €1,200 → €180. Surface labels are in the client's language and the platform's own terms (A-UPI, COSMIC function points) sit behind each (i) |
 | Context Assembly & the Mandate | Discover → Decide | Context is governed before an agent starts; the Mandate is a cryptographic hall-pass, not a master key |
 | Grounded Execution | Build | Every tool-call is intercepted and schema-validated at the MCP Gateway; the Evidence Pack compiles live |
 | Aviation-style HITL Gate | Operate | Irreversible actions hard-stop until a named, OIDC-verified human signs |

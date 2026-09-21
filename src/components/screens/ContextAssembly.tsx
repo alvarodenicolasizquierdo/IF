@@ -71,15 +71,15 @@ export function ContextAssembly() {
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-5 lg:grid-cols-2">
         {/* -------------------- Hot-path memory context -------------------- */}
         <Panel
-          eyebrow="Layer 3 · Context Registry"
-          title="Hot-path memory context"
+          eyebrow="What the agent is allowed to know"
+          title="The context library"
           titleTip={GLOSSARY.contextFreshness}
           action={
             <div className="flex items-center gap-2">
               <Button size="sm" tone="active" variant="outline" onClick={openContextGraph}>
                 View spine
               </Button>
-              <StatusBadge label="Top-k semantic" tone="active" />
+              <StatusBadge label="Assembled" tone="active" />
             </div>
           }
           className="min-h-0"
@@ -115,7 +115,7 @@ export function ContextAssembly() {
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-trust-hitl" />
               </span>
               <p className="font-mono text-[13px] text-ink-muted">
-                Async Context Consolidation Engine processing session transcript…
+                Reading the last session's transcript into the library…
               </p>
             </div>
 
@@ -206,8 +206,8 @@ export function ContextAssembly() {
 
         {/* -------------------- The cryptographic Mandate -------------------- */}
         <Panel
-          eyebrow="Layer 2 · Mandate Guardrail"
-          title="The cryptographic Mandate"
+          eyebrow="What the agent is allowed to do"
+          title="The Mandate"
           titleTip={GLOSSARY.mandate}
           className="min-h-0"
           bodyClassName="flex min-h-0 flex-col p-5"
@@ -271,7 +271,7 @@ export function ContextAssembly() {
 
             <div className="mt-4">
               <p className="mb-1.5 text-[13px] font-bold uppercase tracking-[0.14em] text-ink-faint">
-                Repository scope allowlist — file-system firewall
+                What it may touch — everything else is refused
               </p>
               <ul className="space-y-0.5 rounded-lg border border-hairline bg-canvas/60 p-2">
                 {SCOPE_TREE.map((node) => {

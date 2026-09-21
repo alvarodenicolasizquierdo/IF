@@ -11,12 +11,12 @@ import {
 } from 'recharts';
 import { Gauge, TrendingDown } from 'lucide-react';
 import { TRACKS } from '@/data/tracks';
-import { CLIENT_CONTEXT } from '@/data/scenario';
 import { GLOSSARY } from '@/data/glossary';
 import { selectAupiSeries, selectMetrics, selectTrack, useDemoStore } from '@/store/demoStore';
 import { Panel } from '@/components/ui/Panel';
 import { MetricCard } from '@/components/ui/MetricCard';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { ClientLogo } from '@/components/ui/ClientLogo';
 import { CHART, SPRINT_LABELS } from '@/components/ui/chartTokens';
 import { ChartTooltip } from '@/components/ui/ChartTooltip';
 
@@ -55,8 +55,10 @@ export function ExecutiveDashboard() {
           <h1 className="font-display text-[30px] leading-tight tracking-tight text-ink">
             Executive Trust Dashboard
           </h1>
-          <p className="mt-0.5 text-[15px] text-ink-muted">
-            {CLIENT_CONTEXT.client} · {track.label}
+          <p className="mt-1 flex flex-wrap items-center gap-2 text-[15px] text-ink-muted">
+            <ClientLogo className="max-h-[18px]" />
+            <span aria-hidden>·</span>
+            {track.label}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -65,40 +67,54 @@ export function ExecutiveDashboard() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 xl:grid-cols-5">
+      {/*
+        * Five tiles at equal weight is five things asking to be looked at
+        * first, which is exactly what a reviewer meant by "¿en qué me fijo?".
+        * The Maturity multiplier leads and takes the width, because it is the
+        * honest number on this screen — an ungoverned team scores 1.00×
+        * however fast it looks. The other four are the supporting evidence and
+        * are sized like it.
+        *
+        * Labels are in the language of the person being shown this. The
+        * platform's own vocabulary — COSMIC function points, defect escape
+        * ratio, A-UPI — is intact behind each (i), so nothing is lost for a
+        * client who wants it and nothing is imposed on one who does not.
+        */}
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-6">
         <MetricCard
-          label="Lead time"
-          definition={GLOSSARY.leadTime}
-          baseline={`${BASELINE.leadTimeDays.toFixed(1)}d`}
-          current={`${metrics.leadTimeDays.toFixed(1)}d`}
-          delta={pctDelta(BASELINE.leadTimeDays, metrics.leadTimeDays)}
-        />
-        <MetricCard
-          label="Change failure"
-          definition={GLOSSARY.changeFailureRate}
-          baseline={`${BASELINE.changeFailureRate.toFixed(1)}%`}
-          current={`${metrics.changeFailureRate.toFixed(1)}%`}
-          delta={pctDelta(BASELINE.changeFailureRate, metrics.changeFailureRate)}
-        />
-        <MetricCard
-          label="Defect escape"
-          definition={GLOSSARY.defectEscape}
-          baseline={`${BASELINE.defectEscapeRatio.toFixed(1)}%`}
-          current={`${metrics.defectEscapeRatio.toFixed(1)}%`}
-          delta={pctDelta(BASELINE.defectEscapeRatio, metrics.defectEscapeRatio)}
-        />
-        <MetricCard
-          label="Maturity ×"
+          label="Maturity multiplier"
           definition={GLOSSARY.maturityMultiplier}
           baseline={`${BASELINE.maturityMultiplier.toFixed(2)}×`}
           current={`${metrics.maturityMultiplier.toFixed(2)}×`}
           delta={pctDelta(BASELINE.maturityMultiplier, metrics.maturityMultiplier)}
           lowerIsBetter={false}
           hero
-          footnote="Computed via OPA gate adherence and context freshness."
+          className="sm:col-span-2"
+          footnote="How much of the speed is real, once rework is counted."
         />
         <MetricCard
-          label="TCO / CFP"
+          label="Time to deliver"
+          definition={GLOSSARY.leadTime}
+          baseline={`${BASELINE.leadTimeDays.toFixed(1)}d`}
+          current={`${metrics.leadTimeDays.toFixed(1)}d`}
+          delta={pctDelta(BASELINE.leadTimeDays, metrics.leadTimeDays)}
+        />
+        <MetricCard
+          label="Changes that fail"
+          definition={GLOSSARY.changeFailureRate}
+          baseline={`${BASELINE.changeFailureRate.toFixed(1)}%`}
+          current={`${metrics.changeFailureRate.toFixed(1)}%`}
+          delta={pctDelta(BASELINE.changeFailureRate, metrics.changeFailureRate)}
+        />
+        <MetricCard
+          label="Bugs reaching users"
+          definition={GLOSSARY.defectEscape}
+          baseline={`${BASELINE.defectEscapeRatio.toFixed(1)}%`}
+          current={`${metrics.defectEscapeRatio.toFixed(1)}%`}
+          delta={pctDelta(BASELINE.defectEscapeRatio, metrics.defectEscapeRatio)}
+        />
+        <MetricCard
+          label="Cost per feature"
           definition={GLOSSARY.cfp}
           baseline={`€${BASELINE.tcoPerCfp.toLocaleString()}`}
           current={`€${metrics.tcoPerCfp.toLocaleString()}`}
@@ -109,8 +125,8 @@ export function ExecutiveDashboard() {
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
         <Panel
           className="xl:col-span-2"
-          eyebrow="The traceability spine"
-          title="A-UPI composite index"
+          eyebrow="Governed against ungoverned, same measure"
+          title="Delivery performance"
           titleTip={GLOSSARY.aupi}
           action={
             <div className="flex items-center gap-4">
@@ -148,7 +164,7 @@ export function ExecutiveDashboard() {
                   width={44}
                 >
                   <Label
-                    value="A-UPI index"
+                    value="Performance index"
                     angle={-90}
                     position="insideLeft"
                     style={{ fill: CHART.axis, fontSize: 13, textAnchor: 'middle' }}
@@ -218,14 +234,13 @@ export function ExecutiveDashboard() {
           </div>
           <p className="mt-2 flex items-center gap-1.5 text-[13px] text-ink-faint">
             <Gauge className="h-3 w-3" />
-            Both series are the same measure on one axis — ungoverned AI amplifies chaos while governed
-            delivery compounds.
+            Ungoverned AI amplifies chaos. Governed delivery compounds.
           </p>
         </Panel>
 
         <Panel
-          eyebrow="Outcome-based model"
-          title="TCO per function point"
+          eyebrow="What one unit of delivery costs"
+          title="Cost per feature"
           bodyClassName="p-4"
         >
           <div className="h-[240px]">
@@ -289,8 +304,8 @@ export function ExecutiveDashboard() {
           </div>
           <p className="mt-2 flex items-center gap-1.5 text-[13px] text-ink-faint">
             <TrendingDown className="h-3 w-3" />
-            €{BASELINE.tcoPerCfp.toLocaleString()} at Track 1 → €{TRACKS.track2.metrics.tcoPerCfp} under full
-            control plane enforcement.
+            €{BASELINE.tcoPerCfp.toLocaleString()} ungoverned → €{TRACKS.track2.metrics.tcoPerCfp} with the
+            controls on.
           </p>
         </Panel>
       </div>

@@ -24,6 +24,22 @@ export const CLIENT_CONTEXT = {
 
 export const PHASES: PhaseId[] = ['DISCOVER', 'DECIDE', 'BUILD', 'OPERATE', 'IMPROVE'];
 
+/**
+ * What the phase is, in words a commercial director can read at a glance.
+ *
+ * The blurb below it says the same thing in the platform's own vocabulary and
+ * is kept one hover away. Two registers, one fact — which is the console's
+ * answer to a reviewer who could not tell where to look, and to a room where
+ * half the people have never heard of an MCP Gateway.
+ */
+export const PHASE_LEAD: Record<PhaseId, string> = {
+  DISCOVER: 'What was asked for, written down properly.',
+  DECIDE: 'How it gets built, and what the agent is allowed to touch.',
+  BUILD: 'The work, inside the boundary it was given.',
+  OPERATE: 'A named person decides before anything reaches production.',
+  IMPROVE: 'What happens after go-live, without anyone filing a ticket.',
+};
+
 export const PHASE_BLURB: Record<PhaseId, string> = {
   DISCOVER:
     'Unstructured tax brief ingested and mapped back to the Jira system of record. Requirements compliance gate enforced.',

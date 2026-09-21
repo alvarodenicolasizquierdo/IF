@@ -45,7 +45,7 @@ const SCREENS = [
   {
     name: 'Executive Trust',
     rail: /Executive Trust/,
-    mustBeVisible: [/^Next phase$/, /^OPA check$/, /^Regulation$/],
+    mustBeVisible: [/^Next phase$/, /^Policy check$/, /^Regulation$/],
   },
   {
     name: 'Context & Mandate',
