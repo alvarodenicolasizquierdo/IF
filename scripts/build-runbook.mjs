@@ -17,9 +17,16 @@
  *   node scripts/build-runbook.mjs
  */
 import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { transform } from 'esbuild';
+import {
+  PLANNER_CSS,
+  PLANNER_PLACEHOLDER,
+  renderPlanner,
+  renderPlannerNotice,
+} from './build-planner-section.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = resolve(root, 'runbook/body.html');
@@ -210,6 +217,34 @@ if (!rawBody.includes('__VAULT_PAYLOAD__')) {
 }
 let body = rawBody.replace('__VAULT_PAYLOAD__', vaultPayload);
 
+/*
+ * The demo planner goes into the offline copy and not onto the site.
+ *
+ * It is generated from the readiness register, which names clients and carries
+ * the list of things never to say. The hosted run-book is a public URL — the
+ * page says as much about its own hidden section — so the planner lives in the
+ * file a presenter downloads and the hosted page points at it instead.
+ *
+ * If the register has not been synced on this machine the planner cannot be
+ * built, and the offline copy says so rather than shipping a stale one.
+ */
+if (!body.includes(PLANNER_PLACEHOLDER)) {
+  throw new Error(`runbook/body.html has no ${PLANNER_PLACEHOLDER} placeholder to fill`);
+}
+let plannerCss = '';
+if (STANDALONE) {
+  const readiness = resolve(root, 'sources/readiness.private.json');
+  if (existsSync(readiness)) {
+    body = body.replace(PLANNER_PLACEHOLDER, renderPlanner(JSON.parse(await readFile(readiness, 'utf8'))));
+    plannerCss = PLANNER_CSS;
+  } else {
+    body = body.replace(PLANNER_PLACEHOLDER, renderPlannerNotice());
+    console.warn('  planner: skipped — sources/readiness.private.json is not here. Run npm run sync:readiness.');
+  }
+} else {
+  body = body.replace(PLANNER_PLACEHOLDER, renderPlannerNotice());
+}
+
 // Only what the fragment actually references gets carried, so an unused
 // capture costs nothing and a missing one fails loudly rather than rendering
 // a broken image on a presenter's screen.
@@ -251,7 +286,7 @@ const page = `<!doctype html>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="${favicon}">
 <style>
-${fontFaces}
+${fontFaces}${plannerCss}
 </style>
 </head>
 <body>
@@ -267,6 +302,7 @@ if (STANDALONE) {
     `runbook → dist-runbook/runbook.html (${(page.length / 1024).toFixed(1)} kB, self-contained)`,
   );
   console.log(`  vault: ${exploits.length} competitors, ${(vaultPayload.length / 1024).toFixed(1)} kB encoded`);
+  console.log(`  planner: ${plannerCss ? 'included' : 'not included'}`);
   process.exit(0);
 }
 

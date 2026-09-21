@@ -196,6 +196,52 @@ repeated runs.
 
 ---
 
+## What we are allowed to claim, and keeping it true
+
+Four of the six accelerators on the dashboard carry a month. Those months are
+generated, not typed, and the build refuses to ship one that has passed.
+
+Two documents decide them, and neither lives here:
+
+| File | What it is |
+| --- | --- |
+| `sources/readiness-tracker.html` | The seller's register — what can be shown, and from when |
+| `sources/mvp-schedule.xlsx` | The build plan the same claims depend on |
+
+Both are gitignored. They name clients, carry commercial status and include a
+list of sentences never to say out loud, and **this repository is public**.
+
+```
+npm run sync:readiness   # sources → src/data/readiness.json (committed)
+                         #         → sources/readiness.private.json (not)
+npm run test:readiness   # runs in CI on every push
+npm run test:planner     # drives the planner in the offline run-book
+```
+
+The register answers *can I show it on the 14th of October?* The schedule
+answers *when can a client actually have it?* They are different questions and
+today they have different answers — the register predates the plan's rebase onto
+a mid-September start, so most of its in-build dates land before the epics that
+deliver them. The console is looked at by clients, so it quotes the later of the
+two. `npm run test:readiness` prints every place they disagree.
+
+Dates are rendered as a month, never a day, because the schedule's own
+assumptions sheet says every date in it is arithmetic downstream of two factors
+nobody has measured yet.
+
+**What CI stops.** A capability whose month has passed — the failure that
+happens by sitting still rather than by anyone changing anything. A register
+more than six weeks old (`READINESS_STALE_OK=1` overrides one build). A client's
+name reaching the generated file, and from there the public bundle. Data edited
+by hand instead of synced.
+
+**The demo planner** — what you may show a given buyer, on a given date, on their
+stack — is built into `dist-runbook/runbook.html` and deliberately not onto the
+site. The hosted page carries a line pointing at it instead. Run
+`npm run build:runbook` with the sources present to produce it.
+
+---
+
 ## Architecture
 
 ```

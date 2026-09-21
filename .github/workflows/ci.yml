@@ -37,6 +37,15 @@ jobs:
       - name: Verify the Evidence Pack signer against node:crypto
         run: npm run test:hash
 
+      # The dashboard puts a month beside four of its six accelerators. Those
+      # months come from the readiness register, and they go wrong by sitting
+      # still rather than by anybody changing anything — which is the one kind
+      # of defect review never catches. This is also where a client's name
+      # would be caught if the sync ever started publishing one, and this
+      # repository is public.
+      - name: Check nothing is claiming a date that has passed
+        run: npm run test:readiness
+
       - name: Install Chromium for the walkthrough
         run: npx playwright install --with-deps chromium
 
