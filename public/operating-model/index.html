@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Interactive map of the capabilities, assets, processes, events and platform functionality required to win, deliver, operate and expand Intelligent Flow engagements." />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Intelligent Flow Offering Map</title>
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="../" aria-label="Return to the Intelligent Flow console">
+        <img src="../avenga-wordmark.png" alt="Avenga" />
+        <span>Intelligent Flow</span>
+      </a>
+      <div class="topbar-actions">
+        <span class="working-label">CTO Office · Working map</span>
+        <a class="console-link" href="../">Console</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Offering operating model</p>
+          <h1 id="page-title">One map of everything required to win, deliver and retain</h1>
+          <p class="canonical">Intelligent Flow is the methodology, FlowStudio is how Avenga implements it, and A-UPI is how Avenga measures whether it works.</p>
+        </div>
+        <div class="source-block">
+          <span>Source snapshot</span>
+          <strong>22 September 2026</strong>
+          <small>121 elements · 13 stages · one cross-cutting layer</small>
+        </div>
+      </section>
+
+      <section class="metric-strip" aria-label="Map summary">
+        <div class="metric"><span>Total elements</span><strong id="total-elements">121</strong></div>
+        <div class="metric"><span>Visible now</span><strong id="visible-elements">121</strong></div>
+        <div class="metric"><span>Available or in build</span><strong id="delivery-coverage">20</strong></div>
+        <div class="metric"><span>Current lens</span><strong id="current-lens">Maturity</strong></div>
+      </section>
+
+      <section class="control-panel" aria-label="Map controls">
+        <div class="lens-group">
+          <span class="control-label">Colour lens</span>
+          <div class="segmented" role="group" aria-label="Choose the colour lens">
+            <button type="button" class="lens-button active" data-lens="status" aria-pressed="true">Maturity</button>
+            <button type="button" class="lens-button" data-lens="timing" aria-pressed="false">When</button>
+            <button type="button" class="lens-button" data-lens="reuse" aria-pressed="false">Reuse</button>
+            <button type="button" class="lens-button" data-lens="criticality" aria-pressed="false">Criticality</button>
+          </div>
+        </div>
+
+        <div class="filters">
+          <label class="search-control">
+            <span class="control-label">Find an element</span>
+            <input id="search" type="search" placeholder="Search ID, capability, owner or text" autocomplete="off" />
+          </label>
+          <label>
+            <span class="control-label">Capability family</span>
+            <select id="capability-filter"><option value="">All families</option></select>
+          </label>
+          <label>
+            <span class="control-label">Lifecycle moment</span>
+            <select id="moment-filter"><option value="">All moments</option></select>
+          </label>
+          <label>
+            <span class="control-label">Source priority</span>
+            <select id="priority-filter">
+              <option value="">All priorities</option>
+              <option value="H">High</option>
+              <option value="M">Medium</option>
+              <option value="L">Low</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="control-footer">
+          <div id="legend" class="legend" aria-live="polite"></div>
+          <div class="control-actions">
+            <button id="reset-filters" type="button" class="secondary-button">Reset</button>
+            <button id="download-csv" type="button" class="primary-button">Download visible CSV</button>
+          </div>
+        </div>
+        <p id="lens-note" class="lens-note">Maturity is copied directly from the asset register. Position shows where each element belongs in the client lifecycle.</p>
+      </section>
+
+      <section class="cross-cutting" aria-labelledby="cross-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Across every stage</p>
+            <h2 id="cross-title">Cross-cutting rules</h2>
+          </div>
+          <span id="cross-count" class="count-pill">5 elements</span>
+        </div>
+        <div id="cross-list" class="cross-list"></div>
+      </section>
+
+      <section class="map-section" aria-labelledby="map-title">
+        <div class="section-heading map-heading">
+          <div>
+            <p class="eyebrow">Lifecycle × capability family</p>
+            <h2 id="map-title">Operating system map</h2>
+          </div>
+          <p>Position is fixed. Switch the colour lens to answer a different planning question.</p>
+        </div>
+
+        <div class="matrix-shell" tabindex="0" aria-label="Horizontally scrollable operating model matrix">
+          <div id="matrix" class="matrix"></div>
+        </div>
+        <div id="mobile-list" class="mobile-list"></div>
+        <div id="empty-state" class="empty-state" hidden>
+          <strong>No elements match these filters.</strong>
+          <span>Reset the filters or broaden the search.</span>
+        </div>
+      </section>
+
+      <section class="method-note" aria-label="Method note">
+        <strong>How to read the map</strong>
+        <p>The register remains the source of truth for maturity, owner and priority. Capability family, timing and reuse are initial planning classifications. Criticality uses source priority as a transparent proxy: High = Foundational, Medium = Required, Low = Nice to have.</p>
+      </section>
+    </main>
+
+    <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="detail-title">
+      <div class="dialog-frame">
+        <button id="close-dialog" type="button" class="dialog-close" aria-label="Close detail">×</button>
+        <div id="detail-content"></div>
+      </div>
+    </dialog>
+
+    <footer>
+      <span>Intelligent Flow offering map</span>
+      <span>Source: client lifecycle asset register v1</span>
+    </footer>
+
+    <script src="./data.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

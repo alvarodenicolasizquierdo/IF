@@ -18,6 +18,7 @@
     "test:standalone": "node scripts/verify-standalone.mjs",
     "test:download": "node scripts/verify-download.mjs",
     "test:runbook": "node scripts/verify-runbook.mjs",
+    "test:operating-model": "node scripts/verify-operating-model.mjs",
     "build:runbook": "node scripts/build-runbook.mjs --standalone",
     "test:stage": "node scripts/verify-stage.mjs",
     "capture:runbook": "node scripts/capture-runbook-shots.mjs"
