@@ -130,6 +130,7 @@
     button.innerHTML = `
       <span class="tile-meta"><span>${escapeHtml(item.id)}</span><span>${escapeHtml(item.type)}</span></span>
       <span class="tile-title">${escapeHtml(item.element)}</span>
+      <span class="tile-capability">${escapeHtml(item.capability)}</span>
       <span class="tile-footer"><span>${escapeHtml(item.stage)}</span><span>${escapeHtml(currentValue(item))}</span></span>
     `;
     button.addEventListener("click", () => openDetail(item));
@@ -217,7 +218,7 @@
     const priorityLabel = { H: "High", M: "Medium", L: "Low" }[item.priority] || item.priority;
     els.detail.innerHTML = `
       <p class="detail-kicker">${escapeHtml(item.id)} · ${escapeHtml(item.type)} · ${escapeHtml(item.stageName)}</p>
-      <h2 class="detail-title">${escapeHtml(item.element)}</h2>
+      <h2 id="detail-title" class="detail-title">${escapeHtml(item.element)}</h2>
       <div class="detail-tags">
         <span class="detail-tag">${escapeHtml(item.status)}</span>
         <span class="detail-tag">${escapeHtml(priorityLabel)} priority</span>
@@ -306,7 +307,7 @@
     document.body.appendChild(link);
     link.click();
     link.remove();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   document.querySelectorAll(".lens-button").forEach((button) => {
