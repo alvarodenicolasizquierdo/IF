@@ -333,11 +333,14 @@
     if (window.location.hash) history.replaceState(null, "", window.location.pathname + window.location.search);
   });
 
-  render();
-
-  const initialId = decodeURIComponent(window.location.hash.slice(1));
-  if (initialId) {
-    const item = data.items.find((candidate) => candidate.id === initialId);
+  function openFromHash() {
+    const itemId = decodeURIComponent(window.location.hash.slice(1));
+    if (!itemId) return;
+    const item = data.items.find((candidate) => candidate.id === itemId);
     if (item) openDetail(item);
   }
+
+  window.addEventListener("hashchange", openFromHash);
+  render();
+  openFromHash();
 })();
