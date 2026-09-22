@@ -65,7 +65,7 @@ for (const filename of ['index.html', 'data.js', 'app.js']) {
   await page.getByRole('button', { name: 'Roadmap cover' }).click();
   check(await page.locator('#current-lens').innerText() === 'Roadmap cover', 'desktop: roadmap lens did not activate');
   check((await page.locator('#legend').innerText()).includes('No dedicated row'), 'desktop: roadmap legend is missing');
-  await page.getByLabel('Roadmap cover').selectOption('No dedicated row');
+  await page.locator('#roadmap-filter').selectOption('No dedicated row');
   check(await page.locator('#visible-elements').innerText() === '12', 'desktop: no-dedicated-row filter did not return 12 capabilities');
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
