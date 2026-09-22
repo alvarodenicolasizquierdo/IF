@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Interactive map of the capabilities, assets, processes, events and platform functionality required to win, deliver, operate and expand Intelligent Flow engagements." />
+    <meta name="description" content="Interactive map of the commercial, delivery, technical, governance, measurement, enablement and support capabilities required to sell, deliver and run Intelligent Flow." />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Intelligent Flow Offering Map</title>
+    <title>Intelligent Flow Operating Model</title>
     <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -25,31 +25,32 @@
       <section class="intro" aria-labelledby="page-title">
         <div>
           <p class="eyebrow">Offering operating model</p>
-          <h1 id="page-title">One map of everything required to win, deliver and retain</h1>
-          <p class="canonical">Intelligent Flow is the methodology, FlowStudio is how Avenga implements it, and A-UPI is how Avenga measures whether it works.</p>
+          <h1 id="page-title">Everything required to sell, deliver and run Intelligent Flow</h1>
+          <p class="canonical">Intelligent Flow is Avenga's method for delivering software fast with AI without losing control. People and AI do the work, gates hold consequential changes for named approval, every change leaves an auditable evidence record, and Pulse measures the result against an agreed baseline.</p>
         </div>
         <div class="source-block">
           <span>Source snapshot</span>
           <strong>22 September 2026</strong>
-          <small>121 elements · 13 stages · one cross-cutting layer</small>
+          <small>34 capabilities · four operating areas · eight capability families</small>
         </div>
       </section>
 
       <section class="metric-strip" aria-label="Map summary">
-        <div class="metric"><span>Total elements</span><strong id="total-elements">121</strong></div>
-        <div class="metric"><span>Visible now</span><strong id="visible-elements">121</strong></div>
-        <div class="metric"><span>Available or in build</span><strong id="delivery-coverage">20</strong></div>
-        <div class="metric"><span>Current lens</span><strong id="current-lens">Maturity</strong></div>
+        <div class="metric"><span>Total capabilities</span><strong id="total-elements">34</strong></div>
+        <div class="metric"><span>Visible now</span><strong id="visible-elements">34</strong></div>
+        <div class="metric"><span>Mapped build rows</span><strong id="delivery-coverage">31</strong></div>
+        <div class="metric"><span>Current lens</span><strong id="current-lens">Status</strong></div>
       </section>
 
       <section class="control-panel" aria-label="Map controls">
         <div class="lens-group">
           <span class="control-label">Colour lens</span>
           <div class="segmented" role="group" aria-label="Choose the colour lens">
-            <button type="button" class="lens-button active" data-lens="status" aria-pressed="true">Maturity</button>
+            <button type="button" class="lens-button active" data-lens="status" aria-pressed="true">Status</button>
             <button type="button" class="lens-button" data-lens="timing" aria-pressed="false">When</button>
             <button type="button" class="lens-button" data-lens="reuse" aria-pressed="false">Reuse</button>
             <button type="button" class="lens-button" data-lens="criticality" aria-pressed="false">Criticality</button>
+            <button type="button" class="lens-button" data-lens="roadmapCoverage" aria-pressed="false">Roadmap cover</button>
           </div>
         </div>
 
@@ -63,16 +64,16 @@
             <select id="capability-filter"><option value="">All families</option></select>
           </label>
           <label>
-            <span class="control-label">Lifecycle moment</span>
-            <select id="moment-filter"><option value="">All moments</option></select>
+            <span class="control-label">Operating area</span>
+            <select id="area-filter"><option value="">All areas</option></select>
           </label>
           <label>
-            <span class="control-label">Source priority</span>
-            <select id="priority-filter">
-              <option value="">All priorities</option>
-              <option value="H">High</option>
-              <option value="M">Medium</option>
-              <option value="L">Low</option>
+            <span class="control-label">Roadmap cover</span>
+            <select id="roadmap-filter">
+              <option value="">All coverage</option>
+              <option value="Mapped to roadmap">Mapped to roadmap</option>
+              <option value="Proposed row">Proposed row</option>
+              <option value="No dedicated row">No dedicated row</option>
             </select>
           </label>
         </div>
@@ -84,30 +85,19 @@
             <button id="download-csv" type="button" class="primary-button">Download visible CSV</button>
           </div>
         </div>
-        <p id="lens-note" class="lens-note">Maturity is copied directly from the asset register. Position shows where each element belongs in the client lifecycle.</p>
-      </section>
-
-      <section class="cross-cutting" aria-labelledby="cross-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Across every stage</p>
-            <h2 id="cross-title">Cross-cutting rules</h2>
-          </div>
-          <span id="cross-count" class="count-pill">5 elements</span>
-        </div>
-        <div id="cross-list" class="cross-list"></div>
+        <p id="lens-note" class="lens-note">Status is normalized from the source status field. The exact source wording remains visible in each capability detail.</p>
       </section>
 
       <section class="map-section" aria-labelledby="map-title">
         <div class="section-heading map-heading">
           <div>
-            <p class="eyebrow">Lifecycle × capability family</p>
+            <p class="eyebrow">Operating area × capability family</p>
             <h2 id="map-title">Operating system map</h2>
           </div>
           <p>Position is fixed. Switch the colour lens to answer a different planning question.</p>
         </div>
 
-        <div class="matrix-shell" tabindex="0" aria-label="Horizontally scrollable operating model matrix">
+        <div class="matrix-shell" tabindex="0" aria-label="Horizontally scrollable operating model matrix by operating area and capability family">
           <div id="matrix" class="matrix"></div>
         </div>
         <div id="mobile-list" class="mobile-list"></div>
@@ -117,9 +107,16 @@
         </div>
       </section>
 
+      <section class="map-section" aria-labelledby="build-title">
+        <h2 id="build-title">Engineering, shared platform and enablement build</h2>
+        <p>The method, client implementations, platform and Pulse form the system. Forge is the shared foundation. These 31 roadmap rows support the capabilities above; they are not additional capabilities to add to the total.</p>
+        <p>Platform targets: foundations 16 October; grounded work 4 December; console and deployment 31 December; governance 6 January; evidence 7 January; agents 25 January 2027. Targets remain subject to validation.</p>
+        <p id="reconciliation-note"></p>
+        <div id="build-rows"></div>
+      </section>
       <section class="method-note" aria-label="Method note">
-        <strong>How to read the map</strong>
-        <p>The register remains the source of truth for maturity, owner and priority. Capability family, timing and reuse are initial planning classifications. Criticality uses source priority as a transparent proxy: High = Foundational, Medium = Required, Low = Nice to have.</p>
+        <strong>Source and interpretation</strong>
+        <p>The 34 capabilities, exact status, proposed owner, target date, roadmap mapping and gap come from the v3 roadmap workbook. The v1.7 story supplies the narrative and claim discipline. Status and timing are normalized for colour; capability family, reuse and criticality are working classifications for review.</p>
       </section>
     </main>
 
@@ -131,8 +128,8 @@
     </dialog>
 
     <footer>
-      <span>Intelligent Flow offering map</span>
-      <span>Source: client lifecycle asset register v1</span>
+      <span>Intelligent Flow operating model</span>
+      <span>Sources: Intelligent Flow story and plan v1.7 · 2027 roadmap v3</span>
     </footer>
 
     <script src="./data.js"></script>

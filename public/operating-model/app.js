@@ -4,14 +4,11 @@
   const data = window.OPERATING_MODEL_DATA;
   if (!data || !Array.isArray(data.items)) return;
 
-  const moments = [
-    { key: "win", label: "1 · Win", stages: "S0–S3" },
-    { key: "commit", label: "2 · Commit", stages: "S4" },
-    { key: "mobilise", label: "3 · Mobilise", stages: "S5" },
-    { key: "design", label: "4 · Design", stages: "S6" },
-    { key: "deliver", label: "5 · Deliver", stages: "S7–S9" },
-    { key: "scale", label: "6 · Scale & Operate", stages: "S10–S11" },
-    { key: "retain", label: "7 · Retain & Expand", stages: "S12" },
+  const areas = [
+    { key: "sell", label: "1 · Sell", scope: "10 capabilities" },
+    { key: "deliver", label: "2 · Deliver", scope: "10 capabilities" },
+    { key: "support", label: "3 · Support & Run", scope: "7 capabilities" },
+    { key: "enable", label: "4 · Enable Ourselves", scope: "7 capabilities" },
   ];
 
   const capabilities = [
@@ -27,29 +24,29 @@
 
   const schemes = {
     status: {
-      label: "Maturity",
-      note: "Maturity is copied directly from the asset register. Position shows where each element belongs in the client lifecycle.",
+      label: "Status",
+      note: "Status is normalized from the source status field. The exact source wording remains visible in each capability detail.",
       values: {
         "Available now": { label: "Available now", colour: "#10b981" },
-        "In build · 7 Dec": { label: "In build · 7 Dec", colour: "#9f7aea" },
-        Planned: { label: "Planned", colour: "#38bdf8" },
-        Partial: { label: "Partial / wrong shape", colour: "#f59e0b" },
-        "Not on roadmap": { label: "Not on roadmap", colour: "#ff5a2c" },
+        "Operating rule agreed": { label: "Operating rule agreed", colour: "#9f7aea" },
+        "Open decision / resourcing": { label: "Open decision / resourcing", colour: "#8b7ca0" },
+        "In progress / partial": { label: "In progress / partial", colour: "#f59e0b" },
+        "Planned / not started": { label: "Planned / not started", colour: "#38bdf8" },
       },
     },
     timing: {
       label: "When",
-      note: "Timing is an initial lifecycle classification: Early covers win through mobilisation, Middle covers design through the transformation plan, and Late covers scale, operations and retention.",
+      note: "Timing is normalized from the source target date so the map can be read as a sequence. The exact target remains visible in each detail.",
       values: {
-        Early: { label: "Early", colour: "#10b981" },
-        Middle: { label: "Middle", colour: "#9f7aea" },
-        Late: { label: "Late", colour: "#38bdf8" },
-        "Cross-cutting": { label: "Cross-cutting", colour: "#f59e0b" },
+        "Now–Oct 2026": { label: "Now–Oct 2026", colour: "#10b981" },
+        "Q4 2026": { label: "Q4 2026", colour: "#f59e0b" },
+        "Q1 2027": { label: "Q1 2027", colour: "#9f7aea" },
+        "Later 2027": { label: "Later 2027", colour: "#38bdf8" },
       },
     },
     reuse: {
       label: "Reuse",
-      note: "Reuse is an initial planning classification. Reusable core should be maintained once, configurable packs adapt by stack or market, and client-specific items are engagement instances.",
+      note: "Reuse is a working planning classification. Reusable core is maintained once, configurable packs adapt by market or stack, and client-specific items are engagement instances.",
       values: {
         "Reusable core": { label: "Reusable core", colour: "#10b981" },
         "Configurable pack": { label: "Reusable + configurable", colour: "#9f7aea" },
@@ -58,39 +55,45 @@
     },
     criticality: {
       label: "Criticality",
-      note: "Criticality is a transparent proxy from source priority: High = Foundational, Medium = Required, Low = Nice to have. It is a starting point for challenge, not a new source fact.",
+      note: "Criticality is a working classification for challenge. It does not replace the roadmap decision or imply that later work can be ignored.",
       values: {
         Foundational: { label: "Foundational", colour: "#ff5a2c" },
         Required: { label: "Required", colour: "#f59e0b" },
         "Nice to have": { label: "Nice to have", colour: "#8b7ca0" },
       },
     },
+    roadmapCoverage: {
+      label: "Roadmap cover",
+      note: "Roadmap cover groups the workbook mappings. A mapped row may cover only part of a capability; see the exact mapping and gap. Inclusion in a proposal is not funding approval.",
+      values: {
+        "Mapped to roadmap": { label: "Mapped to roadmap", colour: "#10b981" },
+        "Proposed row": { label: "Proposed row", colour: "#f59e0b" },
+        "No dedicated row": { label: "No dedicated row", colour: "#ff5a2c" },
+      },
+    },
   };
 
-  const state = { lens: "status", query: "", capability: "", moment: "", priority: "" };
+  const state = { lens: "status", query: "", capability: "", area: "", roadmapCoverage: "" };
   const els = {
     matrix: document.getElementById("matrix"),
     mobile: document.getElementById("mobile-list"),
-    cross: document.getElementById("cross-list"),
     legend: document.getElementById("legend"),
     search: document.getElementById("search"),
     capability: document.getElementById("capability-filter"),
-    moment: document.getElementById("moment-filter"),
-    priority: document.getElementById("priority-filter"),
+    area: document.getElementById("area-filter"),
+    roadmap: document.getElementById("roadmap-filter"),
     visible: document.getElementById("visible-elements"),
     total: document.getElementById("total-elements"),
     coverage: document.getElementById("delivery-coverage"),
     lens: document.getElementById("current-lens"),
     lensNote: document.getElementById("lens-note"),
-    crossCount: document.getElementById("cross-count"),
     empty: document.getElementById("empty-state"),
     dialog: document.getElementById("detail-dialog"),
     detail: document.getElementById("detail-content"),
   };
 
   capabilities.forEach((name) => els.capability.add(new Option(name, name)));
-  moments.forEach((moment) => els.moment.add(new Option(moment.label, moment.key)));
-  els.moment.add(new Option("Cross-cutting", "cross"));
+  areas.forEach((area) => els.area.add(new Option(area.label, area.key)));
 
   function escapeHtml(value) {
     return String(value ?? "")
@@ -111,12 +114,13 @@
 
   function matches(item) {
     if (state.capability && item.capability !== state.capability) return false;
-    if (state.moment && item.moment !== state.moment) return false;
-    if (state.priority && item.priority !== state.priority) return false;
+    if (state.area && item.area !== state.area) return false;
+    if (state.roadmapCoverage && item.roadmapCoverage !== state.roadmapCoverage) return false;
     if (!state.query) return true;
     const haystack = [
-      item.id, item.stage, item.stageName, item.type, item.element, item.description,
-      item.status, item.evidence, item.gap, item.owner, item.capability,
+      item.id, item.areaLabel, item.capability, item.element, item.description,
+      item.roadmapRow, item.gap, item.sourceStatus, item.owner, item.by,
+      item.status, item.timing, item.reuse, item.criticality, item.roadmapCoverage,
     ].join(" ").toLowerCase();
     return haystack.includes(state.query);
   }
@@ -128,10 +132,10 @@
     button.style.setProperty("--tile-colour", colourFor(item));
     button.setAttribute("aria-label", `${item.id}: ${item.element}. ${schemes[state.lens].label}: ${currentValue(item)}`);
     button.innerHTML = `
-      <span class="tile-meta"><span>${escapeHtml(item.id)}</span><span>${escapeHtml(item.type)}</span></span>
+      <span class="tile-meta"><span>${escapeHtml(item.id)}</span><span>${escapeHtml(item.by)}</span></span>
       <span class="tile-title">${escapeHtml(item.element)}</span>
       <span class="tile-capability">${escapeHtml(item.capability)}</span>
-      <span class="tile-footer"><span>${escapeHtml(item.stage)}</span><span>${escapeHtml(currentValue(item))}</span></span>
+      <span class="tile-footer"><span>${escapeHtml(item.roadmapCoverage)}</span><span>${escapeHtml(currentValue(item))}</span></span>
     `;
     button.addEventListener("click", () => openDetail(item));
     return button;
@@ -152,43 +156,35 @@
     `).join("");
   }
 
-  function renderCross(filtered) {
-    const items = filtered.filter((item) => item.moment === "cross");
-    els.cross.replaceChildren(...items.map(tile));
-    els.crossCount.textContent = `${items.length} ${items.length === 1 ? "element" : "elements"}`;
-    document.querySelector(".cross-cutting").hidden = items.length === 0;
-  }
-
   function renderMatrix(filtered) {
-    const lifecycleItems = filtered.filter((item) => item.moment !== "cross");
     els.matrix.innerHTML = "";
 
     const corner = document.createElement("div");
     corner.className = "matrix-corner";
-    corner.innerHTML = "<strong>Capability family</strong><span>Rows own the work</span>";
+    corner.innerHTML = "<strong>Capability family</strong><span>Rows show who owns the capability</span>";
     els.matrix.appendChild(corner);
 
-    moments.forEach((moment) => {
+    areas.forEach((area) => {
       const header = document.createElement("div");
       header.className = "moment-header";
-      const count = lifecycleItems.filter((item) => item.moment === moment.key).length;
-      header.innerHTML = `<span>${moment.stages} · ${count} elements</span><strong>${escapeHtml(moment.label)}</strong>`;
+      const count = filtered.filter((item) => item.area === area.key).length;
+      header.innerHTML = `<span>${escapeHtml(area.scope)} · ${count} visible</span><strong>${escapeHtml(area.label)}</strong>`;
       els.matrix.appendChild(header);
     });
 
     capabilities.forEach((capability) => {
-      const laneItems = lifecycleItems.filter((item) => item.capability === capability);
+      const laneItems = filtered.filter((item) => item.capability === capability);
       const lane = document.createElement("div");
       lane.className = "lane-header";
       lane.innerHTML = `<strong>${escapeHtml(capability)}</strong><span>${laneItems.length} visible</span>`;
       els.matrix.appendChild(lane);
 
-      moments.forEach((moment) => {
+      areas.forEach((area) => {
         const cell = document.createElement("div");
         cell.className = "matrix-cell";
         laneItems
-          .filter((item) => item.moment === moment.key)
-          .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
+          .filter((item) => item.area === area.key)
+          .sort((a, b) => a.sourceNumber - b.sourceNumber)
           .forEach((item) => cell.appendChild(tile(item)));
         els.matrix.appendChild(cell);
       });
@@ -196,8 +192,8 @@
   }
 
   function renderMobile(filtered) {
-    const groups = moments
-      .map((moment) => ({ ...moment, items: filtered.filter((item) => item.moment === moment.key) }))
+    const groups = areas
+      .map((area) => ({ ...area, items: filtered.filter((item) => item.area === area.key) }))
       .filter((group) => group.items.length);
     els.mobile.innerHTML = "";
     groups.forEach((group) => {
@@ -205,45 +201,44 @@
       section.className = "mobile-group";
       const header = document.createElement("div");
       header.className = "mobile-group-header";
-      header.innerHTML = `<strong>${escapeHtml(group.label)}</strong><span>${group.items.length} elements</span>`;
+      header.innerHTML = `<strong>${escapeHtml(group.label)}</strong><span>${group.items.length} capabilities</span>`;
       section.appendChild(header);
       group.items
-        .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
+        .sort((a, b) => a.sourceNumber - b.sourceNumber)
         .forEach((item) => section.appendChild(tile(item)));
       els.mobile.appendChild(section);
     });
   }
 
   function openDetail(item) {
-    const priorityLabel = { H: "High", M: "Medium", L: "Low" }[item.priority] || item.priority;
     els.detail.innerHTML = `
-      <p class="detail-kicker">${escapeHtml(item.id)} · ${escapeHtml(item.type)} · ${escapeHtml(item.stageName)}</p>
+      <p class="detail-kicker">${escapeHtml(item.id)} · ${escapeHtml(item.areaLabel)}</p>
       <h2 id="detail-title" class="detail-title">${escapeHtml(item.element)}</h2>
       <div class="detail-tags">
         <span class="detail-tag">${escapeHtml(item.status)}</span>
-        <span class="detail-tag">${escapeHtml(priorityLabel)} priority</span>
+        <span class="detail-tag">${escapeHtml(item.roadmapCoverage)}</span>
         <span class="detail-tag">${escapeHtml(item.capability)}</span>
         <span class="detail-tag">${escapeHtml(item.reuse)}</span>
       </div>
       <section class="detail-section">
-        <h3>What it must do or contain</h3>
+        <h3>What it is</h3>
         <p>${escapeHtml(item.description) || "No description recorded."}</p>
       </section>
       <section class="detail-section">
-        <h3>Evidence / notes</h3>
-        <p>${escapeHtml(item.evidence) || "No evidence note recorded."}</p>
-      </section>
-      <section class="detail-section">
-        <h3>Gap / action</h3>
+        <h3>Gap against the roadmap</h3>
         <p>${escapeHtml(item.gap) || "No additional gap recorded."}</p>
       </section>
       <section class="detail-section detail-grid">
-        <div class="detail-field"><span>Owner</span><strong>${escapeHtml(item.owner)}</strong></div>
-        <div class="detail-field"><span>RFP source</span><strong>${escapeHtml(item.rfpSource) || "—"}</strong></div>
-        <div class="detail-field"><span>Lifecycle timing</span><strong>${escapeHtml(item.timing)}</strong></div>
+        <div class="detail-field"><span>Exact source status</span><strong>${escapeHtml(item.sourceStatus)}</strong></div>
+        <div class="detail-field"><span>Proposed owner</span><strong>${escapeHtml(item.owner)}</strong></div>
+        <div class="detail-field"><span>Target</span><strong>${escapeHtml(item.by)}</strong></div>
+        <div class="detail-field"><span>Workbook mapping</span><strong>${escapeHtml(item.roadmapRow) || "—"}</strong></div>
+      </section>
+      <section class="detail-section detail-grid">
+        <div class="detail-field"><span>Planning timing</span><strong>${escapeHtml(item.timing)}</strong></div>
         <div class="detail-field"><span>Reuse model</span><strong>${escapeHtml(item.reuse)}</strong></div>
-        <div class="detail-field"><span>Criticality proxy</span><strong>${escapeHtml(item.criticality)}</strong></div>
-        <div class="detail-field"><span>Executive moment</span><strong>${escapeHtml(item.momentLabel)}</strong></div>
+        <div class="detail-field"><span>Criticality</span><strong>${escapeHtml(item.criticality)}</strong></div>
+        <div class="detail-field"><span>Operating area</span><strong>${escapeHtml(item.areaLabel)}</strong></div>
       </section>
     `;
     if (!els.dialog.open) els.dialog.showModal();
@@ -259,11 +254,10 @@
     const filtered = data.items.filter(matches);
     els.total.textContent = data.items.length;
     els.visible.textContent = filtered.length;
-    els.coverage.textContent = data.items.filter((item) => item.status === "Available now" || item.status.startsWith("In build")).length;
+    els.coverage.textContent = data.roadmap.length;
     els.lens.textContent = schemes[state.lens].label;
     els.lensNote.textContent = schemes[state.lens].note;
     renderLegend(filtered);
-    renderCross(filtered);
     renderMatrix(filtered);
     renderMobile(filtered);
     els.empty.hidden = filtered.length !== 0;
@@ -273,12 +267,12 @@
   function resetFilters() {
     state.query = "";
     state.capability = "";
-    state.moment = "";
-    state.priority = "";
+    state.area = "";
+    state.roadmapCoverage = "";
     els.search.value = "";
     els.capability.value = "";
-    els.moment.value = "";
-    els.priority.value = "";
+    els.area.value = "";
+    els.roadmap.value = "";
     render();
   }
 
@@ -289,12 +283,12 @@
   function downloadCsv() {
     const rows = data.items.filter(matches);
     const columns = [
-      ["ID", "id"], ["Stage", "stage"], ["Stage name", "stageName"],
-      ["Executive moment", "momentLabel"], ["Capability family", "capability"],
-      ["Type", "type"], ["Element", "element"], ["What it must do or contain", "description"],
-      ["Maturity", "status"], ["Evidence / notes", "evidence"], ["Gap / action", "gap"],
-      ["Owner", "owner"], ["Priority", "priority"], ["Timing", "timing"],
-      ["Reuse", "reuse"], ["Criticality proxy", "criticality"],
+      ["ID", "id"], ["Operating area", "areaLabel"], ["Capability family", "capability"],
+      ["Capability", "element"], ["What it is", "description"],
+      ["Workbook row", "roadmapRow"], ["Gap against row", "gap"],
+      ["Exact source status", "sourceStatus"], ["Proposed owner", "owner"], ["By", "by"],
+      ["Normalized status", "status"], ["Timing", "timing"], ["Reuse", "reuse"],
+      ["Criticality", "criticality"], ["Roadmap cover", "roadmapCoverage"],
     ];
     const csv = [columns.map(([label]) => csvCell(label)).join(",")]
       .concat(rows.map((item) => columns.map(([, key]) => csvCell(item[key])).join(",")))
@@ -303,7 +297,7 @@
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "Intelligent_Flow_offering_map_visible.csv";
+    link.download = "Intelligent_Flow_operating_model_visible.csv";
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -324,8 +318,8 @@
 
   els.search.addEventListener("input", (event) => { state.query = event.target.value.trim().toLowerCase(); render(); });
   els.capability.addEventListener("change", (event) => { state.capability = event.target.value; render(); });
-  els.moment.addEventListener("change", (event) => { state.moment = event.target.value; render(); });
-  els.priority.addEventListener("change", (event) => { state.priority = event.target.value; render(); });
+  els.area.addEventListener("change", (event) => { state.area = event.target.value; render(); });
+  els.roadmap.addEventListener("change", (event) => { state.roadmapCoverage = event.target.value; render(); });
   document.getElementById("reset-filters").addEventListener("click", resetFilters);
   document.getElementById("download-csv").addEventListener("click", downloadCsv);
   document.getElementById("close-dialog").addEventListener("click", closeDetail);
@@ -343,5 +337,12 @@
 
   window.addEventListener("hashchange", openFromHash);
   render();
+  document.getElementById("reconciliation-note").textContent = data.meta.reconciliation;
+  document.getElementById("build-rows").innerHTML = data.roadmap.map(row => `
+    <details class="build-row"><summary><strong>${escapeHtml(row.id)} · ${escapeHtml(row.element)}</strong> <span>${escapeHtml(row.readyBy)}</span></summary>
+    <p>${escapeHtml(row.description)}</p>
+    <p><strong>Exit 2026 forecast:</strong> ${escapeHtml(row.exit2026)}</p>
+    <p><strong>Evidence of done:</strong> ${escapeHtml(row.done)}</p>
+    <p>${escapeHtml(row.source)}${['EA-13','EA-14'].includes(row.id) ? ' · Proposed; Juan to confirm' : ''}</p></details>`).join('');
   openFromHash();
 })();
