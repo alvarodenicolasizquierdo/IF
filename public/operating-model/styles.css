@@ -223,6 +223,7 @@ input::placeholder { color: var(--ink-faint); }
 .tile-meta, .tile-footer { display: flex; justify-content: space-between; gap: 8px; color: var(--ink-faint); font-size: 0.66rem; line-height: 1.25; }
 .tile-meta { margin-bottom: 5px; letter-spacing: 0.04em; text-transform: uppercase; }
 .tile-title { display: block; font-size: 0.78rem; font-weight: 700; line-height: 1.3; }
+.tile-capability { display: none; }
 .tile-footer { margin-top: 7px; align-items: flex-end; }
 .tile-footer span:last-child { color: var(--tile-colour); text-align: right; }
 .cross-list .capability-tile { min-height: 126px; margin: 0; }
@@ -237,6 +238,8 @@ input::placeholder { color: var(--ink-faint); }
 .detail-dialog {
   width: min(760px, calc(100vw - 30px));
   max-height: min(850px, calc(100vh - 30px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 0;
   border: 1px solid var(--hairline);
   border-radius: 16px;
@@ -282,6 +285,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 24px
   .cross-list .capability-tile { min-height: 0; }
   .matrix-shell { display: none; }
   .mobile-list { display: grid; gap: 18px; }
+  .mobile-list .tile-capability { display: block; margin-top: 4px; color: var(--ink-faint); font-size: 0.7rem; }
   .mobile-group { padding: 14px; border: 1px solid var(--hairline); border-radius: 12px; background: rgba(44, 24, 71, 0.54); }
   .mobile-group-header { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
   .mobile-group-header strong { font-size: 1rem; }
