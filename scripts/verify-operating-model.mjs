@@ -1,6 +1,7 @@
 import { chromium } from 'playwright';
+import { readFile } from 'node:fs/promises';
 
-const BASE = process.env.BASE_URL ?? 'http://localhost:4174/';
+const BASE = process.env.BASE_URL ?? 'http://localhost:4173/';
 const browser = await chromium.launch();
 const failures = [];
 
@@ -34,12 +35,23 @@ console.log('Intelligent Flow offering map — verification');
 
   await page.getByPlaceholder('Search ID, capability, owner or text').fill('S6.03');
   check(await page.locator('#visible-elements').innerText() === '1', 'desktop: ID search did not return one element');
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download visible CSV' }).click();
+  const download = await downloadPromise;
+  const csv = await readFile(await download.path(), 'utf8');
+  check(download.suggestedFilename() === 'Intelligent_Flow_offering_map_visible.csv', 'desktop: CSV filename is wrong');
+  check(csv.includes('"S6.03"'), 'desktop: filtered CSV is missing the visible element');
+  check(csv.split('\r\n').filter((line) => /^"S\d/.test(line)).length === 1, 'desktop: filtered CSV contains more than one element');
   await page.locator('.matrix .capability-tile').click();
   check(await page.locator('#detail-dialog').getAttribute('open') !== null, 'desktop: element detail did not open');
+  check(await page.locator('#detail-dialog').getAttribute('aria-labelledby') === 'detail-title', 'desktop: detail dialog has no accessible name');
   check((await page.locator('#detail-content').innerText()).includes('Policy-as-code gate catalogue'), 'desktop: wrong detail content opened');
   await page.getByRole('button', { name: 'Close detail' }).click();
 
   await page.getByRole('button', { name: 'Reset' }).click();
+  await page.getByRole('button', { name: 'Criticality' }).click();
+  check(await page.locator('#current-lens').innerText() === 'Criticality', 'desktop: criticality lens did not activate');
+  check((await page.locator('#legend').innerText()).includes('Foundational'), 'desktop: criticality legend is missing');
   await page.getByLabel('Source priority').selectOption('H');
   check(await page.locator('#visible-elements').innerText() === '51', 'desktop: high-priority filter did not return 51 elements');
 
@@ -55,6 +67,7 @@ console.log('Intelligent Flow offering map — verification');
   check(await page.locator('.matrix-shell').isHidden(), 'mobile: desktop matrix remains visible');
   check(await page.locator('#mobile-list').isVisible(), 'mobile: lifecycle list is not visible');
   check(await page.locator('#mobile-list .capability-tile').count() === 116, 'mobile: lifecycle list does not contain 116 elements');
+  check(await page.locator('#mobile-list .tile-capability').first().isVisible(), 'mobile: capability family is not visible on tiles');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   check(overflow <= 1, `mobile: page has ${overflow}px horizontal overflow`);
   await page.getByRole('button', { name: 'When' }).click();
@@ -82,6 +95,6 @@ if (failures.length) {
 }
 
 console.log('  ✓ 121 source elements present');
-console.log('  ✓ maturity, reuse and timing lenses work');
-console.log('  ✓ search, filters, detail and deep links work');
+console.log('  ✓ maturity, reuse, timing and criticality lenses work');
+console.log('  ✓ search, filters, CSV export, detail and deep links work');
 console.log('  ✓ desktop and mobile layouts have no page overflow');
