@@ -16,11 +16,19 @@ import { PERSONAS, SIGNED_UPLIFT, TRACKS } from '@/data/tracks';
 import {
   CLIENT_CONTEXT,
   COMPETITOR_EXPLOITS,
+  FCEE_STEPS,
   GOVERNED_CODE,
   MCP_INTERCEPTS,
   PHASES,
 } from '@/data/scenario';
-import { DEFAULT_MODEL_ID, getModel, MODELS } from '@/data/models';
+import {
+  DEFAULT_MODEL_ID,
+  formatUsd,
+  getModel,
+  mandateCostUsd,
+  mandateGpuCostUsd,
+  MODELS,
+} from '@/data/models';
 import { mintToken, sha256Hex } from '@/lib/sha256';
 
 const PHASE_SCREEN: Record<PhaseId, ScreenId> = {
@@ -815,15 +823,28 @@ export const useDemoStore = create<DemoState>((set, get) => ({
       },
     });
 
+    // Both prices, named, in the toast. "How you are billed changes" is one of
+    // the six things the run-book promises this control does, and until now it
+    // was a claim the screen left the presenter to make on its behalf. The
+    // basis matters as much as the figure: a frontier route meters tokens, a
+    // sovereign one bills hours of a machine the client already owns.
+    const budget = get().mandate.budgetTokens;
+    const priceOf = (m: typeof model) => {
+      const api = mandateCostUsd(m, budget);
+      if (api !== null) return `${formatUsd(api)} per run`;
+      const gpu = mandateGpuCostUsd(m, budget);
+      return gpu !== null ? `${formatUsd(gpu)} per run in GPU-hours` : 'no metered cost';
+    };
+
     get().pushToast({
       title: 'LLM Gateway re-routed',
-      detail: `${model.name} — Tier ${model.tier}, ${model.tierLabel}. ${model.note}`,
+      detail: `${model.name} — Tier ${model.tier}, ${model.tierLabel}. Was ${priceOf(previous)}, now ${priceOf(model)}. ${model.note}`,
       tone: model.piiSafe ? 'passed' : 'violation',
     });
     get().log({
       phase: get().activePhase,
       actor: 'LiteLLM Multi-Tier Gateway',
-      message: `Route switched ${previous.name} → ${model.name} (${model.routeId}). Residency: ${model.dataResidency}.`,
+      message: `Route switched ${previous.name} → ${model.name} (${model.routeId}). Residency: ${model.dataResidency}. Billing basis now ${priceOf(model)}.`,
       tone: model.piiSafe ? 'passed' : 'violation',
     });
   },
@@ -842,7 +863,55 @@ export const useDemoStore = create<DemoState>((set, get) => ({
   /* Continuous Evolution                                                */
   /* ------------------------------------------------------------------ */
 
-  advanceFcee: () => set((s) => ({ fceeStepIndex: Math.min(s.fceeStepIndex + 1, 6) })),
+  /**
+   * Step the post-deployment loop, and leave a trace.
+   *
+   * It used to do nothing but move an index. On screen that is one grey tick
+   * becoming another grey tick, and the audit log — the column this whole
+   * console argues is the proof — did not move at all. A presenter clicking it
+   * in front of a client got no confirmation the click had landed, which is
+   * exactly the complaint that reached us.
+   *
+   * The loop runs continuously, so the last step wraps rather than dead-ends:
+   * LEARN writes back to the context library and MONITOR picks up again, which
+   * is the behaviour the screen claims in its own title.
+   */
+  advanceFcee: () => {
+    const from = get().fceeStepIndex;
+    const wrapping = from >= FCEE_STEPS.length - 1;
+    const next = wrapping ? 0 : from + 1;
+    set({ fceeStepIndex: next });
+
+    if (wrapping) {
+      get().pushToast({
+        title: 'Loop closed — and started again',
+        detail:
+          'What it learned is written back to the context library, so the next run starts from it. Nobody filed a ticket for any of this.',
+        tone: 'passed',
+      });
+      get().log({
+        phase: 'IMPROVE',
+        actor: 'Continuous Evolution Engine',
+        message:
+          'LEARN complete. Findings written back to the context library and the loop re-entered at MONITOR.',
+        tone: 'passed',
+      });
+      return;
+    }
+
+    const step = FCEE_STEPS[next];
+    get().pushToast({
+      title: `${step.name} — Continuous Evolution`,
+      detail: step.detail,
+      tone: 'active',
+    });
+    get().log({
+      phase: 'IMPROVE',
+      actor: 'Continuous Evolution Engine',
+      message: `${step.name.toUpperCase()}: ${step.detail}`,
+      tone: 'active',
+    });
+  },
 
   raiseRemediationPr: () => {
     set({ remediationPrRaised: true, fceeStepIndex: Math.max(get().fceeStepIndex, 3) });

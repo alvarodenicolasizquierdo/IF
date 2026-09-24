@@ -84,8 +84,19 @@ export function ModelSwitcher() {
           <Cloud className={cx('h-3.5 w-3.5 shrink-0', activeTone.text)} />
         )}
         <span className="min-w-0">
+          {/*
+            * The price of the route rides the metadata line, beside the tier.
+            *
+            * It used to live only inside the open list, so switching a model
+            * moved a number nobody could see any more once the list closed —
+            * and the claim we make out loud is that changing the model changes
+            * what you are billed and how. It belongs here rather than on a
+            * line of its own: a third line makes this chip taller, the header
+            * with it, and at 1280×720 that pushed Grounded Execution's primary
+            * action fifteen pixels below the fold.
+            */}
           <span className="block whitespace-nowrap text-[12px] font-bold uppercase tracking-[0.14em] text-ink-faint">
-            Model · T{active.tier}
+            Model · T{active.tier} · {runCost(active, budget)}
           </span>
           <span className={cx('block truncate whitespace-nowrap font-mono text-[14px] font-bold', activeTone.text)}>
             {active.name}

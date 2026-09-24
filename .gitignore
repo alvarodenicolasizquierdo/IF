@@ -16,3 +16,10 @@ public/runbook.html
 public/runbook-shots/
 runbook/.generated-body.html
 dist-runbook/
+
+# The source documents the readiness data is synced from. They carry client
+# names, commercial status and internal guidance, and this repository is
+# public. Keep them here, keep them out of git.
+sources/
+dist-planner/
+stage-frames/

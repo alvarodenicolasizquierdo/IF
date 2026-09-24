@@ -1,3 +1,5 @@
+import { ACCELERATOR_SOURCE, capability, type CapabilityState } from './readiness';
+
 /**
  * The accelerators — the modules Avenga drops into a client's own platform.
  *
@@ -12,20 +14,26 @@
  * nothing here is a claim the demo cannot back up on the spot.
  *
  * ---------------------------------------------------------------------------
- * A note on `status`, because it is the part that can embarrass us.
+ * On `status` and the date beside it — the part that can embarrass us.
  *
- * The talk track's claim discipline is absolute: available now, in build with
- * a date, or planned — and the badge is on screen while the thing is, never in
- * an apology afterwards. In a room with analysts in it that discipline is
- * worth more than any feature it sits beside.
+ * These used to be inferred from the December plan. They are not inferred any
+ * more. Each accelerator names an entry in the readiness register, and the
+ * state and the date are read from src/data/readiness.json, which is generated
+ * from the register and the build schedule together. Nobody types a month into
+ * this file, and when the register moves the dashboard moves with it.
  *
- * The statuses below are inferred from the December MVP plan and from what is
- * running at clients today, not handed down. They need confirming before this
- * screen is shown to anyone outside the team.
+ * The date shown is when a client can have the thing, not when we can
+ * demonstrate it. Where those differ — and today they differ on almost every
+ * line, because the register predates the plan's rebase onto a mid-September
+ * start — the later of the two wins. Showing the earlier one to a client is
+ * the exact failure the claim discipline exists to prevent.
+ *
+ * What stays hand-written here is the sentence: the register is not written in
+ * a client's language and should not be pasted into one.
  * ---------------------------------------------------------------------------
  */
 
-export type AcceleratorStatus = 'now' | 'building' | 'planned';
+export type AcceleratorStatus = CapabilityState;
 
 export interface Accelerator {
   id: string;
@@ -33,60 +41,71 @@ export interface Accelerator {
   /** One line. What it does for the client, not how it works. */
   line: string;
   status: AcceleratorStatus;
-  /** Only for 'building'. A date, or the badge is not a claim. */
-  when?: string;
+  /** A month and a year, from the register. Absent only if the register has none. */
+  when: string | null;
   /** Where in this console you can show it working. */
+  provenIn: string;
+  /** The register entry this is answerable to. */
+  source: string;
+}
+
+interface Copy {
+  id: keyof typeof ACCELERATOR_SOURCE & string;
+  name: string;
+  line: string;
   provenIn: string;
 }
 
-export const ACCELERATORS: Accelerator[] = [
+const COPY: Copy[] = [
   {
     id: 'spec-driven',
     name: 'Spec-driven delivery',
     line: 'Requirements, specs and tasks live as files beside the code, so a change to the requirement does not cost you the work.',
-    status: 'now',
     provenIn: 'Running at clients today',
   },
   {
     id: 'context-probe',
     name: 'Context probe',
     line: 'Checks what the AI is about to rely on, and stops it before a token is spent if the data is stale or unclassified.',
-    status: 'building',
-    when: 'Dec 2026',
     provenIn: 'Context & Mandate — Run probe',
   },
   {
     id: 'mandate',
     name: 'Mandate',
     line: 'Sets what an agent may touch, for how long, and how much it may spend. Signed by a named person.',
-    status: 'building',
-    when: 'Dec 2026',
     provenIn: 'Context & Mandate — Sign Mandate',
   },
   {
     id: 'gates',
     name: 'Policy gates',
     line: 'A named approver on the changes you are most afraid of. A gate that never says no is decoration.',
-    status: 'building',
-    when: 'Dec 2026',
     provenIn: 'Grounded Execution — the gate',
   },
   {
     id: 'evidence',
     name: 'Evidence Pack',
     line: 'The signed record of one change: what was asked for, what was checked, who said yes. Readable without us.',
-    status: 'building',
-    when: 'Dec 2026',
     provenIn: 'Grounded Execution — Evidence Pack',
   },
   {
     id: 'evolution',
     name: 'Evolution loop',
     line: 'Watches after go-live and drafts the fix itself, under the same gates. Nobody has to file a ticket.',
-    status: 'planned',
     provenIn: 'Continuous Evolution',
   },
 ];
+
+export const ACCELERATORS: Accelerator[] = COPY.map((c) => {
+  const source = ACCELERATOR_SOURCE[c.id];
+  const cap = capability(source);
+  return {
+    ...c,
+    source,
+    status: cap.state,
+    // A live capability needs no date beside it; "available now" is the date.
+    when: cap.state === 'live' ? null : cap.showFromLabel,
+  };
+});
 
 /**
  * Deliberately not a colour. Green against red is the pair that collapses for
@@ -95,7 +114,7 @@ export const ACCELERATORS: Accelerator[] = [
  * into a deck.
  */
 export const STATUS_LABEL: Record<AcceleratorStatus, string> = {
-  now: 'Available now',
-  building: 'In build',
+  live: 'Available now',
+  build: 'In build',
   planned: 'Planned',
 };

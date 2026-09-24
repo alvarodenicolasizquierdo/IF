@@ -1,4 +1,5 @@
 import { ACCELERATORS, STATUS_LABEL, type AcceleratorStatus } from '@/data/accelerators';
+import { READINESS, longDate } from '@/data/readiness';
 import { Panel } from '@/components/ui/Panel';
 import { Reveal } from '@/components/ui/Reveal';
 import { cx } from '@/components/ui/tone';
@@ -19,11 +20,25 @@ import { cx } from '@/components/ui/tone';
 export function AcceleratorStrip({ className }: { className?: string }) {
   return (
     <Panel
-      eyebrow="Delivered a module at a time"
+      eyebrow="One module at a time"
       title="The accelerators"
       className={className}
       bodyClassName="p-3"
-      action={<p className="whitespace-nowrap text-[12px] text-ink-faint">Hover for detail</p>}
+      action={
+        /*
+         * The provenance line, and it is not decoration. Every date in this
+         * panel is a claim with a month on it, and the first fair question is
+         * how old the claim is. Answering it on the panel costs one line and
+         * saves the presenter from being asked it in front of the room.
+         */
+        <Reveal
+          className="whitespace-nowrap text-[12px] text-ink-faint"
+          label={`As at ${longDate(READINESS.asOf)}`}
+          detail={`Read from the readiness register and the build schedule rather than written here, and synced on ${longDate(READINESS.syncedAt)}. Dates are months because the schedule's own assumptions say so: it runs on two estimating factors that have not been measured yet, so a month is the honest precision and a day would not be. Hover any accelerator for what it does.`}
+          side="left"
+          muted
+        />
+      }
     >
       <ul className="flex flex-col gap-1">
         {ACCELERATORS.map((a) => (
@@ -47,16 +62,16 @@ export function AcceleratorStrip({ className }: { className?: string }) {
  * is under way, an outline is intended — legible after the frame has been
  * converted to greyscale, which is the only test that survives a projector.
  */
-function StatusChip({ status, when }: { status: AcceleratorStatus; when?: string }) {
-  const label = status === 'building' && when ? `${STATUS_LABEL[status]} ${when}` : STATUS_LABEL[status];
+function StatusChip({ status, when }: { status: AcceleratorStatus; when: string | null }) {
+  const label = status !== 'live' && when ? `${STATUS_LABEL[status]} · ${when}` : STATUS_LABEL[status];
 
   return (
     <span
       className={cx(
         'inline-flex w-fit items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider',
-        status === 'now'
+        status === 'live'
           ? 'border-trust-passed/50 text-trust-passed'
-          : status === 'building'
+          : status === 'build'
             ? 'border-hairline text-ink-muted'
             : 'border-hairline/60 text-ink-faint',
       )}
@@ -70,8 +85,8 @@ function StatusChip({ status, when }: { status: AcceleratorStatus; when?: string
 function Glyph({ status }: { status: AcceleratorStatus }) {
   return (
     <svg width="8" height="8" viewBox="0 0 8 8" aria-hidden focusable="false" className="shrink-0">
-      {status === 'now' && <rect width="8" height="8" fill="currentColor" />}
-      {status === 'building' && (
+      {status === 'live' && <rect width="8" height="8" fill="currentColor" />}
+      {status === 'build' && (
         <>
           <rect width="8" height="8" fill="none" stroke="currentColor" strokeWidth="1.4" />
           <rect width="4" height="8" fill="currentColor" />
