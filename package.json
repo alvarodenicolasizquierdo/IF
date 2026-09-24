@@ -22,6 +22,7 @@
     "build:runbook": "node scripts/build-runbook.mjs --standalone",
     "test:stage": "node scripts/verify-stage.mjs",
     "sync:readiness": "node scripts/sync-readiness.mjs",
+    "set:presenter-password": "node scripts/set-presenter-password.mjs",
     "test:readiness": "node scripts/verify-readiness.mjs",
     "test:planner": "node scripts/verify-planner.mjs",
     "capture:runbook": "node scripts/capture-runbook-shots.mjs"

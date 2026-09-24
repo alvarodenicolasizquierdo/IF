@@ -76,6 +76,15 @@ export default {
           '0%': { transform: 'translateY(-100%)' },
           '100%': { transform: 'translateY(2200%)' },
         },
+        // A refusal you feel rather than read, and short enough not to be a
+        // performance in front of a room. A sideways shake is the one motion
+        // worth suppressing for anyone who asked not to see it, so index.css
+        // turns this one off under prefers-reduced-motion.
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '20%, 60%': { transform: 'translateX(-4px)' },
+          '40%, 80%': { transform: 'translateX(4px)' },
+        },
         'caret-blink': {
           '0%, 49%': { opacity: '1' },
           '50%, 100%': { opacity: '0' },
@@ -88,6 +97,7 @@ export default {
         'fade-in': 'fade-in 200ms ease-out both',
         'scale-in': 'scale-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both',
         'sweep-scan': 'sweep-scan 2.6s linear infinite',
+        shake: 'shake 280ms ease-in-out 1',
         'caret-blink': 'caret-blink 1s step-end infinite',
       },
     },

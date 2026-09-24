@@ -114,12 +114,49 @@ await step('auto-play runs the narrative and stops at the human decision', async
   await click(/^Reset$/);
 });
 
-await step('God Mode toggles on backtick', () => page.keyboard.press('`'));
-await step('EPAM demolition point fires live drift', async () => {
-  await click('EPAM');
-  await click(/Run live proof/);
-  await page.waitForSelector('text=Control plane lockout');
+// God Mode is behind a password now, and the password is not in this public
+// repository. Set PRESENTER_PASSWORD to cover everything behind the lock;
+// without it the gate itself is still checked and the rest is skipped loudly
+// rather than passing silently on coverage it did not run.
+const PRESENTER_PASSWORD = process.env.PRESENTER_PASSWORD ?? '';
+
+await step('God Mode asks for a password rather than opening', async () => {
+  await page.keyboard.press('`');
+  await page.waitForSelector('[data-testid="presenter-unlock"]', { timeout: 3000 });
+  if (await page.locator('aside[aria-label="Presenter God Mode panel"]').count()) {
+    throw new Error('the panel opened without a password');
+  }
 });
+
+await step('a wrong password is refused', async () => {
+  await page.fill('#presenter-password', 'not-the-password');
+  await page.getByRole('button', { name: 'Unlock' }).click();
+  await page.waitForTimeout(300);
+  if (await page.locator('aside[aria-label="Presenter God Mode panel"]').count()) {
+    throw new Error('a wrong password opened the panel');
+  }
+  if (!(await page.locator('[data-testid="presenter-unlock"]').count())) {
+    throw new Error('the prompt vanished on a wrong password');
+  }
+});
+
+if (!PRESENTER_PASSWORD) {
+  console.log('  ⚠ skipped: God Mode contents, EPAM demolition point');
+  console.log('    set PRESENTER_PASSWORD to cover them (repository secret in CI)');
+  await page.keyboard.press('Escape');
+} else {
+  await step('the right password opens God Mode', async () => {
+    await page.fill('#presenter-password', PRESENTER_PASSWORD);
+    await page.keyboard.press('Enter');
+    await page.waitForSelector('aside[aria-label="Presenter God Mode panel"]', { timeout: 3000 });
+  });
+
+  await step('EPAM demolition point fires live drift', async () => {
+    await click('EPAM');
+    await click(/Run live proof/);
+    await page.waitForSelector('text=Control plane lockout');
+  });
+}
 
 await step('the model switcher lists every assurance tier', async () => {
   await page.getByRole('button', { name: /^Model · T/ }).click();

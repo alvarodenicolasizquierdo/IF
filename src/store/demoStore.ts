@@ -30,6 +30,7 @@ import {
   MODELS,
 } from '@/data/models';
 import { mintToken, sha256Hex } from '@/lib/sha256';
+import { isPresenterUnlocked, unlockPresenter } from '@/lib/presenterLock';
 
 const PHASE_SCREEN: Record<PhaseId, ScreenId> = {
   DISCOVER: 'context',
@@ -175,6 +176,10 @@ interface DemoState {
   activePersona: PersonaId;
   activeScreen: ScreenId;
   presenterMode: boolean;
+  /** Has this tab supplied the presenter password? */
+  presenterUnlocked: boolean;
+  /** Is the password prompt on screen? */
+  presenterPrompt: boolean;
 
   /* ---- Governance state ---- */
   mandate: Mandate;
@@ -236,6 +241,9 @@ interface DemoState {
   setScreen: (screen: ScreenId) => void;
   togglePresenterMode: () => void;
   setPresenterMode: (open: boolean) => void;
+  requestPresenterMode: () => void;
+  closePresenterPrompt: () => void;
+  submitPresenterPassword: (password: string) => boolean;
 
   runContextProbe: () => void;
   startAutoPlay: () => void;
@@ -288,6 +296,7 @@ const initialState = () => ({
   activePersona: 'lead-fde' as PersonaId,
   activeScreen: 'dashboard' as ScreenId,
   presenterMode: false,
+  presenterPrompt: false,
 
   mandate: { ...INITIAL_MANDATE },
   evidencePack: buildEvidencePack(),
@@ -323,6 +332,13 @@ const initialState = () => ({
 
 export const useDemoStore = create<DemoState>((set, get) => ({
   ...initialState(),
+
+  /*
+   * Deliberately outside initialState, which is what Reset spreads back in.
+   * Resetting the scenario is something a presenter does mid-demo, and having
+   * it re-lock their own controls would be the wrong behaviour every time.
+   */
+  presenterUnlocked: isPresenterUnlocked(),
 
   /* ------------------------------------------------------------------ */
   /* Narrative                                                           */
@@ -396,8 +412,39 @@ export const useDemoStore = create<DemoState>((set, get) => ({
 
   setScreen: (screen) => set({ activeScreen: screen }),
 
-  togglePresenterMode: () => set((s) => ({ presenterMode: !s.presenterMode })),
-  setPresenterMode: (open) => set({ presenterMode: open }),
+  /*
+   * Closing needs no password; opening does.
+   *
+   * The toggle is bound to a key a presenter hits without looking, so the
+   * locked case must not be a dead press — it raises the prompt instead, and
+   * the prompt is what refuses.
+   */
+  togglePresenterMode: () => {
+    if (get().presenterMode) {
+      set({ presenterMode: false });
+      return;
+    }
+    get().requestPresenterMode();
+  },
+  setPresenterMode: (open) => {
+    if (!open) {
+      set({ presenterMode: false });
+      return;
+    }
+    get().requestPresenterMode();
+  },
+  requestPresenterMode: () =>
+    set(
+      get().presenterUnlocked
+        ? { presenterMode: true, presenterPrompt: false }
+        : { presenterPrompt: true },
+    ),
+  closePresenterPrompt: () => set({ presenterPrompt: false }),
+  submitPresenterPassword: (password) => {
+    if (!unlockPresenter(password)) return false;
+    set({ presenterUnlocked: true, presenterPrompt: false, presenterMode: true });
+    return true;
+  },
 
   /* ------------------------------------------------------------------ */
   /* Mandate & execution                                                 */
