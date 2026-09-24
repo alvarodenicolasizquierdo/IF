@@ -117,10 +117,45 @@ const OVERLAYS = [
     mustBeVisible: [/Approve & cryptographically sign/],
   },
   {
-    name: 'God Mode',
-    open: async (page) => page.keyboard.press('`'),
-    mustBeVisible: [/EPAM/],
+    name: 'Presenter unlock',
+    // The unlock lasts the tab and survives the reload this harness does
+    // between scenarios, so a run that had already opened God Mode would find
+    // the panel here and quietly measure the wrong thing. Clear it first: that
+    // makes this scenario independent of the order rather than dependent on it.
+    open: async (page) => {
+      await page.evaluate(() => {
+        try {
+          sessionStorage.removeItem('if-presenter-unlocked');
+        } catch {
+          /* private windows throw; the page is locked there anyway */
+        }
+      });
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.keyboard.press('`');
+    },
+    mustBeVisible: [/^Unlock$/],
   },
+  // Behind the password now. The geometry of the panel is worth auditing at
+  // every presenter viewport, so this scenario stays — but it can only run
+  // where the password is available, and it says so rather than quietly
+  // measuring nothing.
+  ...(process.env.PRESENTER_PASSWORD
+    ? [
+        {
+          name: 'God Mode',
+          open: async (page) => {
+            await page.keyboard.press('`');
+            await page.waitForSelector('[data-testid="presenter-unlock"]', { timeout: 3000 });
+            await page.fill('#presenter-password', process.env.PRESENTER_PASSWORD);
+            await page.keyboard.press('Enter');
+            await page.waitForSelector('aside[aria-label="Presenter God Mode panel"]', {
+              timeout: 3000,
+            });
+          },
+          mustBeVisible: [/EPAM/],
+        },
+      ]
+    : []),
   {
     name: 'Contextual help',
     open: async (page) => page.getByRole('button', { name: /Open help/i }).click(),

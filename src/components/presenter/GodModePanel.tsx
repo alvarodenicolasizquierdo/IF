@@ -15,8 +15,13 @@ import { cx, TONE } from '@/components/ui/tone';
  * pace, identity and which competitor claim gets destroyed next.
  */
 export function GodModePanel() {
-  const open = useDemoStore((s) => s.presenterMode);
+  // presenterMode is only ever true once the tab has been unlocked — the
+  // store routes every way in through the password — but read the flag here
+  // too, so no future caller can open this panel by setting one boolean.
+  const unlocked = useDemoStore((s) => s.presenterUnlocked);
+  const open = useDemoStore((s) => s.presenterMode) && unlocked;
   const toggle = useDemoStore((s) => s.togglePresenterMode);
+  const requestPresenterMode = useDemoStore((s) => s.requestPresenterMode);
   const setPresenterMode = useDemoStore((s) => s.setPresenterMode);
 
   const activePhase = useDemoStore((s) => s.activePhase);
@@ -32,7 +37,8 @@ export function GodModePanel() {
   const swapModel = useDemoStore((s) => s.swapToSovereignModel);
   const triggerExploit = useDemoStore((s) => s.triggerExploit);
 
-  // Backtick toggles the panel from anywhere, except while typing in a field.
+  // Backtick toggles the panel from anywhere, except while typing in a field
+  // — which now includes the password box in front of it.
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== '`' && event.code !== 'Backquote') return;
@@ -55,10 +61,9 @@ export function GodModePanel() {
       <Tooltip
         content={
           <>
-            <strong className="text-ink">Presenter God Mode.</strong> Jump to any phase, force a
-            track or identity, fire an instant proof, or open a competitor demolition point. Also
-            opens with the key immediately left of “1” — backtick on a US or UK keyboard, the same
-            physical key on any other layout.
+            <strong className="text-ink">Presenter controls.</strong> Password required, once per
+            tab. Also opens with the key immediately left of “1” — backtick on a US or UK keyboard,
+            the same physical key on any other layout.
           </>
         }
         side="left"
@@ -67,7 +72,7 @@ export function GodModePanel() {
       >
         <button
           type="button"
-          onClick={() => setPresenterMode(true)}
+          onClick={requestPresenterMode}
           aria-label="Open presenter God Mode panel"
           className="fixed bottom-5 right-5 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-hairline bg-surface/80 text-ink-faint shadow-panel backdrop-blur transition hover:border-trust-active/50 hover:text-trust-active-soft"
         >

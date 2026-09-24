@@ -100,6 +100,15 @@ function renderVault(exploits) {
           <code>º</code> on a Spanish one. It is the same physical key on any layout, because the
           console matches the key's position rather than the character it prints. The key that
           actually prints a backtick on a Spanish keyboard, next to <code>P</code>, will not work.</p>
+        <p><strong>It asks for the presenter password.</strong> Once per browser tab, and it
+          survives a reload, so type it while you are setting up rather than in front of the room.
+          Reset does not re-lock it. The password is not written down here, in the console's code,
+          or anywhere else on this site — ask Álvaro, and do not put it in writing where the link
+          travels.</p>
+        <p class="warn">Like the section you are reading, the lock is concealment with a password on
+          it, not protection: the page has no server behind it, so anyone with the developer tools
+          open can get past it. It stops the accident — a client alone with your laptop, a link
+          forwarded one hop too far — which is the case that actually happens.</p>
       </div>
 
       <div class="cards">

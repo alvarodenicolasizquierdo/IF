@@ -161,9 +161,9 @@ export interface PresenterSecret {
 export const PRESENTER_SECRETS: PresenterSecret[] = [
   {
     label: 'Presenter God Mode',
-    how: 'Click the crown at the bottom-right, or press the key immediately left of “1”',
+    how: 'Click the crown at the bottom-right, or press the key immediately left of “1”, then type the presenter password',
     detail:
-      'Jump to any phase, force a track or an identity, fire an instant proof, or run a competitor demolition point. Hidden by default so a client never sees the strings. On a US or UK keyboard that key is the backtick; on a Spanish or French layout it is the same physical key, whatever it prints — the shortcut matches the position, not the character.',
+      'Jump to any phase, force a track or an identity, fire an instant proof, or run a competitor demolition point. Hidden by default so a client never sees the strings, and locked as well as hidden since the link started travelling: the password is asked once per browser tab and survives a reload, so you type it before the room fills and not again. Reset does not re-lock it. On a US or UK keyboard the shortcut key is the backtick; on a Spanish or French layout it is the same physical key, whatever it prints — the shortcut matches the position, not the character. If you do not have the password, ask Álvaro; it is deliberately not written down in the repository or on the site.',
   },
   {
     label: 'Run cycle',

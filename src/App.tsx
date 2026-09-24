@@ -28,6 +28,7 @@ import { ExploitBriefing } from '@/components/overlays/ExploitBriefing';
 import { HelpOverlay } from '@/components/overlays/HelpOverlay';
 import { ContextGraph } from '@/components/overlays/ContextGraph';
 import { GodModePanel } from '@/components/presenter/GodModePanel';
+import { PresenterUnlock } from '@/components/presenter/PresenterUnlock';
 
 export default function App() {
   const activeScreen = useDemoStore((s) => s.activeScreen);
@@ -180,6 +181,7 @@ export default function App() {
       <HelpOverlay />
       <ContextGraph />
       <GodModePanel />
+      <PresenterUnlock />
       <ToastStack />
     </div>
   );

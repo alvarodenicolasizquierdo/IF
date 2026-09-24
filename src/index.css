@@ -55,3 +55,16 @@
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 14px 50%);
   }
 }
+
+/*
+ * The one animation in this console worth suppressing on request.
+ *
+ * A sideways shake is the classic vestibular trigger, and it is also the only
+ * motion here that carries meaning rather than polish — so it does not simply
+ * stop, it becomes a colour the border already shows.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-shake {
+    animation: none;
+  }
+}

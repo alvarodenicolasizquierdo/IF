@@ -196,6 +196,35 @@ repeated runs.
 
 ---
 
+## The presenter password
+
+God Mode — phase jumps, forced identities, the competitor demolition matrix —
+asks for a password before it opens. Once per browser tab; it survives a reload
+and Reset does not re-lock it, so you type it while setting up rather than in
+front of the room.
+
+```
+npm run set:presenter-password -- 'the new one'
+```
+
+That writes the SHA-256 digest into `src/lib/presenterLock.ts` and the
+plaintext into `sources/presenter-password.txt`, which is gitignored. **Never
+commit the plaintext**: this repository is public, and so is the site it builds.
+Rebuild and redeploy for a change to take effect, and tell whoever presents.
+
+**What the lock is.** Concealment with a password on it, not protection. The
+console is a static page with no server behind it, so it has to carry whatever
+it checks against, and anyone with the developer tools open can get past it.
+It stops the accident — a client alone with the laptop, a link forwarded one hop
+further than intended — which is the case that actually happens.
+
+The walkthrough and the layout audit read `PRESENTER_PASSWORD` from the
+environment. Without it they still check that the gate holds and that a wrong
+password is refused, then skip what is behind the lock and say so. Set it as a
+repository secret to keep that coverage in CI.
+
+---
+
 ## What we are allowed to claim, and keeping it true
 
 Four of the six accelerators on the dashboard carry a month. Those months are
