@@ -26,7 +26,7 @@
 import { sha256Hex } from './sha256';
 
 /** SHA-256 of the presenter password. Regenerate with npm run set:presenter-password. */
-const DIGEST = '82eb0d2fff17a9bc1f37cdbfece6697e54bb84000eb5e27afe28d57a5bf93e9c';
+const DIGEST = 'eea5e8169deefad6e074bfb8bcaade492eab629213bd9ec94a23029d039405f8';
 
 /**
  * Per tab, not per click.
