@@ -4,7 +4,10 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:4173/';
-const browser = await chromium.launch();
+// Same escape hatch the other verifiers carry: a prebuilt Chromium on the box
+// rather than one Playwright has to download. Without it this check could
+// only run in CI, which is the one place nobody is watching it.
+const browser = await chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
 const failures = [];
 const forbiddenName = /flow\s*studio|studio\s*flow/i;
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));

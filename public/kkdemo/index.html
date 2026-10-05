@@ -91,8 +91,7 @@ h1 em{font-style:normal;color:var(--accent)}
   background:linear-gradient(to top,rgba(16,8,25,.99) 62%,rgba(16,8,25,0));
   padding:30px clamp(16px,3vw,36px) 20px;
 }
-.cue-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}
-.say{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);padding-top:3px}
+.cue-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
 .cue p{margin:0;font-size:clamp(15px,1.75vw,19px);line-height:1.4;color:var(--ink)}
 .cue .do{display:block;margin-top:5px;font-size:13px;color:var(--faint)}
 .nav{display:flex;gap:8px}
@@ -128,6 +127,10 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--rule);border-b
   .cue-in{grid-template-columns:1fr;gap:12px}
   .nav{justify-content:flex-end}
   .mod{flex-direction:column;align-items:flex-start}
+  /* A phone cannot centre these scenes inside what is left after the cue bar,
+   *  so it scrolls them instead of hiding the last module behind the bar. */
+  body{overflow:auto}
+  .stage{height:auto;min-height:100%;place-items:start center;padding:72px 16px 200px}
 }
 </style>
 </head>
@@ -252,11 +255,11 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--rule);border-b
       </div>
       <div class="mod">
         <div><h3>Policy gates</h3><p>A named approver on the changes you are most afraid of. A gate that never says no is decoration.</p></div>
-        <span class="pill soon"><svg class="gl" viewBox="0 0 8 8"><rect width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.6"/><rect width="4" height="8" fill="currentColor"/></svg>In build · Nov 2026</span>
+        <span class="pill soon"><svg class="gl" viewBox="0 0 8 8"><rect width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.6"/><rect width="4" height="8" fill="currentColor"/></svg>In build · November 2026</span>
       </div>
       <div class="mod">
         <div><h3>Evidence Pack</h3><p>The signed record of one change: what was asked for, what was checked, who said yes. Readable without us.</p></div>
-        <span class="pill soon"><svg class="gl" viewBox="0 0 8 8"><rect width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.6"/><rect width="4" height="8" fill="currentColor"/></svg>In build · Dec 2026</span>
+        <span class="pill soon"><svg class="gl" viewBox="0 0 8 8"><rect width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.6"/><rect width="4" height="8" fill="currentColor"/></svg>In build · December 2026</span>
       </div>
     </div>
   </section>
@@ -279,7 +282,6 @@ kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--rule);border-b
 
 <div class="cue">
   <div class="cue-in">
-    <span class="say">You&nbsp;say</span>
     <p id="cue-text">—<span class="do" id="cue-do"></span></p>
     <span class="nav">
       <button id="prev" aria-label="Previous">←</button>

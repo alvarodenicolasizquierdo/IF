@@ -34,7 +34,7 @@ export function AcceleratorStrip({ className }: { className?: string }) {
         <Reveal
           className="whitespace-nowrap text-[12px] text-ink-faint"
           label={`As at ${longDate(READINESS.asOf)}`}
-          detail={`Read from the readiness register and the build schedule rather than written here, and synced on ${longDate(READINESS.syncedAt)}. Dates are months because the schedule's own assumptions say so: it runs on two estimating factors that have not been measured yet, so a month is the honest precision and a day would not be. Hover any accelerator for what it does.`}
+          detail={`Read from the readiness register and the build schedule rather than written here, and synced on ${longDate(READINESS.syncedAt)}. Mandate, policy gates and Evidence Pack carry the claim we are making rather than the register's own date; the other three are the register's. Dates are months because the schedule's own assumptions say so: it runs on two estimating factors that have not been measured yet, so a month is the honest precision and a day would not be. Hover any accelerator for what it does.`}
           side="left"
           muted
         />

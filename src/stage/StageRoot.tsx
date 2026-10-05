@@ -9,7 +9,7 @@ import { TravelApp, type AppScreen, type AppState } from './app/TravelApp';
 import { GatePanel } from './screens/GatePanel';
 import { SpecDocument } from './screens/SpecDocument';
 import { EvidencePack } from './screens/EvidencePack';
-import { ELAPSED, type ClaimState, type FeatureId, type Phase } from './data';
+import { CLAIM_MONTH, ELAPSED, type ClaimState, type FeatureId, type Phase } from './data';
 
 /**
  * Stage Mode — a second surface on the console's codebase, not a second
@@ -113,7 +113,15 @@ export function StageRoot() {
             />
           </>
         )}
-        {chrome && <ClaimBadge state={claim} />}
+        {/* The month belongs to the thing on screen, not to the deck. The pack
+         *  frame is the Evidence Pack's claim; everything else in build is the
+         *  gates'. ?month= overrides either for a one-off frame. */}
+        {chrome && (
+          <ClaimBadge
+            state={claim}
+            month={params.get('month') ?? (route.screen === 'pack' ? CLAIM_MONTH.evidence : CLAIM_MONTH.gates)}
+          />
+        )}
         {chrome && caption && <CaptionBand text={caption} />}
       </div>
     </div>

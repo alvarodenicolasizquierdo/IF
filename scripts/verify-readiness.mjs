@@ -98,6 +98,64 @@ if (ahead.length) {
   );
 }
 
+/* 3b ---------------------------------------------- the claims we override */
+
+// Three modules get named out loud and carry the claim we are making rather
+// than the register's date. That is legitimate and it is also the easiest
+// thing in this repository to forget about, so it is checked here as hard as
+// the generated data: a month that has gone past is a wrong answer in front of
+// an owner, whoever typed it.
+const CLAIMS = resolve(root, 'src/data/claims.json');
+const claims = JSON.parse(readFileSync(CLAIMS, 'utf8'));
+const overrides = Object.entries(claims.overrides);
+
+const badKey = overrides.filter(([id]) => !(id in data.acceleratorSource));
+check(
+  'every claim override names a real accelerator',
+  badKey.length === 0,
+  badKey.length ? `${badKey.map(([id]) => id).join(', ')} is not an accelerator` : `${overrides.length} overridden`,
+);
+
+const stale = overrides.filter(([, o]) => o.showFrom && o.showFrom < today);
+check(
+  'no overridden claim names a month that has already passed',
+  stale.length === 0,
+  stale.length
+    ? `${stale.map(([id, o]) => `${id} (${o.showFromLabel})`).join(', ')} — decide the new month and edit src/data/claims.json`
+    : `checked against ${today}`,
+);
+
+const unreasoned = overrides.filter(([, o]) => !o.why || o.why.length < 40);
+check(
+  'every override says why',
+  unreasoned.length === 0,
+  unreasoned.length ? `${unreasoned.map(([id]) => id).join(', ')} has no reason worth reading` : `${overrides.length} reasons on file`,
+);
+
+// Not a failure. It is the whole point of keeping two files: this is the
+// distance between what we are saying and what the plan reaches, and whoever
+// stands up in front of a room should know it before being asked.
+const distance = overrides
+  .map(([id, o]) => {
+    const cap = data.capabilities.find((c) => c.id === data.acceleratorSource[id]);
+    return { id, o, cap };
+  })
+  .filter(({ o, cap }) => cap && (o.state !== cap.state || o.showFrom !== cap.showFrom));
+if (distance.length) {
+  notes.push(
+    `${distance.length} module claim${distance.length === 1 ? '' : 's'} ahead of the register, decided ${claims.decidedOn}:`,
+    ...distance.map(({ id, o, cap }) => {
+      const saying = o.showFromLabel ?? (o.state === 'live' ? 'available now' : o.state);
+      return (
+        `    ${id.padEnd(9)} saying ${saying.padEnd(15)}` +
+        `register ${cap.state} ${cap.showFromLabel ?? cap.showFrom}   plan ${cap.planFrom ?? 'no epic'}`
+      );
+    }),
+    '  Each is met by demonstration rather than by the software being finished.',
+    '  If one of them cannot be demonstrated, it is the claim that moves, not the date.',
+  );
+}
+
 /* 4 -------------------------------------------- generated, not hand-edited */
 
 if (existsSync(TRACKER)) {
