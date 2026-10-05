@@ -57,6 +57,13 @@ await shot('context-library', 'section:has-text("The context library")');
 await page.getByRole('button', { name: /Run probe/i }).first().click();
 await page.waitForTimeout(900);
 await shot('probe-blocked', 'section:has-text("The context library")');
+// The spine itself. Stage 02 tells you to open it and then describes it in
+// words; a figure is cheaper than the paragraph.
+await page.getByRole('button', { name: /View spine/i }).first().click();
+await page.waitForTimeout(800);
+await shot('spine', '[role="dialog"] > div');
+await page.getByRole('button', { name: /^Close$/i }).first().click();
+await page.waitForTimeout(400);
 await shot('mandate', 'section:has-text("The Mandate")');
 
 // Execution: the Evidence Pack building itself.
