@@ -102,9 +102,17 @@ await firstSay.locator('summary').click();
 
 // Every thumbnail has to have actually loaded. A broken image on a presenter's
 // screen ninety seconds before they walk on is worse than no image at all.
+// A count rather than a per-stage rule, so adding or dropping a figure is a
+// deliberate act that has to come past this line. Stage 02 carries two: the
+// hygiene block and the spine it tells the presenter to open.
+const EXPECTED_SHOTS = 10;
 const shots = await page.locator('figure.shot img').count();
-check('each stage that needs one carries a thumbnail', shots === 9, `${shots} found`);
-// The thumbnails load lazily, which is right for a page carrying nine of
+check(
+  'the run-book carries every figure it should',
+  shots === EXPECTED_SHOTS,
+  `${shots} found, expected ${EXPECTED_SHOTS}`,
+);
+// The thumbnails load lazily, which is right for a page carrying ten of
 // them — so scroll the page the way a reader does before asking whether they
 // arrived. Checking without scrolling measures the loading strategy, not the
 // images.
