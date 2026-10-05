@@ -7,6 +7,8 @@
  * shot again, and the recording window is one afternoon.
  */
 
+import CLAIMS from '../data/claims.json';
+
 /** Placeholder brand. Open item: check against the trade mark register by 10 Sept. */
 export const APP_NAME = 'Northbound';
 export const APP_LEGAL_NAME = 'Northbound Travel';
@@ -147,9 +149,21 @@ export const PHASE_LABEL: Record<Phase, string> = {
 
 /** Claim discipline: every frame carries one of these, with no exceptions. */
 export type ClaimState = 'now' | 'building' | 'planned';
+
+/**
+ * The months the in-build badge is allowed to say, taken from
+ * src/data/claims.json so the stage and the console cannot drift apart. The
+ * badge used to carry one hardcoded month for every frame, which meant the
+ * Evidence Pack frame claimed the gates' date.
+ */
+export const CLAIM_MONTH = {
+  gates: CLAIMS.overrides.gates.showFromLabel,
+  evidence: CLAIMS.overrides.evidence.showFromLabel,
+} as const;
+
 export const CLAIM_LABEL: Record<ClaimState, string> = {
   now: 'Available now',
-  building: 'In build Nov 2026',
+  building: `In build ${CLAIM_MONTH.gates}`,
   planned: 'Planned',
 };
 

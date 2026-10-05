@@ -1,4 +1,5 @@
 import { ACCELERATOR_SOURCE, capability, type CapabilityState } from './readiness';
+import claims from './claims.json';
 
 /**
  * The accelerators — the modules Avenga drops into a client's own platform.
@@ -47,6 +48,8 @@ export interface Accelerator {
   provenIn: string;
   /** The register entry this is answerable to. */
   source: string;
+  /** True when the claim is set in claims.json rather than read off the register. */
+  claimed: boolean;
 }
 
 interface Copy {
@@ -95,15 +98,41 @@ const COPY: Copy[] = [
   },
 ];
 
+interface Override {
+  state: AcceleratorStatus;
+  showFromLabel: string | null;
+  why: string;
+}
+const OVERRIDES = claims.overrides as Record<string, Override | undefined>;
+
+/**
+ * Three of these modules get named out loud, so their claim is set by the
+ * person doing the naming rather than read off the register: Mandate is
+ * available, policy gates are in build for November 2026, Evidence Pack is in
+ * build for December 2026.
+ *
+ * That is a claim ahead of the schedule on two of the three, and it is not
+ * hidden anywhere. It lives in src/data/claims.json with a reason per module,
+ * readiness.json is left exactly as the sources produced it, and
+ * npm run test:readiness prints the distance between the two on every build
+ * and fails if an overridden month has gone past. The register stays the
+ * answer to "what does the plan reach"; this is the answer to "what are we
+ * saying", and keeping them as two files is what stops one quietly becoming
+ * the other.
+ */
 export const ACCELERATORS: Accelerator[] = COPY.map((c) => {
   const source = ACCELERATOR_SOURCE[c.id];
   const cap = capability(source);
+  const claim = OVERRIDES[c.id];
+  const status = claim?.state ?? cap.state;
+  const when = claim ? claim.showFromLabel : cap.showFromLabel;
   return {
     ...c,
     source,
-    status: cap.state,
+    status,
     // A live capability needs no date beside it; "available now" is the date.
-    when: cap.state === 'live' ? null : cap.showFromLabel,
+    when: status === 'live' ? null : when,
+    claimed: Boolean(claim),
   };
 });
 

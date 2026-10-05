@@ -1,0 +1,25 @@
+{
+  "$comment": "Hand-authored, unlike readiness.json beside it. This is the presenter's claim for the three modules that get named out loud, recorded here rather than typed into the generated file so it shows up in a diff and can be argued with. Carries no client names, no commercial status and no internal guidance: this repository is public.",
+  "decidedOn": "2026-10-05",
+  "note": "Each of these is a claim met by demonstration before the automating epic lands. The register and the schedule still say what they say; readiness.json is untouched and the gap is printed by npm run test:readiness on every build.",
+  "overrides": {
+    "mandate": {
+      "state": "live",
+      "showFrom": null,
+      "showFromLabel": null,
+      "why": "The mandate itself — scope, duration, budget, signed by a named person — is on screen and working in Context & Mandate today. The register entry behind this module covers the wider capability of agents filling stages under those mandates, which is still in build; the module as named and shown is available."
+    },
+    "gates": {
+      "state": "build",
+      "showFrom": "2026-11-01",
+      "showFromLabel": "November 2026",
+      "why": "Demonstrable from November. The governance epic that makes it enforced in software finishes later, which is why the state stays In build rather than becoming available."
+    },
+    "evidence": {
+      "state": "build",
+      "showFrom": "2026-12-01",
+      "showFromLabel": "December 2026",
+      "why": "Packs are assembled for December. The epic that makes them automatic on every change finishes later, which is why the state stays In build."
+    }
+  }
+}
