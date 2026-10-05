@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intelligent Flow — investor demo</title>
+<meta name="description" content="Ten minutes: what Avenga Intelligent Flow does, what is real today, and what is dated.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<style>
+/* ---------------------------------------------------------------------------
+   One file, no dependencies, no network. Opens from a URL or from a download.
+   Avenga palette; system fonts only, so it renders identically offline.
+   --------------------------------------------------------------------------- */
+:root{
+  --ground:#170D26; --raised:#241539; --sunk:#100819; --rule:#402A5E;
+  --ink:#FFFFFF; --soft:#E0DACE; --faint:#A796BC;
+  --accent:#FF5A2C; --live:#34D399; --warn:#FFB454;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+}
+/* ----------------------------------------------------------------- chrome -- */
+.top{
+  position:fixed;top:0;left:0;right:0;height:56px;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(16px,3vw,36px);
+  background:linear-gradient(to bottom,rgba(23,13,38,.96),rgba(23,13,38,0));
+}
+.brand{display:flex;align-items:center;gap:12px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.brand b{color:var(--accent);letter-spacing:.02em;text-transform:none;font-size:17px}
+.steps{display:flex;gap:7px;align-items:center}
+.dot{width:26px;height:3px;border-radius:2px;background:var(--rule);transition:background .3s}
+.dot.on{background:var(--accent)}
+.dot.done{background:var(--faint)}
+
+/* ------------------------------------------------------------------ stage -- */
+.stage{height:100%;display:grid;place-items:center;padding:76px clamp(16px,4vw,64px) 132px}
+.scene{display:none;width:100%;max-width:1180px;animation:rise .45s cubic-bezier(.16,1,.3,1) both}
+.scene.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.scene{animation:none}}
+
+.kicker{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font-size:clamp(34px,5.4vw,62px);line-height:1.03;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--accent)}
+.sub{font-size:clamp(16px,1.7vw,20px);line-height:1.45;color:var(--soft);margin:0;max-width:62ch}
+
+/* ------------------------------------------------------------------ cards -- */
+.grid{display:grid;gap:14px;margin-top:30px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--raised);border:1px solid var(--rule);border-radius:14px;padding:22px 24px}
+
+/* numbers */
+.num{font-size:clamp(40px,5.6vw,68px);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.num small{font-size:.42em;letter-spacing:0;color:var(--faint);margin-left:6px}
+.lab{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin:0 0 12px}
+.was{font-size:15px;color:var(--faint);margin:10px 0 0}
+.was s{opacity:.65}
+.win .num{color:var(--live)}
+.lose .num{color:var(--faint)}
+
+/* module rows */
+.mod{display:flex;align-items:center;justify-content:space-between;gap:18px;
+     background:var(--raised);border:1px solid var(--rule);border-radius:12px;padding:18px 22px}
+.mod h3{margin:0;font-size:clamp(18px,2vw,23px);letter-spacing:-.01em}
+.mod p{margin:5px 0 0;font-size:14px;color:var(--faint);max-width:46ch}
+.pill{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+      border:1px solid;border-radius:999px;padding:7px 15px;font-size:13px;font-weight:700;
+      letter-spacing:.08em;text-transform:uppercase}
+.pill .gl{width:9px;height:9px;flex:none}
+.now{color:var(--live);border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.1)}
+.soon{color:var(--warn);border-color:rgba(255,180,84,.42);background:rgba(255,180,84,.08)}
+
+/* evidence list */
+.ev{display:grid;gap:10px;margin-top:26px}
+.ev div{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;
+        padding:14px 18px;background:var(--sunk);border-left:3px solid var(--rule);border-radius:0 10px 10px 0}
+.ev b{color:var(--accent);font-size:13px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.ev span{color:var(--soft);font-size:clamp(15px,1.6vw,17px);line-height:1.4}
+
+/* ------------------------------------------------------------------- cue --- */
+.cue{
+  position:fixed;left:0;right:0;bottom:0;z-index:20;
+  background:linear-gradient(to top,rgba(16,8,25,.99) 62%,rgba(16,8,25,0));
+  padding:30px clamp(16px,3vw,36px) 20px;
+}
+.cue-in{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}
+.say{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);padding-top:3px}
+.cue p{margin:0;font-size:clamp(15px,1.75vw,19px);line-height:1.4;color:var(--ink)}
+.cue .do{display:block;margin-top:5px;font-size:13px;color:var(--faint)}
+.nav{display:flex;gap:8px}
+.nav button{
+  font:inherit;font-size:19px;line-height:1;color:var(--soft);cursor:pointer;
+  background:var(--raised);border:1px solid var(--rule);border-radius:9px;
+  width:42px;height:38px;display:grid;place-items:center;
+}
+.nav button:hover{border-color:var(--accent);color:var(--ink)}
+.nav button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ------------------------------------------------------------------ spine -- */
+.spine{margin-top:26px;background:var(--sunk);border:1px solid var(--rule);border-radius:14px;padding:20px}
+.spine svg{width:100%;height:auto;display:block}
+.verdict{margin:16px 0 0;padding:15px 18px;border:1px solid rgba(255,90,44,.5);
+         background:rgba(255,90,44,.09);border-radius:10px;
+         font-size:clamp(15px,1.7vw,18px);line-height:1.45;color:var(--ink)}
+.verdict b{color:var(--accent)}
+
+/* ------------------------------------------------------------------- gate -- */
+.gate{border:2px solid var(--warn);border-radius:16px;background:rgba(255,180,84,.07);padding:26px;margin-top:26px}
+.gate .hd{display:flex;align-items:center;gap:12px;color:var(--warn);font-size:13px;
+          letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:16px}
+.who{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid var(--rule)}
+.who code{font-family:var(--mono);font-size:14px;color:var(--soft);background:var(--sunk);padding:5px 11px;border-radius:7px}
+
+.foot{position:fixed;right:clamp(16px,3vw,36px);top:66px;z-index:19;font-size:12px;color:var(--faint)}
+.foot a{color:var(--faint)}
+.hint{font-size:12px;color:var(--faint);margin-top:18px}
+kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--rule);border-bottom-width:2px;
+    border-radius:5px;padding:2px 6px;color:var(--soft)}
+@media (max-width:720px){
+  .cue-in{grid-template-columns:1fr;gap:12px}
+  .nav{justify-content:flex-end}
+  .mod{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><b>avenga</b><span>Intelligent&nbsp;Flow</span></div>
+  <div class="steps" id="steps" aria-hidden="true"></div>
+</header>
+
+<main class="stage" id="stage">
+
+  <!-- 1 ---------------------------------------------------------------- -->
+  <section class="scene on" data-say="Same team. Same work. The only difference is how much control sits around the AI." data-do="Click the arrow when the number has landed.">
+    <p class="kicker">One piece of work, two ways of delivering it</p>
+    <h1>The same feature, <em>built twice</em></h1>
+    <p class="sub">A billing change for a European telco. On the left, engineers bought by the hour. On the right, the same people under governed AI delivery.</p>
+    <div class="grid g2">
+      <div class="card lose">
+        <p class="lab">Traditional delivery</p>
+        <p class="num">€1,200</p>
+        <p class="was">per unit of software delivered · 14 days to production</p>
+      </div>
+      <div class="card win">
+        <p class="lab">Governed AI delivery</p>
+        <p class="num">€180</p>
+        <p class="was">per unit of software delivered · 2 days to production</p>
+      </div>
+    </div>
+    <p class="hint">Worked example on anonymised client data, not a measured average. The measured results come at the end.</p>
+  </section>
+
+  <!-- 2 ---------------------------------------------------------------- -->
+  <section class="scene" data-say="Everyone can make AI write code. This is AI that declines to start." data-do="Point at the red line. Then advance.">
+    <p class="kicker">Moment one</p>
+    <h1>It <em>stops itself</em></h1>
+    <p class="sub">Before a single token is spent, the agent traces every artefact it is about to rely on — back to the requirement that justifies it.</p>
+
+    <div class="spine">
+      <svg viewBox="0 0 1000 300" role="img" aria-label="Traceability spine: one source has no requirement behind it, so the run is held">
+        <defs>
+          <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#FF5A2C"/>
+          </marker>
+        </defs>
+        <!-- good paths -->
+        <g fill="none" stroke="#402A5E" stroke-width="2">
+          <path d="M250,150 C360,150 360,56 470,56"/>
+          <path d="M250,150 C360,150 360,110 470,110"/>
+          <path d="M250,150 C360,150 360,164 470,164"/>
+          <path d="M700,56 C810,56 810,150 844,150"/>
+          <path d="M700,110 C810,110 810,150 844,150"/>
+          <path d="M700,164 C810,164 810,150 844,150"/>
+        </g>
+        <!-- the bad path -->
+        <path d="M700,246 C800,246 812,160 842,152" fill="none" stroke="#FF5A2C" stroke-width="2.5"
+              stroke-dasharray="7 6" marker-end="url(#a)"/>
+        <!-- requirement -->
+        <rect x="40" y="118" width="210" height="64" rx="10" fill="#241539" stroke="#34D399"/>
+        <text x="60" y="144" fill="#A796BC" font-size="11" letter-spacing="1.6">REQUIREMENT</text>
+        <text x="60" y="166" fill="#34D399" font-size="15" font-family="ui-monospace,monospace">AZ-7001</text>
+        <!-- traced artefacts -->
+        <g font-size="13" font-family="ui-monospace,monospace">
+          <rect x="470" y="34" width="230" height="44" rx="9" fill="#241539" stroke="#402A5E"/>
+          <text x="488" y="61" fill="#E0DACE">Design decision</text>
+          <rect x="470" y="88" width="230" height="44" rx="9" fill="#241539" stroke="#402A5E"/>
+          <text x="488" y="115" fill="#E0DACE">EU tax rules v1</text>
+          <rect x="470" y="142" width="230" height="44" rx="9" fill="#241539" stroke="#402A5E"/>
+          <text x="488" y="169" fill="#E0DACE">Interface contract</text>
+          <!-- orphan -->
+          <rect x="470" y="222" width="230" height="48" rx="9" fill="rgba(255,90,44,.12)" stroke="#FF5A2C"/>
+          <text x="488" y="244" fill="#FF5A2C">TaxRates_2023.xls</text>
+          <text x="488" y="262" fill="#FF5A2C" font-size="11" font-family="sans-serif">no requirement · unclassified</text>
+        </g>
+        <!-- target -->
+        <rect x="846" y="124" width="138" height="52" rx="10" fill="#241539" stroke="#FFB454"/>
+        <text x="864" y="146" fill="#A796BC" font-size="10" letter-spacing="1.4">WILL CHANGE</text>
+        <text x="864" y="165" fill="#FFB454" font-size="14" font-family="ui-monospace,monospace">billing.js</text>
+      </svg>
+    </div>
+
+    <p class="verdict"><b>Held.</b> One source feeding this change has no requirement behind it and was never classified. Nothing traces it to anything a human asked for — so anything the agent writes from it could be invention. The run does not start.</p>
+  </section>
+
+  <!-- 3 ---------------------------------------------------------------- -->
+  <section class="scene" data-say="This cannot be clicked past. A named person signs, and the record seals behind them." data-do="Let it sit for a beat. This is the slide that matters.">
+    <p class="kicker">Moment two</p>
+    <h1>A named human <em>signs</em></h1>
+    <p class="sub">The change is written, tested and ready. It still does not reach production on its own.</p>
+
+    <div class="gate">
+      <p class="hd"><span>▲</span> Manual authorisation required</p>
+      <div class="grid g2" style="margin-top:0">
+        <div>
+          <p class="lab">What it touches</p>
+          <p class="sub" style="font-size:16px">One file. Production billing. Not reversible without a release.</p>
+        </div>
+        <div>
+          <p class="lab">What was checked</p>
+          <p class="sub" style="font-size:16px">Every source traced. Every tool-call intercepted. Tests green.</p>
+        </div>
+      </div>
+      <div class="who">
+        <span class="lab" style="margin:0">Signing as</span>
+        <code>CISO · verified identity</code>
+        <span style="color:var(--faint);font-size:14px">— anyone else is refused, by role, not by convention.</span>
+      </div>
+    </div>
+
+    <p class="verdict" style="border-color:var(--rule);background:var(--sunk)">This is what an auditor asks for, what a regulator asks for, and what an acquirer's diligence team asks for.</p>
+  </section>
+
+  <!-- 4 ---------------------------------------------------------------- -->
+  <section class="scene" data-say="Every claim here carries a date, and the dates come from the build plan — not from me." data-do="This is the credibility slide. Do not rush it.">
+    <p class="kicker">Moment three</p>
+    <h1>It refuses to <em>overclaim</em></h1>
+    <p class="sub">Three modules, each dropped into a client's own estate alongside delivery. One is running today. Two are dated.</p>
+    <div class="grid" style="gap:12px;margin-top:28px">
+      <div class="mod">
+        <div><h3>Mandate</h3><p>What an agent may touch, for how long, and what it may spend. Signed by a named person.</p></div>
+        <span class="pill now"><svg class="gl" viewBox="0 0 8 8"><rect width="8" height="8" fill="currentColor"/></svg>Available</span>
+      </div>
+      <div class="mod">
+        <div><h3>Policy gates</h3><p>A named approver on the changes you are most afraid of. A gate that never says no is decoration.</p></div>
+        <span class="pill soon"><svg class="gl" viewBox="0 0 8 8"><rect width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.6"/><rect width="4" height="8" fill="currentColor"/></svg>In build · Nov 2026</span>
+      </div>
+      <div class="mod">
+        <div><h3>Evidence Pack</h3><p>The signed record of one change: what was asked for, what was checked, who said yes. Readable without us.</p></div>
+        <span class="pill soon"><svg class="gl" viewBox="0 0 8 8"><rect width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.6"/><rect width="4" height="8" fill="currentColor"/></svg>In build · Dec 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 ---------------------------------------------------------------- -->
+  <section class="scene" data-say="That was the console we sell with. This is what is already real, and paid for." data-do="Finish here. Then take questions.">
+    <p class="kicker">Off the screen</p>
+    <h1>What is <em>already real</em></h1>
+    <div class="ev">
+      <div><b>In production</b><span>Running on real client work at two named clients. One CIO will take a reference call.</span></div>
+      <div><b>Measured</b><span>Delivery measurement live on a client's own AWS, steady after four sprints — their infrastructure, not ours.</span></div>
+      <div><b>Adopted</b><span>One client team: ~90% of frontend code AI-generated by three engineers, and the highest product stickiness in the group.</span></div>
+      <div><b>Evaluated</b><span>Two enterprise evaluation panels watched the full loop run live, on inputs they chose, nothing pre-recorded.</span></div>
+      <div><b>Falsifiable</b><span>Two tests agreed for December. If either fails, we will say so.</span></div>
+    </div>
+    <p class="hint">Press <kbd>←</kbd> to go back to any moment. <a href="#" id="dl" style="color:var(--accent)">Download this page</a> to run it with no network.</p>
+  </section>
+
+</main>
+
+<div class="cue">
+  <div class="cue-in">
+    <span class="say">You&nbsp;say</span>
+    <p id="cue-text">—<span class="do" id="cue-do"></span></p>
+    <span class="nav">
+      <button id="prev" aria-label="Previous">←</button>
+      <button id="next" aria-label="Next">→</button>
+    </span>
+  </div>
+</div>
+
+<script>
+(function(){
+  var scenes = [].slice.call(document.querySelectorAll('.scene'));
+  var steps  = document.getElementById('steps');
+  var cue    = document.getElementById('cue-text');
+  var cueDo  = document.getElementById('cue-do');
+  var i = 0;
+
+  scenes.forEach(function(_,n){
+    var d = document.createElement('span');
+    d.className = 'dot'; d.title = 'Go to ' + (n+1);
+    d.addEventListener('click', function(){ go(n); });
+    d.style.cursor = 'pointer';
+    steps.appendChild(d);
+  });
+  var dots = [].slice.call(steps.children);
+
+  function go(n){
+    i = Math.max(0, Math.min(scenes.length - 1, n));
+    scenes.forEach(function(s,k){ s.classList.toggle('on', k === i); });
+    dots.forEach(function(d,k){
+      d.className = 'dot' + (k === i ? ' on' : (k < i ? ' done' : ''));
+    });
+    // The cue is the scene's own, so the two can never drift apart.
+    cue.childNodes[0].nodeValue = scenes[i].dataset.say || '';
+    cueDo.textContent = scenes[i].dataset.do || '';
+    window.scrollTo(0,0);
+  }
+
+  document.getElementById('next').addEventListener('click', function(){ go(i+1); });
+  document.getElementById('prev').addEventListener('click', function(){ go(i-1); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); go(i+1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){ e.preventDefault(); go(i-1); }
+    if (e.key === 'Home'){ go(0); }
+  });
+
+  // Saves itself. Works from the hosted copy and from an already-downloaded
+  // one, so a presenter on a bad network always has a local copy.
+  var dl = document.getElementById('dl');
+  if (dl) dl.addEventListener('click', function(e){
+    e.preventDefault();
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    var url = URL.createObjectURL(new Blob([html], {type:'text/html'}));
+    var a = document.createElement('a');
+    a.href = url; a.download = 'intelligent-flow-investor-demo.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>
