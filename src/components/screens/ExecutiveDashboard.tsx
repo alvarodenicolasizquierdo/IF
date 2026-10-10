@@ -338,8 +338,6 @@ export function ExecutiveDashboard() {
           </p>
         </Panel>
       </div>
-
-      <AcceleratorStrip />
     </div>
   );
 }
